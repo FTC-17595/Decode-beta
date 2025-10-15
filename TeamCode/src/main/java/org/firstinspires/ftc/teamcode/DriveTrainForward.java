@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name = "Auto Forward")
-
+@Disabled
 public class DriveTrainForward extends LinearOpMode {
 
     @Override
