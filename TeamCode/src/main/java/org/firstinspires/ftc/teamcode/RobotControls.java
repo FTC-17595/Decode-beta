@@ -16,11 +16,11 @@ public class RobotControls {
     boolean shiftArtifactInContainer;
     boolean rejectContainerArtifact;
     public void updateControls() {
-        intakeArtifact = linearOpMode.gamepad2.a;
-        shiftArtifactInContainer = linearOpMode.gamepad2.b;
-        rejectContainerArtifact = linearOpMode.gamepad2.x;
-        rejectIntakeArtifact = linearOpMode.gamepad2.y;
-        rejectShootingArtifact = linearOpMode.gamepad2.left_trigger;
-        shootArtifact = linearOpMode.gamepad2.right_trigger;
+        intakeArtifact = linearOpMode.gamepad1.a;
+        shiftArtifactInContainer = linearOpMode.gamepad1.b;
+        rejectContainerArtifact = linearOpMode.gamepad1.x;
+        rejectIntakeArtifact = linearOpMode.gamepad1.y;
+        rejectShootingArtifact = linearOpMode.gamepad1.left_trigger;
+        shootArtifact = linearOpMode.gamepad1.right_trigger;
     }
 }

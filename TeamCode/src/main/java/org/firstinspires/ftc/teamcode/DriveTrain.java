@@ -125,8 +125,8 @@ public class DriveTrain {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Calculate rotated x and y values
-        double rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-        double rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         // Apply scaling to rotX if needed
         rotX = rotX * 1.1;
@@ -136,9 +136,9 @@ public class DriveTrain {
     }
 
     public void displayTelemetry() {
-        linearOpMode.telemetry.addData("Left Stick (X, Y)", "%5.2f, %5.2f", -linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, -linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER);
+        linearOpMode.telemetry.addData("Left Stick (X, Y)", "%5.2f, %5.2f", linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, -linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER);
         linearOpMode.telemetry.addData("Right Stick (Rotation)", "%5.2f", linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER);
-        linearOpMode.telemetry.addData("Raw Left Stick (X, Y)", "%5.2f, %5.2f", -linearOpMode.gamepad1.left_stick_x, -linearOpMode.gamepad1.left_stick_y);
+        linearOpMode.telemetry.addData("Raw Left Stick (X, Y)", "%5.2f, %5.2f", linearOpMode.gamepad1.left_stick_x, -linearOpMode.gamepad1.left_stick_y);
         linearOpMode.telemetry.addData("Raw Right Stick (Rotation)", "%5.2f", linearOpMode.gamepad1.right_stick_x);
         linearOpMode.telemetry.addData("Fast Mode", linearOpMode.gamepad1.left_bumper);
         linearOpMode.telemetry.addData("Slow Mode", linearOpMode.gamepad1.right_bumper);
@@ -158,7 +158,7 @@ public class DriveTrain {
             return;
         }
 
-        Powers motorPower = getPowers(-linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER, -linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER);
+        Powers motorPower = getPowers(-linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER, linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER);
         frontLeftMotor.setPower(motorPower.getFrontLeftPower());
         frontRightMotor.setPower(motorPower.getFrontRightPower());
         backLeftMotor.setPower(motorPower.getBackLeftPower());
@@ -178,7 +178,7 @@ public class DriveTrain {
     }
 
     public void resetYaw() {
-        if (linearOpMode.gamepad1.back) {
+        if (linearOpMode.gamepad1.start) {
             imu.resetYaw();
             counter++;
         }
