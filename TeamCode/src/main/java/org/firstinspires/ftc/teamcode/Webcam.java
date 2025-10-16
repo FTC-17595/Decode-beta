@@ -21,43 +21,63 @@ public class Webcam {
     private final LinearOpMode linearOpMode;
     private final RobotControls robotControls;
     private ColorBlobLocatorProcessor colorLocator;
+    private VisionPortal portal; // Don't make this final
 
     public Webcam(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
         this.robotControls = new RobotControls(linearOpMode);
-        this.colorLocator = createProcessor(ColorRange.ARTIFACT_PURPLE); // Initialize with a default color
-
-        VisionPortal portal = new VisionPortal.Builder()
+        this.colorLocator = createProcessor(false); // Initialize with a default color
+        this.portal = new VisionPortal.Builder()
                 .addProcessor(colorLocator)
                 .setCameraResolution(new Size(640, 360))
                 .setCamera(linearOpMode.hardwareMap.get(WebcamName.class, webcamName))
                 .build();
-        // This is the end of the blob for the camera
     }
 
-    private ColorBlobLocatorProcessor createProcessor(ColorRange targetColor) {
-        return new ColorBlobLocatorProcessor.Builder()
-                .setTargetColorRange(ColorRange.ARTIFACT_PURPLE)   // Use a predefined color match
-                .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.75, 0.75, 0.75, -0.75))
-                .setDrawContours(true)   // Show contours on the Stream Preview
-                .setBoxFitColor(0)       // Disable the drawing of rectangles
-                .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
-                .setBlurSize(5)          // Smooth the transitions between different colors in image
+    // SUPPORTED COLORS: GREEN (TRUE), PURPLE (FALSE, DEFAULT)
+    // Creates a colorProcessor every time the target color is changed
+    private ColorBlobLocatorProcessor createProcessor(Boolean targetColor) {
+        if (targetColor == true) {
+            return new ColorBlobLocatorProcessor.Builder()
+                    .setTargetColorRange(ColorRange.ARTIFACT_GREEN) // Use a predefined color match
+                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                    .setRoi(ImageRegion.asUnityCenterCoordinates(-0.75, 0.75, 0.75, -0.75))
+                    .setDrawContours(true)   // Show contours on the Stream Preview
+                    .setBoxFitColor(0)       // Disable the drawing of rectangles
+                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                    .setBlurSize(5)          // Smooth the transitions between different colors in image
 
-                // the following options have been added to fill in perimeter holes.
-                .setDilateSize(15)       // Expand blobs to fill any divots on the edges
-                .setErodeSize(15)        // Shrink blobs back to original size
-                .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
+                    // The following options have been added to fill in perimeter holes.
+                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                    .setErodeSize(15)        // Shrink blobs back to original size
+                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
 
-                .build();
-    }
+                    .build();
+        } else {
+            return new ColorBlobLocatorProcessor.Builder()
+                    .setTargetColorRange(ColorRange.ARTIFACT_PURPLE) // Use a predefined color match
+                    .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)
+                    .setRoi(ImageRegion.asUnityCenterCoordinates(-0.75, 0.75, 0.75, -0.75))
+                    .setDrawContours(true)   // Show contours on the Stream Preview
+                    .setBoxFitColor(0)       // Disable the drawing of rectangles
+                    .setCircleFitColor(Color.rgb(255, 255, 0)) // Draw a circle
+                    .setBlurSize(5)          // Smooth the transitions between different colors in image
 
-    public void setTargetColorRange(ColorBlobLocatorProcessor colorLocator, ColorRange colorRange) {
-        if (colorRange == ColorRange.ARTIFACT_PURPLE) {
-            // colorLocator.setTargetColorRange(ColorRange.ARTIFACT_PURPLE);
+                    // The following options have been added to fill in perimeter holes.
+                    .setDilateSize(15)       // Expand blobs to fill any divots on the edges
+                    .setErodeSize(15)        // Shrink blobs back to original size
+                    .setMorphOperationType(ColorBlobLocatorProcessor.MorphOperationType.CLOSING)
 
+                    .build();
         }
+    }
+
+    public void setTargetColorRange(Boolean colorRange) {
+        ColorBlobLocatorProcessor newProcessor = createProcessor(colorRange);
+
+        this.portal.setProcessorEnabled(this.colorLocator, false);
+        this.portal.setProcessorEnabled(newProcessor, true);
+        this.colorLocator = newProcessor;
     }
 
     /* This function simply returns color blobs for processing
