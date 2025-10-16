@@ -25,4 +25,5 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'org.ejml:ejml-simple:0.44.0'
 }

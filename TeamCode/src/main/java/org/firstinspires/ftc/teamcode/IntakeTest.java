@@ -11,6 +11,7 @@ public class IntakeTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        // Make sure to use test motor configurations or modify the line below
         DcMotor intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
 
         waitForStart();
