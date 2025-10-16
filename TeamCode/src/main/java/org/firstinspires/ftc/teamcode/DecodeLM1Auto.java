@@ -63,8 +63,8 @@ public class DecodeLM1Auto extends LinearOpMode {
 
         // Keep driving while opmode is active AND the robot is more than 30 cm away in X or Y
         while (opModeIsActive() &&
-                (Math.abs(targetX - odo.getPosX(DistanceUnit.CM)) > 30 ||
-                        Math.abs(targetY - odo.getPosY(DistanceUnit.CM)) > 30)) {
+                (Math.abs(targetX - odo.getPosX(DistanceUnit.MM)) > 30 ||
+                        Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 30)) {
 
             // Update odometry each loop to get the latest position
             odo.update();
@@ -72,8 +72,8 @@ public class DecodeLM1Auto extends LinearOpMode {
             // Compute distance from target in X and Y, scaled down for motor power
             // The 0.001 factor converts cm error into a smaller motor power signal
             // Negative Y compensates for coordinate orientation differences
-            double x = 0.001 * (targetX - odo.getPosX(DistanceUnit.CM));
-            double y = -0.001 * (targetY - odo.getPosY(DistanceUnit.CM));
+            double x = 0.001 * (targetX - odo.getPosX(DistanceUnit.MM));
+            double y = -0.001 * (targetY - odo.getPosY(DistanceUnit.MM));
 
             // Get the robot's heading (rotation angle) from the IMU in radians
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -136,8 +136,8 @@ public class DecodeLM1Auto extends LinearOpMode {
 
             while (opModeIsActive() && ((error > 1) || (error < -1))) {
                 odo.update();
-                telemetry.addData("X: ", odo.getPosX(DistanceUnit.CM));
-                telemetry.addData("Y: ", odo.getPosY(DistanceUnit.CM));
+                telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
+                telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
 //                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
                 telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.update();
@@ -175,8 +175,8 @@ public class DecodeLM1Auto extends LinearOpMode {
 
         private void initAuto() {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        //        odo.setOffsets(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setOffsets(107.95, 21, DistanceUnit.CM ); //took on 12/20 by Rohan
+        //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(150, 60, DistanceUnit.MM ); //took on 12/20 by Rohan
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
