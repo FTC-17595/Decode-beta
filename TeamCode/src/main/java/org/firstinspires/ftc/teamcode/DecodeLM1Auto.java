@@ -79,6 +79,8 @@ public class DecodeLM1Auto extends LinearOpMode {
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             // Rotate the field-relative (x, y) error into robot-relative coordinates
+            // Further explanation: this uses a 2D rotation matrix to transform the error vector
+            // So that it aligns with the robot's own "point of view"
             double rotY = y * Math.cos(-botHeading) - x * Math.sin(-botHeading);
             double rotX = y * Math.sin(-botHeading) + x * Math.cos(-botHeading);
 
@@ -151,6 +153,8 @@ public class DecodeLM1Auto extends LinearOpMode {
                 }*/
                 driveMotorsPower = error / 50;
 
+                // Make sure the power never drops too close to 0
+
                 if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
                     driveMotorsPower = 0.35;
                 } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
@@ -183,6 +187,7 @@ public class DecodeLM1Auto extends LinearOpMode {
         odo.resetPosAndIMU();
         odo.recalibrateIMU();
 
+        // Initialize motor attributes
         frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
