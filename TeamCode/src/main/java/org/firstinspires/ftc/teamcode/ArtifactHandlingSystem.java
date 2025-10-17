@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.AutoConstants.AUTO_ARTIFACT_SHOOT_POWER;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -85,6 +87,17 @@ public class ArtifactHandlingSystem {
             outtakeMotor.setPower(0);
         }
     }
+
+    public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
+        if (shootArtifact > 0) {
+            outtakeMotor.setPower(AUTO_ARTIFACT_SHOOT_POWER);
+        } else if (rejectArtifact > 0) {
+            outtakeMotor.setPower(-rejectArtifact);
+        } else {
+            outtakeMotor.setPower(0);
+        }
+    }
+
 
     public void displayTelemetry() {
         linearOpMode.telemetry.addData("Outtake Motor Power", outtakeMotor.getPower());
