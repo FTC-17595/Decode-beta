@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous(name = "Auto LM1")
 public class DecodeLM1Auto extends LinearOpMode {
@@ -22,21 +24,44 @@ public class DecodeLM1Auto extends LinearOpMode {
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
-
+    boolean PPG = false;
+    boolean  PGP = false;
+    boolean GPP = false;
     IMU imu;
     @Override
     public void runOpMode() {
 
         initAuto();
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .build();
 
-            driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
+        AprilTagDetection tag = tagProcessor.getDetections().get(0);
+
+
+
+
+        if (tag.id == 21) {
+            PPG = true;
+
+        } else if (tag.id == 22) {
+            PGP = true;
+
+        } else if (tag.id == 23){
+            PPG = true;
+        }
+
+        driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
             gyroTurnToAngle(110);
 
             ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
             artifactSystem.shootAutoArtifact();
 
         driveToPos(40, 23);
-/*
+
         while (counter < 2) {
             frontLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
             backLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
@@ -47,8 +72,20 @@ public class DecodeLM1Auto extends LinearOpMode {
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
-*/
 
+
+
+        if (PPG == true) {
+            driveToPos(12,12);
+            // the PPG line
+        } else if (PGP == true) {
+
+            // the PGP line
+            driveToPos(12,12);
+        } else if (GPP == true) {
+            // The GPP line
+            driveToPos(12,12);
+        }
 
 
     }
@@ -141,13 +178,14 @@ public class DecodeLM1Auto extends LinearOpMode {
                 telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.update();
 
-                /*driveMotorsPower = error / 200;
+driveMotorsPower = error / 200;
 
                 if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
                     driveMotorsPower = 0.2;
                 } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
                     driveMotorsPower = -0.2;
-                }*/
+                }
+
                 driveMotorsPower = error / 50;
 
                 if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
