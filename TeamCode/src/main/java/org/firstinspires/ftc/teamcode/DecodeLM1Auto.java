@@ -30,8 +30,9 @@ public class DecodeLM1Auto extends LinearOpMode {
         initAuto();
 
             driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
-            gyroTurnToAngle(110);
-        //TODO: When the robot classes get built we need to add actions for outake to score the pre-load
+            // Delete second parameter when optimal turn speed is determined
+            gyroTurnToAngle(110, 1);
+        //TODO: When the robot classes get built we need to add actions for outtake to score the pre-load
 
         ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
         artifactSystem.shootAutoArtifact();
@@ -130,13 +131,14 @@ public class DecodeLM1Auto extends LinearOpMode {
 
 
 
-    private void gyroTurnToAngle(double turnAngle) {
+    private void gyroTurnToAngle(double turnAngle, int turnSpeed) {
+            // Delete second parameter when optimal turn speed is determined
             double error, currentHeadingAngle, driveMotorsPower;
             imu.resetYaw();
 
             error = turnAngle;
 
-            while (opModeIsActive() && ((error > 1) || (error < -1))) {
+            while (opModeIsActive() && (Math.abs(error) > 1)) {
                 odo.update();
                 telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
                 telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
@@ -151,7 +153,9 @@ public class DecodeLM1Auto extends LinearOpMode {
                 } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
                     driveMotorsPower = -0.2;
                 }*/
-                driveMotorsPower = error / 50;
+
+                double turnDenominator = 50.00/turnSpeed;
+                driveMotorsPower = error / turnDenominator;
 
                 // Make sure the power never drops too close to 0
 
