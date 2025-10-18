@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
+import static org.firstinspires.ftc.teamcode.AutoConstants.ARTIFACT_COLUMNS;
+import static org.firstinspires.ftc.teamcode.AutoConstants.ARTIFACT_ROWS;
 import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_X;
 import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_Y;
 
@@ -23,12 +25,15 @@ public class DecodeLM1Auto extends LinearOpMode {
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
 
+    int artifact_x_index = 4;
+    int artifact_y_index = 1;
+
     IMU imu;
     @Override
     public void runOpMode() {
 
         initAuto();
-
+            // 23, 16
             driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
             // Delete second parameter when optimal turn speed is determined
             gyroTurnToAngle(110, 1);
@@ -37,7 +42,19 @@ public class DecodeLM1Auto extends LinearOpMode {
         ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
         artifactSystem.shootAutoArtifact();
 
-        driveToPos(40, 23);
+        if (artifact_x_index < 6) {
+            artifact_x_index = artifact_x_index + 1;
+        } else if (artifact_y_index < 3) {
+            artifact_x_index = 4;
+            artifact_y_index = artifact_y_index + 1;
+        } else {
+            System.out.println("I don't know what to put here");
+        }
+        // Should drive to artifact, not measured yet
+
+        driveToPos(ARTIFACT_COLUMNS.get(artifact_x_index-1), ARTIFACT_ROWS.get(artifact_y_index-1));
+        artifactSystem.intakeSystem(true,false);
+
 /*
         while (counter < 2) {
             frontLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
