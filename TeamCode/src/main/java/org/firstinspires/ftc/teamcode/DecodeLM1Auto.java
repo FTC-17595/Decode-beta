@@ -28,11 +28,12 @@ public class DecodeLM1Auto extends LinearOpMode {
     boolean  PGP = false;
     boolean GPP = false;
     IMU imu;
+    AprilTagProcessor tagProcessor;
     @Override
     public void runOpMode() {
 
         initAuto();
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder()
+        tagProcessor = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
                 .setDrawTagID(true)
@@ -45,7 +46,7 @@ public class DecodeLM1Auto extends LinearOpMode {
 
 
         if (tag.id == 21) {
-            PPG = true;
+            GPP = true;
 
         } else if (tag.id == 22) {
             PGP = true;
@@ -162,6 +163,60 @@ public class DecodeLM1Auto extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
+
+    private void AlignToTag(AprilTagDetection tag) {
+        double error, drivePower;
+
+
+        error = tag.ftcPose.yaw;
+
+        while (opModeIsActive() && Math.abs(error) > 1.0) {
+            odo.update();
+
+
+            AprilTagDetection currentTag = getLatestTag();
+            if (currentTag == null) {
+                telemetry.addLine("Tag lost — stopping alignment.");
+                break;
+            }
+
+            error = currentTag.ftcPose.yaw;
+
+
+            drivePower = error / 50.0;
+
+
+            if (drivePower > 0) {
+                drivePower = Math.max(drivePower, 0.35);
+            } else if (drivePower < 0) {
+                drivePower = Math.min(drivePower, -0.35);
+            }
+
+
+            frontLeftMotor.setPower(-drivePower);
+            backLeftMotor.setPower(-drivePower);
+            frontRightMotor.setPower(drivePower);
+            backRightMotor.setPower(drivePower);
+
+            telemetry.addData("Tag Yaw", error);
+            telemetry.addData("Drive Power", drivePower);
+            telemetry.update();
+        }
+
+
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+    }
+
+    private AprilTagDetection getLatestTag() {
+        if (tagProcessor.getDetections().size() > 0) {
+            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
+            return aprilTagDetection;
+        }
+        return null;
+    }
 
 
     private void gyroTurnToAngle(double turnAngle) {
