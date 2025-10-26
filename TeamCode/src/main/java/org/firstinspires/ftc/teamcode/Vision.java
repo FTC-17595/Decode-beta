@@ -26,7 +26,7 @@ public class Vision extends LinearOpMode {
         VisionPortal visionPortal = new VisionPortal.Builder()
                 .addProcessor(tagProcessor)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam"))
-                .setCameraResolution(new Size(1280,720))
+                .setCameraResolution(new Size(640,480))
                         .build();
 
 
@@ -41,13 +41,14 @@ public class Vision extends LinearOpMode {
             if (tagProcessor.getDetections().size() > 0) {
                 AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
-                telemetry.addData(  "x", tag.ftcPose.x);
+                telemetry.addData("x", tag.ftcPose.x);
                 telemetry.addData(  "y", tag. ftcPose.y);
                 telemetry.addData(  "z", tag.ftcPose.z);
                 telemetry. addData( "roll", tag. ftcPose.roll);
                 telemetry.addData(  "pitch", tag. ftcPose.pitch);
                 telemetry. addData( "yaw", tag. ftcPose.yaw);
                 telemetry.addData("ID", tag.id);
+                telemetry.update();
             }
 
 
