@@ -15,8 +15,8 @@ public class DriveTrain {
     private final LinearOpMode linearOpMode;
     private int counter = 0;
 
-    private double ROTATE_SPEED_ADJUSTER = ConstantsTeleOp.RIGHT_JOYSTICK_SPEED_ADJUSTER;
-    private double DRIVE_AND_STRAFE_SPEED_ADJUSTER = ConstantsTeleOp.LEFT_JOYSTICK_SPEED_ADJUSTER;
+    private double ROTATE_SPEED_ADJUSTER = TeleOpConstants.RIGHT_JOYSTICK_SPEED_ADJUSTER;
+    private double DRIVE_AND_STRAFE_SPEED_ADJUSTER = TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
 
     public DriveTrain(LinearOpMode linearOpMode) {
         frontLeftMotor = linearOpMode.hardwareMap.dcMotor.get("frontLeftMotor");
@@ -26,7 +26,7 @@ public class DriveTrain {
 
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.DOWN
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
         );
 
         imu = linearOpMode.hardwareMap.get(IMU.class, "imu");
@@ -56,10 +56,10 @@ public class DriveTrain {
         private final double backRightPower;
 
         public Powers(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
-            this.frontLeftPower = frontLeftPower / ConstantsTeleOp.LEFT_JOYSTICK_SPEED_ADJUSTER;
-            this.frontRightPower = frontRightPower / ConstantsTeleOp.LEFT_JOYSTICK_SPEED_ADJUSTER;
-            this.backLeftPower = backLeftPower / ConstantsTeleOp.LEFT_JOYSTICK_SPEED_ADJUSTER;
-            this.backRightPower = backRightPower / ConstantsTeleOp.LEFT_JOYSTICK_SPEED_ADJUSTER;
+            this.frontLeftPower = frontLeftPower / TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
+            this.frontRightPower = frontRightPower / TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
+            this.backLeftPower = backLeftPower / TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
+            this.backRightPower = backRightPower / TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
         }
 
         public double getFrontLeftPower() {
@@ -154,7 +154,7 @@ public class DriveTrain {
     }
 
     public void setMotorPowers() {
-        if (linearOpMode.gamepad1.back) {
+        if (linearOpMode.gamepad1.start) {
             return;
         }
 
