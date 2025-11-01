@@ -21,6 +21,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @Autonomous(name = "Auto LM1")
 public class DecodeLM1Auto extends LinearOpMode {
 
+    boolean debug = true;
+
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -91,6 +93,17 @@ public class DecodeLM1Auto extends LinearOpMode {
 
     }
 
+    private void debug() {
+        odo.update();
+        telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
+        telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
+        telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        if (debug) {
+
+        }
+        telemetry.update();
+    }
+
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
     private void driveToPos(double targetX, double targetY) {
         // Update odometry before starting
@@ -104,7 +117,7 @@ public class DecodeLM1Auto extends LinearOpMode {
                         Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 30)) {
 
             // Update odometry each loop to get the latest position
-            odo.update();
+            debug();
 
             // Compute distance from target in X and Y, scaled down for motor power
             // The 0.001 factor converts cm error into a smaller motor power signal
@@ -226,14 +239,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             error = turnAngle;
 
             while (opModeIsActive() && ((error > 1) || (error < -1))) {
-                odo.update();
-                telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
-                telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
-//                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
-                telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-                telemetry.update();
-
-driveMotorsPower = error / 200;
+                driveMotorsPower = error / 200;
 
                 if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
                     driveMotorsPower = 0.2;
@@ -309,8 +315,6 @@ driveMotorsPower = error / 200;
             telemetry.addData("Counter:", counter);
             telemetry.update();
         }
-
-
 
 
     }
