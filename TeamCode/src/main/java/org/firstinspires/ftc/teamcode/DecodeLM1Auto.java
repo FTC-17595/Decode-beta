@@ -61,21 +61,12 @@ public class DecodeLM1Auto extends LinearOpMode {
             ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
             artifactSystem.shootAutoArtifact();
 
-        driveToPos(40, 23);
-
-        while (counter < 2) {
-            frontLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
-            backLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
-            frontRightMotor.setPower(AutoConstants.DRIVE_SPEED);
-            backRightMotor.setPower(AutoConstants.DRIVE_SPEED);
-        }
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
 
 
 
+
+
+/*      TODO: ADD IN THE VALUES FOR  OBELISK
         if (PPG == true) {
             driveToPos(12,12);
             // the PPG line
@@ -88,7 +79,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             driveToPos(12,12);
         }
 
-
+*/
     }
 
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
