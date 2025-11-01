@@ -42,27 +42,35 @@ public class ColorDetection {
         }
     }
 
-    private float hue() {
+    private float[] getHSV() {
         int red = colorSensor.red();
         int green = colorSensor.green();
         int blue = colorSensor.blue();
 
         float[] hsv = new float[3];
         Color.RGBToHSV(red, green, blue, hsv);
-        return hsv[0];
+        return hsv;
     }
 
     private String detectColor() {
-        float hue = hue();
+        float[] hsv = getHSV();
+        float hue   = hsv[0];
+        float value = hsv[2];
 
-        if ((hue > 150) && (hue < 170)) {
+        if (value < 0.5) { // ignore dark / nothing
+            return "Unknown";
+        }
+
+        // Check hue ranges
+        if (hue > 140 && hue < 180) {
             return "Green";
-        } else if ((hue > 220) && (hue < 240)) {
+        } else if (hue > 200 && hue < 260) {
             return "Purple";
         } else {
             return "Unknown";
         }
     }
+
 
     public void setRGBIndicator() {
         String detectedColor = detectColor();
@@ -89,8 +97,19 @@ public class ColorDetection {
     }
 
     public void displayTelemetry() {
+        int red = colorSensor.red();
+        int green = colorSensor.green();
+        int blue = colorSensor.blue();
+
+        float[] hsv = getHSV();
+
         linearOpMode.telemetry.addData("Detected Color", detectColor());
-        linearOpMode.telemetry.addData("Detected Hue", hue());
+        linearOpMode.telemetry.addData("Red", red);
+        linearOpMode.telemetry.addData("Green", green);
+        linearOpMode.telemetry.addData("Blue", blue);
+        linearOpMode.telemetry.addData("Hue", hsv[0]);
+        linearOpMode.telemetry.addData("Saturation", hsv[1]);
+        linearOpMode.telemetry.addData("Value", hsv[2]);
         linearOpMode.telemetry.addData("RGB Position", getRGBIndicatorPosition());
         linearOpMode.telemetry.addData("Celebrate Mode", isCelebrateOn());
     }
