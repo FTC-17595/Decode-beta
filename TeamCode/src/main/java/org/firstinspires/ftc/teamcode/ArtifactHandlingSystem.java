@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.AutoConstants.AUTO_ARTIFACT_SHOOT_POWER;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -16,10 +14,11 @@ public class ArtifactHandlingSystem {
 //    private final DcMotor rightContainerMotor;
     private final Servo flapServo;
     private final LinearOpMode linearOpMode;
+    private double launchFactor;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
         this.outtakeMotor = linearOpMode.hardwareMap.dcMotor.get("outtakeMotor");
-            this.intakeMotor = linearOpMode.hardwareMap.dcMotor.get("intakeMotor");
+        this.intakeMotor = linearOpMode.hardwareMap.dcMotor.get("intakeMotor");
         this.containerMotor = linearOpMode.hardwareMap.dcMotor.get("containerMotor");
         this.flapServo = linearOpMode.hardwareMap.servo.get("flapServo");
         this.linearOpMode = linearOpMode;
@@ -38,6 +37,10 @@ public class ArtifactHandlingSystem {
         flapServo.setDirection(Servo.Direction.FORWARD);
 //        leftContainerMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //        rightContainerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        launchFactor = TeleOpConstants.SHORT_SHOOTING_FACTOR;
     }
 
     public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact) {
@@ -53,15 +56,15 @@ public class ArtifactHandlingSystem {
         }
     }
 
-    public void containerSystem(boolean sendArtifact) {
-        intakeMotor.setPower(0);
-
-        if (sendArtifact) {
-            containerMotor.setPower(1);
-        } else {
-            containerMotor.setPower(0);
-        }
-    }
+//    public void containerSystem(boolean sendArtifact) {
+//        intakeMotor.setPower(0);
+//
+//        if (sendArtifact) {
+//            containerMotor.setPower(1);
+//        } else {
+//            containerMotor.setPower(0);
+//        }
+//    }
 
     public void flapSystem(boolean flapUp) {
         if (flapUp) {
@@ -97,17 +100,31 @@ public class ArtifactHandlingSystem {
 
     public void shootingSystem(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
-            outtakeMotor.setPower(shootArtifact);
+            outtakeMotor.setPower(shootArtifact * launchFactor);
         } else if (rejectArtifact > 0) {
-            outtakeMotor.setPower(-rejectArtifact);
+            outtakeMotor.setPower(-rejectArtifact * launchFactor);
         } else {
             outtakeMotor.setPower(0);
         }
     }
 
+    public void adjustShootingFactor(boolean increase, boolean decrease) {
+        if (increase) {
+            launchFactor += 0.01;
+        } else if (decrease) {
+            launchFactor -= 0.01;
+        }
+    }
+
+    public void switchShootingFactor(boolean switch_f) {
+        if (switch_f) {
+            launchFactor = launchFactor == TeleOpConstants.SHORT_SHOOTING_FACTOR ? TeleOpConstants.LONG_SHOOTING_FACTOR : TeleOpConstants.SHORT_SHOOTING_FACTOR;
+        }
+    }
+
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
-            outtakeMotor.setPower(AUTO_ARTIFACT_SHOOT_POWER);
+            outtakeMotor.setPower(AutoConstants.AUTO_ARTIFACT_SHOOT_POWER);
         } else if (rejectArtifact > 0) {
             outtakeMotor.setPower(-rejectArtifact);
         } else {
@@ -121,6 +138,7 @@ public class ArtifactHandlingSystem {
         linearOpMode.telemetry.addData("Intake Motor Power", intakeMotor.getPower());
         linearOpMode.telemetry.addData("Container Motor Power", containerMotor.getPower());
         linearOpMode.telemetry.addData("Flap Servo Position", flapServo.getPosition());
+        linearOpMode.telemetry.addData("Shooting Factor", launchFactor);
 //        linearOpMode.telemetry.addData("Left Container Power", leftContainerMotor.getPower());
 //        linearOpMode.telemetry.addData("Right Container Power", rightContainerMotor.getPower());
     }
