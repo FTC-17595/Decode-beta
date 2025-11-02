@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
-import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_X;
-import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_Y;
+import static org.firstinspires.ftc.teamcode.AutoConstants.SHOOT_X;
+import static org.firstinspires.ftc.teamcode.AutoConstants.SHOOT_Y;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -33,6 +33,8 @@ public class DecodeLM1Auto extends LinearOpMode {
     public void runOpMode() {
 
         initAuto();
+        waitForStart();
+        if(isStopRequested()) return;
         tagProcessor = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
                 .setDrawCubeProjection(true)
@@ -55,7 +57,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             PPG = true;
         }
 
-        driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
+        driveToPos(SHOOT_X, SHOOT_Y);
             gyroTurnToAngle(110);
 
             ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
@@ -87,7 +89,7 @@ public class DecodeLM1Auto extends LinearOpMode {
         // Update odometry before starting
         odo.update();
 
-        boolean telemAdded = false;  // Flag so telemetry is printed only once
+        boolean telemAdded = true;  // Flag so telemetry is printed only once
 
         // Keep driving while opmode is active AND the robot is more than 30 cm away in X or Y
         while (opModeIsActive() &&
@@ -144,7 +146,9 @@ public class DecodeLM1Auto extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             // Optionally, you could update telemetry here for debugging
-            telemetry.update();
+//            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
+//            telemetry.addData("X:", odo.getPosX(DistanceUnit.MM));
+//            telemetry.update();
         }
 
         // Stop all motors when target position is reached or opmode ends
@@ -189,6 +193,8 @@ public class DecodeLM1Auto extends LinearOpMode {
             frontRightMotor.setPower(drivePower);
             backRightMotor.setPower(drivePower);
 
+            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
+            telemetry.addData("X:", odo.getPosX(DistanceUnit.MM));
             telemetry.addData("Tag Yaw", error);
             telemetry.addData("Drive Power", drivePower);
             telemetry.update();

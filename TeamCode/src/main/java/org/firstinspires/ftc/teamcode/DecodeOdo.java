@@ -40,7 +40,7 @@ public class DecodeOdo  {
         }
         return isActive;
     }
-    private void driveToPos(double targetX, double targetY) {
+    public void driveToPos(double targetX, double targetY) {
         // Update odometry before starting
         odo.update();
 
@@ -57,8 +57,8 @@ public class DecodeOdo  {
             // Compute distance from target in X and Y, scaled down for motor power
             // The 0.001 factor converts cm error into a smaller motor power signal
             // Negative Y compensates for coordinate orientation differences
-            double x = 0.001 * (targetX - odo.getPosX(DistanceUnit.MM));
-            double y = -0.001 * (targetY - odo.getPosY(DistanceUnit.MM));
+            double x = 0.0001 * (targetX - odo.getPosX(DistanceUnit.MM));
+            double y = -0.0001 * (targetY - odo.getPosY(DistanceUnit.MM));
 
             // Get the robot's heading (rotation angle) from the IMU in radians
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -110,5 +110,52 @@ public class DecodeOdo  {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
     }
+
+
+    private void gyroTurnToAngle(double turnAngle) {
+        double error, currentHeadingAngle, driveMotorsPower;
+        imu.resetYaw();
+
+        error = turnAngle;
+
+        while (opModeIsActive() && ((error > 1) || (error < -1))) {
+            odo.update();
+            linearOpMode.telemetry.addData("X: ", odo.getPosX(DistanceUnit.CM));
+            linearOpMode.telemetry.addData("Y: ", odo.getPosY(DistanceUnit.CM));
+//                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
+            linearOpMode.telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            linearOpMode.telemetry.update();
+
+                /*driveMotorsPower = error / 200;
+
+                if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
+                    driveMotorsPower = 0.2;
+                } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
+                    driveMotorsPower = -0.2;
+                }*/
+            driveMotorsPower = error / 50;
+
+            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.35;
+            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.35;
+            }
+            // Positive power causes left turn
+            frontLeftMotor.setPower(-driveMotorsPower);
+            backLeftMotor.setPower(-driveMotorsPower);
+            frontRightMotor.setPower(driveMotorsPower);
+            backRightMotor.setPower(driveMotorsPower);
+
+            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            error = turnAngle - currentHeadingAngle;
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+
+    }
+
 
 }
