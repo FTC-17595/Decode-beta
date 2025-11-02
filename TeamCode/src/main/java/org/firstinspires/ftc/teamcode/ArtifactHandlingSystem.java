@@ -15,6 +15,9 @@ public class ArtifactHandlingSystem {
     private final Servo flapServo;
     private final LinearOpMode linearOpMode;
     private double launchFactor;
+    private long flapDownTime = 0;
+    private boolean isMotorRecovering = false;
+    private static final long MOTOR_RECOVERY_DELAY = 300;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
         this.outtakeMotor = linearOpMode.hardwareMap.dcMotor.get("outtakeMotor");
@@ -37,8 +40,6 @@ public class ArtifactHandlingSystem {
         flapServo.setDirection(Servo.Direction.FORWARD);
 //        leftContainerMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 //        rightContainerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         launchFactor = TeleOpConstants.SHORT_SHOOTING_FACTOR;
     }
@@ -73,6 +74,42 @@ public class ArtifactHandlingSystem {
             flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
         }
     }
+
+//    public void flapSystemWithRecovery(boolean flapUp) {
+//        if (flapUp) {
+//            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+//            isMotorRecovering = false;
+//        } else {
+//            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+//            flapDownTime = System.currentTimeMillis();
+//            isMotorRecovering = true;
+//        }
+//    }
+//
+//    public void shootingSystemWithBoost(float shootArtifact, float rejectArtifact) {
+//        if (shootArtifact > 0) {
+//            double effectivePower = shootArtifact * launchFactor;
+//
+//            // Apply temporary boost if motor is recovering from flap compression
+//            if (isMotorRecovering) {
+//                long timeSinceFlap = System.currentTimeMillis() - flapDownTime;
+//                if (timeSinceFlap < MOTOR_RECOVERY_DELAY) {
+//                    // Boost power by 15% during recovery period
+//                    effectivePower *= 1.15;
+//                } else {
+//                    isMotorRecovering = false;
+//                }
+//            }
+//
+//            outtakeMotor.setPower(Math.min(effectivePower, 1.0)); // Cap at 1.0
+//        } else if (rejectArtifact > 0) {
+//            outtakeMotor.setPower(-rejectArtifact * launchFactor);
+//            isMotorRecovering = false;
+//        } else {
+//            outtakeMotor.setPower(0);
+//            isMotorRecovering = false;
+//        }
+//    }
 
     public void shootAutoArtifact(){
         Thread ArtifactShoot = new Thread(() -> {

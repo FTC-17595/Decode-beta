@@ -9,6 +9,6 @@ public class TeleOpConstants {
     final static double GREEN = 0.500;
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
-    final static double SHORT_SHOOTING_FACTOR = 0.72;
-    final static double LONG_SHOOTING_FACTOR = 1;
+    final static double SHORT_SHOOTING_FACTOR = 0.55;
+    final static double LONG_SHOOTING_FACTOR = 0.65;
 }
