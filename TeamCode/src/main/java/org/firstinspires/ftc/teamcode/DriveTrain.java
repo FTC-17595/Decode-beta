@@ -25,7 +25,7 @@ public class DriveTrain {
         backRightMotor = linearOpMode.hardwareMap.dcMotor.get("backRightMotor");
 
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         );
 
