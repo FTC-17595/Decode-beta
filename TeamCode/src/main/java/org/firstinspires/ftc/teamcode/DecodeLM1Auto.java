@@ -61,7 +61,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             gyroTurnToAngle(110);
 
             ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
-            artifactSystem.shootAutoArtifact();
+//            DecodeAuto.shootAutoArtifact();
 
 
 

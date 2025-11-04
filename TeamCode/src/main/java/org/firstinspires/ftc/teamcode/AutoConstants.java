@@ -16,6 +16,8 @@ public class AutoConstants {
     static final double SHOOT_Y = -307.373;
     static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
     static final double AUTO_STRAFE_POWER = 0.5;
+    final static double SHORT_SHOOTING_FACTOR = 0.55;
+    final static double LONG_SHOOTING_FACTOR = 0.65;
     static final double AUTO_ARTIFACT_SHOOT_VELOCITY = 0; // TODO: Need to add velocity
 
 }

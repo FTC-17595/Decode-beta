@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static android.os.SystemClock.sleep;
+import static java.lang.Math.abs;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,15 +10,30 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class DecodeOdo  {
-    LinearOpMode linearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import java.util.Locale;
+
+public class DecodeAuto {
+
+
+    private DcMotor outtakeMotor;
+    private  DcMotor intakeMotor;
+    private  DcMotor containerMotor;
+    //    private final DcMotor leftContainerMotor;
+//    private final DcMotor rightContainerMotor;
+    private Servo flapServo;
+    private final LinearOpMode linearOpMode;
+    private double launchFactor;
+
     GoBildaPinpointDriver odo;
     IMU imu;
 
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-    public DecodeOdo(LinearOpMode linearOpMode) {
+    public DecodeAuto(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
 
         // Hardware initialization
@@ -24,8 +42,84 @@ public class DecodeOdo  {
         backLeftMotor   = linearOpMode.hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor  = linearOpMode.hardwareMap.dcMotor.get("backRightMotor");
 
+            outtakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            containerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            outtakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            containerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            flapServo.setDirection(Servo.Direction.FORWARD);
+//        leftContainerMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//        rightContainerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+            outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            launchFactor = TeleOpConstants.SHORT_SHOOTING_FACTOR;
+
+
         imu = linearOpMode.hardwareMap.get(IMU.class, "imu");
         odo = linearOpMode.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+    }
+
+    public void OuttakeSystem(float distance) {
+        if (distance > 1) {
+            outtakeMotor.setPower(AutoConstants.LONG_SHOOTING_FACTOR);
+        } else if (distance == 0.5) {
+            outtakeMotor.setPower(AutoConstants.SHORT_SHOOTING_FACTOR);
+        } else {
+            outtakeMotor.setPower(0);
+        }
+    }
+    public void shootAutoArtifact(){
+//        Thread ArtifactShoot = new Thread(() -> {
+//            long endTime = System.currentTimeMillis() + 4000; // 4 seconds from now
+//
+//            // Start the outtake motor for shooting
+//            OuttakeSystem(1);
+//
+//            while (System.currentTimeMillis() < endTime) {
+//
+//                containerMotor.setPower(1);
+////                containerSystem(true, false);
+//
+//            }
+//
+//
+//
+//            OuttakeSystem(0);
+//            System.out.println("Thread finished its 4-second run!");
+//        });
+//
+//        // Start the thread
+//        ArtifactShoot.start();
+        OuttakeSystem(1);
+        AutoflapSystem(true);
+        sleep(670);
+        AutoflapSystem(false);
+        intakeSystemAuto(true,false);
+        sleep(1500);
+        AutoflapSystem(true);
+        sleep(670);
+        AutoflapSystem(false);
+        intakeSystemAuto(true,false);
+        sleep(1500);
+        AutoflapSystem(true);
+        sleep(670);
+        AutoflapSystem(false);
+
+    }
+    public void intakeSystemAuto(boolean intakeArtifact, boolean rejectArtifact) {
+        if (intakeArtifact) {
+            intakeMotor.setPower(1);
+            containerMotor.setPower(1);
+        } else if (rejectArtifact) {
+            intakeMotor.setPower(-1);
+            containerMotor.setPower(-1);
+        } else {
+            intakeMotor.setPower(0);
+            containerMotor.setPower(0);
+        }
     }
 
     public void displayTelemetryAuto() {
@@ -111,7 +205,66 @@ public class DecodeOdo  {
         backRightMotor.setPower(0);
     }
 
+    public void AutoflapSystem(boolean flapUp) {
+        if (flapUp) {
+            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+        } else {
+            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+        }
+    }
 
+    public void shootingSystem(float shootArtifact, float rejectArtifact) {
+        if (shootArtifact > 0) {
+            outtakeMotor.setPower(shootArtifact * launchFactor);
+        } else if (rejectArtifact > 0) {
+            outtakeMotor.setPower(-rejectArtifact * launchFactor);
+        } else {
+            outtakeMotor.setPower(0);
+        }
+    }
+    public void autoShootArtifactsFar() {
+
+        AutoflapSystem(true);
+    }
+    private void PinpointForward(double target) {
+
+
+
+        double margin = target + odo.getPosX(DistanceUnit.MM);
+
+
+        while (opModeIsActive() && abs(margin) > 100) {
+
+            odo.update();
+
+            Pose2D pos = odo.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+            linearOpMode.telemetry.addData("Position", data);
+            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+
+            double direction = Math.signum(margin);
+            double power = 0.5 * direction;
+            double current = odo.getPosX(DistanceUnit.MM);
+            margin = target + current;
+
+            linearOpMode.telemetry.addData("Margin", margin);
+
+            linearOpMode.telemetry.update();
+
+
+            frontLeftMotor.setPower(power);
+            backLeftMotor.setPower(power);
+            frontRightMotor.setPower(power);
+            backRightMotor.setPower(power);
+
+
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+    }
     private void gyroTurnToAngle(double turnAngle) {
         double error, currentHeadingAngle, driveMotorsPower;
         imu.resetYaw();
