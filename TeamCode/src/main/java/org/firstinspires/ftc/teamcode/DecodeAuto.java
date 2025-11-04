@@ -55,7 +55,7 @@ public class DecodeAuto {
 
             outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            launchFactor = TeleOpConstants.SHORT_SHOOTING_FACTOR;
+            launchFactor = AutoConstants.SHORT_SHOOTING_FACTOR;
 
 
         imu = linearOpMode.hardwareMap.get(IMU.class, "imu");
