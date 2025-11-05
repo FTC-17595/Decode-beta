@@ -57,18 +57,14 @@ public class DecodeLM1Auto extends LinearOpMode {
             PPG = true;
         }
 
-        driveToPos(SHOOT_X, SHOOT_Y);
-            gyroTurnToAngle(110);
+//        driveToPos(SHOOT_X, SHOOT_Y);
+//        gyroTurnToAngle(110);
+        DecodeOdo autoFunctions = new DecodeOdo(linearOpMode);
+        ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
+        artifactSystem.shootAutoArtifact();
+        autoFunctions.gyroTurnToAngle(-10);
 
-            ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
-            artifactSystem.shootAutoArtifact();
-
-
-
-
-
-
-/*      TODO: ADD IN THE VALUES FOR  OBELISK
+/*      TODO: ADD IN THE VALUES FOR OBELISK
         if (PPG == true) {
             driveToPos(12,12);
             // the PPG line

@@ -112,7 +112,7 @@ public class DecodeOdo  {
     }
 
 
-    private void gyroTurnToAngle(double turnAngle) {
+    public void gyroTurnToAngle(double turnAngle) {
         double error, currentHeadingAngle, driveMotorsPower;
         imu.resetYaw();
 

@@ -133,7 +133,7 @@ public class ArtifactHandlingSystem {
 
         // Start the thread
         ArtifactShoot.start();
-    }
+    } /* 😟😟😟 */
 
     public void shootingSystem(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {

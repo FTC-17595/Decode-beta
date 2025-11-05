@@ -36,12 +36,17 @@ import java.util.Locale;
         public void runOpMode() {
 
             initAuto();
+
+            ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
+            artifactSystem.configureMotorModes();
+
             waitForStart();
             resetRuntime();
             if(isStopRequested()) return;
 
 
-            PinpointForward(1200);
+            artifactSystem.shootingSystem(1,0);
+//            PinpointForward(1200);
 
 
 //            while (opModeIsActive()) {
@@ -232,6 +237,9 @@ import java.util.Locale;
 
 
         private void initAuto() {
+
+
+
             odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
             //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
             odo.setOffsets(130, 40, DistanceUnit.MM ); //took on 12/20 by Rohan
