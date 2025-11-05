@@ -10,7 +10,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
     private RobotControls robotControls;
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
-    private DecodeOdo decodeOdo;
+
 
 
     @Override
@@ -19,7 +19,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
         robotControls = new RobotControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
-        decodeOdo  = new DecodeOdo(this);
+
 
         configureMotorModes();
 
@@ -46,6 +46,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
+            artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
             colorDetection.setRGBIndicator();
             displayTelemetry();
