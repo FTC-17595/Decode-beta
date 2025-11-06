@@ -3,16 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Auto Outtake Preloads", group = "Competition")
+@Autonomous(name = "Auto Outtake Preloads")
 public class AutoOuttakePreloads extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
-    private static final long SPINUP_MS = 2000;
+    private static final long SPINUP_MS = 1500;
     private static final long SERVO_UP_MS = 250;
     private static final long SERVO_RESET_MS = 150;
     private static final long FEED_MS = 1000;
     private static final long FEED_SETTLE_MS = 150;
     private static final long PREFIRE_WAIT_MS = 200;
+
 
     @Override
     public void runOpMode() {
