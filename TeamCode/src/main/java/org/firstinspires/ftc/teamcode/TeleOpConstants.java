@@ -9,8 +9,8 @@ public class TeleOpConstants {
     final static double GREEN = 0.500;
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
-    final static double SHORT_RANGE_VELOCITY = 1610.0;
-    final static double LONG_RANGE_VELOCITY = 1840.0;
+    final static double SHORT_RANGE_VELOCITY = 1250.0;
+    final static double LONG_RANGE_VELOCITY = 1410.0;
     final static double MAX_VELOCITY = 2300.0;
     final static double VELOCITY_INCREMENT = 10.0;
 }

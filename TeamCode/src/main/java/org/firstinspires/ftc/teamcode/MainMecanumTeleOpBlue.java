@@ -32,11 +32,6 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
         while (opModeIsActive()) {
             robotControls.updateControls();
 
-//            if (robotControls.intakeArtifact || robotControls.rejectIntakeArtifact) {
-//                artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
-//            } else {
-//                artifactHandlingSystem.containerSystem(robotControls.shiftArtifactInContainer);
-//            }
 
             driveTrain.adjustTurnSpeed();
             driveTrain.setMotorPowers();
@@ -46,7 +41,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
-//            artifactHandlingSystem.checkMotorHealth();
+            artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
             colorDetection.setRGBIndicator();
             displayTelemetry();

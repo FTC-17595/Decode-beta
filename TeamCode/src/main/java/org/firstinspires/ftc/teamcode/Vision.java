@@ -27,31 +27,40 @@ public class Vision extends LinearOpMode {
                 .addProcessor(tagProcessor)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam"))
                 .setCameraResolution(new Size(640,480))
-                        .build();
+
+                .build();
+//        visionPortal.start();
 
 
-
-
-
+//        AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
         waitForStart();
 
-        while (!isStopRequested() && opModeIsActive()) {
+        while (opModeIsActive()) {
+            visionPortal.getCameraState(); // updates the detection pipeline
 
-            if (tagProcessor.getDetections().size() > 0) {
+            if (!tagProcessor.getDetections().isEmpty()) {
                 AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
-                telemetry.addData("x", tag.ftcPose.x);
-                telemetry.addData(  "y", tag. ftcPose.y);
-                telemetry.addData(  "z", tag.ftcPose.z);
-                telemetry. addData( "roll", tag. ftcPose.roll);
-                telemetry.addData(  "pitch", tag. ftcPose.pitch);
-                telemetry. addData( "yaw", tag. ftcPose.yaw);
-                telemetry.addData("ID", tag.id);
-                telemetry.update();
+                if (tag.ftcPose != null) { // ✅ check that pose exists
+                    telemetry.addData("x", tag.ftcPose.x);
+                    telemetry.addData("y", tag.ftcPose.y);
+                    telemetry.addData("z", tag.ftcPose.z);
+                    telemetry.addData("roll", tag.ftcPose.roll);
+                    telemetry.addData("pitch", tag.ftcPose.pitch);
+                    telemetry.addData("yaw", tag.ftcPose.yaw);
+                    telemetry.addData("ID", tag.id);
+                } else {
+                    telemetry.addData("Status", "Tag detected but pose not yet computed");
+                }
+            } else {
+                telemetry.addData("Status", "No tags detected");
             }
 
-
+            telemetry.update();
         }
+
+
+
     }
 }
