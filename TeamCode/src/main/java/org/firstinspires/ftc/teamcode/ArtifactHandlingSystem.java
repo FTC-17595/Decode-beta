@@ -92,10 +92,10 @@ public class ArtifactHandlingSystem {
     }
 
     public void shootingSystem(float shootArtifact, float rejectArtifact) {
-        if (shootArtifact > 0) {
-            outtakeMotor.setVelocity(launchVelocity * shootArtifact);
-        } else if (rejectArtifact > 0) {
-            outtakeMotor.setVelocity(-launchVelocity * rejectArtifact);
+        if (shootArtifact > 0.1) {
+            outtakeMotor.setVelocity(launchVelocity);
+        } else if (rejectArtifact > 0.1) {
+            outtakeMotor.setVelocity(-launchVelocity);
         } else {
             outtakeMotor.setVelocity(0);
         }
@@ -120,7 +120,7 @@ public class ArtifactHandlingSystem {
 
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
-            outtakeMotor.setVelocity(AutoConstants.AUTO_ARTIFACT_SHOOT_VELOCITY);
+            outtakeMotor.setVelocity(AutoConstants.LONG_RANGE_VELOCITY);
         } else if (rejectArtifact > 0) {
             outtakeMotor.setVelocity(-launchVelocity * rejectArtifact);
         } else {

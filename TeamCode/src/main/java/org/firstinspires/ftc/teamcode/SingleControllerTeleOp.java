@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main Mecanum TeleOp Blue")
-public class MainMecanumTeleOpBlue extends LinearOpMode {
+@TeleOp(name = "Test TeleOp")
+public class SingleControllerTeleOp extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
-    private RobotControls robotControls;
+    private singleController robotControls;
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
 
@@ -16,7 +16,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
-        robotControls = new RobotControls(this);
+        robotControls = new singleController(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
 
