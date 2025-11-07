@@ -1,12 +1,19 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-@TeleOp
 
+import org.firstinspires.ftc.teamcode.ArtifactHandlingSystem;
+import org.firstinspires.ftc.teamcode.ColorDetection;
+import org.firstinspires.ftc.teamcode.DriveTrain;
+import org.firstinspires.ftc.teamcode.RobotControls;
+
+@TeleOp
+@Disabled
 public class IntakeTest extends LinearOpMode{
     private final DcMotor intakeMotor;
     private final DcMotor containerMotor;
@@ -81,7 +88,7 @@ public class IntakeTest extends LinearOpMode{
         containerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flapServo.setDirection(Servo.Direction.FORWARD);
 
-        intakePower = TeleOpConstants.SHORT_RANGE_VELOCITY;
+//        intakePower = TeleOpConstants.SHORT_RANGE_VELOCITY;
     }
 
     public void adjustIntakePower(boolean increase, boolean decrease) {

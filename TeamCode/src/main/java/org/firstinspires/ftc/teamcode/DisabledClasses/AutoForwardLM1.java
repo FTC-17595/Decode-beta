@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
 //import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_X;
 //import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_Y;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "Auto Forward")
-
+@Disabled
 public class AutoForwardLM1 extends LinearOpMode {
 
     GoBildaPinpointDriver odo;

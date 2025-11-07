@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
 import static java.lang.Math.abs;
 
@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -19,6 +20,7 @@ import java.util.Locale;
 
 
 @Autonomous(name = "DriveToTest")
+@Disabled
     public class DriveToTest extends LinearOpMode {
 
         GoBildaPinpointDriver odo;

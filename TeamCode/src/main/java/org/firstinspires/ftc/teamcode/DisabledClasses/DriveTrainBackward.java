@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Auto Forward")
+import org.firstinspires.ftc.teamcode.DriveTrain;
+
+@Autonomous
 @Disabled
-public class DriveTrainForward extends LinearOpMode {
+public class DriveTrainBackward extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,7 +19,7 @@ public class DriveTrainForward extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
         while (opModeIsActive()) {
-            driveTrain.setMovePower(0.5);
+            driveTrain.setMovePower(-0.5);
 
         }
 
