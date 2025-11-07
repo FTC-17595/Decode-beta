@@ -14,6 +14,7 @@ import java.util.Random;
 public class ColorDetection {
     private final ColorSensor colorSensor;
     private final Servo rgbIndicator;
+    private final Servo outtakeIndicator;
     private boolean celebrateOn = false;
     private boolean previousCelebrate = false;
     private final LinearOpMode linearOpMode;
@@ -21,6 +22,7 @@ public class ColorDetection {
     public ColorDetection(LinearOpMode linearOpMode) {
         colorSensor = linearOpMode.hardwareMap.get(ColorSensor.class, "colorSensor");
         rgbIndicator = linearOpMode.hardwareMap.get(Servo.class, "rgbIndicator");
+        outtakeIndicator = linearOpMode.hardwareMap.get(Servo.class, "outtakeIndicator");
 
         this.linearOpMode = linearOpMode;
     }
@@ -64,7 +66,9 @@ public class ColorDetection {
         // Check hue ranges
         if (hue > 140 && hue < 180) {
             return "Green";
-        } else if (hue > 200 && hue < 260) {
+        } else if (hue >= 180 && hue <= 220) {
+            return "Blue";
+        } else if (hue > 220 && hue < 260) {
             return "Purple";
         } else {
             return "Unknown";
@@ -78,6 +82,9 @@ public class ColorDetection {
         switch (detectedColor) {
             case "Green":
                 rgbIndicator.setPosition(TeleOpConstants.GREEN);
+                break;
+            case "Blue":
+                rgbIndicator.setPosition(TeleOpConstants.BLUE);
                 break;
             case "Purple":
                 rgbIndicator.setPosition(TeleOpConstants.VIOLET);

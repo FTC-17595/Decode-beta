@@ -11,8 +11,6 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
 
-
-
     @Override
     public void runOpMode() throws InterruptedException {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
@@ -32,6 +30,11 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
         while (opModeIsActive()) {
             robotControls.updateControls();
 
+            boolean autoShootActive = artifactHandlingSystem.autoShootingSystemTeleOp(robotControls.autoShoot);
+
+            if (!autoShootActive) {
+                artifactHandlingSystem.shootingSystem(robotControls.shootArtifact, robotControls.motorBrake);
+            }
 
             driveTrain.adjustTurnSpeed();
             driveTrain.setMotorPowers();
