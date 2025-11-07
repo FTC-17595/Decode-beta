@@ -46,7 +46,10 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
             artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
-            colorDetection.setRGBIndicator();
+            colorDetection.setOuttakeIndicatorWithVelocity(
+                    artifactHandlingSystem.getLaunchVelocity(),
+                    artifactHandlingSystem.getActualVelocity()
+            );
             displayTelemetry();
         }
     }

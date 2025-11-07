@@ -66,9 +66,7 @@ public class ColorDetection {
         // Check hue ranges
         if (hue > 140 && hue < 180) {
             return "Green";
-        } else if (hue >= 180 && hue <= 220) {
-            return "Blue";
-        } else if (hue > 220 && hue < 260) {
+        } else if (hue > 200 && hue < 260) {
             return "Purple";
         } else {
             return "Unknown";
@@ -83,9 +81,6 @@ public class ColorDetection {
             case "Green":
                 rgbIndicator.setPosition(TeleOpConstants.GREEN);
                 break;
-            case "Blue":
-                rgbIndicator.setPosition(TeleOpConstants.BLUE);
-                break;
             case "Purple":
                 rgbIndicator.setPosition(TeleOpConstants.VIOLET);
                 break;
@@ -93,6 +88,24 @@ public class ColorDetection {
                 rgbIndicator.setPosition(TeleOpConstants.BLANK);
                 break;
         }
+    }
+
+    public void setOuttakeIndicatorWithVelocity(double targetVelocity, double actualVelocity) {
+        // Check velocity status first (highest priority)
+        if (targetVelocity == 0) {
+            // Motor not being commanded - blank
+            outtakeIndicator.setPosition(TeleOpConstants.BLANK);
+            return;
+        }
+
+        if (Math.abs(actualVelocity - targetVelocity) <= 10) {
+            // At target velocity - blue
+            outtakeIndicator.setPosition(TeleOpConstants.BLUE);
+            return;
+        }
+
+        // If not at target and motor is running:
+        outtakeIndicator.setPosition(TeleOpConstants.BLANK);
     }
 
     private double getRGBIndicatorPosition() {

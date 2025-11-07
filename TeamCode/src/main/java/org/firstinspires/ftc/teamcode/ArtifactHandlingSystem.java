@@ -48,10 +48,10 @@ public class ArtifactHandlingSystem {
     public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact) {
         if (intakeArtifact) {
             intakeMotor.setPower(1);
-            containerMotor.setPower(0.5);
+            containerMotor.setPower(1);
         } else if (rejectArtifact) {
             intakeMotor.setPower(-1);
-            containerMotor.setPower(-0.5);
+            containerMotor.setPower(-1);
         } else {
             intakeMotor.setPower(0);
             containerMotor.setPower(0);
@@ -233,6 +233,14 @@ public class ArtifactHandlingSystem {
         } else {
             outtakeMotor.setVelocity(0);
         }
+    }
+
+    public double getLaunchVelocity() {
+        return launchVelocity;
+    }
+
+    public double getActualVelocity() {
+        return outtakeMotor.getVelocity();
     }
 
     public void checkMotorHealth() {
