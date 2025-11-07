@@ -17,9 +17,8 @@ public class RobotControls {
     boolean increaseFactor;
     boolean decreaseFactor;
     boolean switchLaunchPower;
-//    boolean shiftArtifactInContainer;
-//    boolean rejectContainerArtifact;
     boolean celebrate;
+    boolean autoShoot;
     public void updateControls() {
         intakeArtifact = linearOpMode.gamepad2.a;
         flapArtifact = linearOpMode.gamepad2.b;
@@ -30,8 +29,6 @@ public class RobotControls {
         celebrate = linearOpMode.gamepad2.back;
         increaseFactor = linearOpMode.gamepad2.dpad_up;
         decreaseFactor = linearOpMode.gamepad2.dpad_down;
-//        autoShoot = linearOpMode.gamepad2.right_bumper;
-//        shiftArtifactInContainer = linearOpMode.gamepad2.x;
-//        rejectContainerArtifact = linearOpMode.gamepad2.x;
+        autoShoot = linearOpMode.gamepad2.right_bumper;
     }
 }
