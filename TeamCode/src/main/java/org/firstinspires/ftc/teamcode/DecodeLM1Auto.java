@@ -64,7 +64,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             decodeAuto.shootAutoArtifact();
 //        decodeAuto.shootAutoArtifactSingle();
             sleep(600);
-//            decodeAuto.driveToPos(500, 500);
+            decodeAuto.driveToPos(1000, 1000);
 //            sleep(200);
 //            decodeAuto.gyroTurnToAngle(-90);
 //            sleep(500);
