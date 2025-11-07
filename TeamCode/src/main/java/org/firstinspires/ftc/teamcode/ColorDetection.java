@@ -14,6 +14,7 @@ import java.util.Random;
 public class ColorDetection {
     private final ColorSensor colorSensor;
     private final Servo rgbIndicator;
+    private final Servo outtakeIndicator;
     private boolean celebrateOn = false;
     private boolean previousCelebrate = false;
     private final LinearOpMode linearOpMode;
@@ -21,6 +22,7 @@ public class ColorDetection {
     public ColorDetection(LinearOpMode linearOpMode) {
         colorSensor = linearOpMode.hardwareMap.get(ColorSensor.class, "colorSensor");
         rgbIndicator = linearOpMode.hardwareMap.get(Servo.class, "rgbIndicator");
+        outtakeIndicator = linearOpMode.hardwareMap.get(Servo.class, "outtakeIndicator");
 
         this.linearOpMode = linearOpMode;
     }
@@ -86,6 +88,24 @@ public class ColorDetection {
                 rgbIndicator.setPosition(TeleOpConstants.BLANK);
                 break;
         }
+    }
+
+    public void setOuttakeIndicatorWithVelocity(double targetVelocity, double actualVelocity) {
+        // Check velocity status first (highest priority)
+        if (targetVelocity == 0) {
+            // Motor not being commanded - blank
+            outtakeIndicator.setPosition(TeleOpConstants.BLANK);
+            return;
+        }
+
+        if (Math.abs(actualVelocity - targetVelocity) <= 10) {
+            // At target velocity - blue
+            outtakeIndicator.setPosition(TeleOpConstants.BLUE);
+            return;
+        }
+
+        // If not at target and motor is running:
+        outtakeIndicator.setPosition(TeleOpConstants.BLANK);
     }
 
     private double getRGBIndicatorPosition() {
