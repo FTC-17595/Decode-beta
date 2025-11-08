@@ -28,6 +28,8 @@ public class ColorDetection {
     }
 
     public void celebrateToggle(boolean celebrate) throws InterruptedException {
+        boolean wasCelebrateOn = celebrateOn;
+
         if (celebrate && !previousCelebrate) {
             celebrateOn = !celebrateOn;
         }
@@ -46,6 +48,10 @@ public class ColorDetection {
             outtakeIndicator.setPosition(rainbowColor);
 
             Thread.sleep(250);
+        } else if (wasCelebrateOn) {
+            // Clear both indicators when celebration is turned off
+            rgbIndicator.setPosition(TeleOpConstants.BLANK);
+            outtakeIndicator.setPosition(TeleOpConstants.BLANK);
         }
     }
 
@@ -80,6 +86,11 @@ public class ColorDetection {
 
 
     public void setRGBIndicator() {
+        // Don't update if celebrating
+        if (celebrateOn) {
+            return;
+        }
+
         String detectedColor = detectColor();
 
         switch (detectedColor) {
@@ -96,6 +107,11 @@ public class ColorDetection {
     }
 
     public void setOuttakeIndicatorWithVelocity(double targetVelocity, double actualVelocity) {
+        // Don't update if celebrating
+        if (celebrateOn) {
+            return;
+        }
+
         // Check velocity status first (highest priority)
         if (targetVelocity == 0) {
             // Motor not being commanded - blank
