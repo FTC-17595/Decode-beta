@@ -67,7 +67,17 @@ public class AutoRed extends LinearOpMode {
         decodeAuto.intakeRun();
 //            sleep(1000);
         decodeAuto.PinpointY(1400);
-        decodeAuto.PinpointY(-1000);
+        sleep(700);
+        decodeAuto.intakeSystemAuto(false,false);
+        decodeAuto.PinpointY(-1400);
+        gyroTurnToAngle(90);
+        decodeAuto.PinpointX(-150);
+        gyroTurnToAngle(-22);
+        decodeAuto.shootAutoArtifactFar();
+        gyroTurnToAngle(22);
+        decodeAuto.PinpointX(300);
+        gyroTurnToAngle(-90);
+
 /*            odo.setPosY(0,DistanceUnit.MM);
             gyroTurnToAngle(90);
             decodeAuto.driveToPos(1260.634,100);
