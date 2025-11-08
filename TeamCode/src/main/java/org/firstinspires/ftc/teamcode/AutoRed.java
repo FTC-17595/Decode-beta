@@ -57,17 +57,17 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
 //        if (opModeIsActive() && (loopFinished = false)) {
 
-            decodeAuto.shootAutoArtifactFar();
+        decodeAuto.shootAutoArtifactFar();
 
-            decodeAuto.gyroTurnToAngle(22);
-            odo.resetPosAndIMU();
-            decodeAuto.PinpointX(607);
-            decodeAuto.gyroTurnToAngle(-90);
+        decodeAuto.gyroTurnToAngle(22);
+        odo.resetPosAndIMU();
+        decodeAuto.PinpointX(607);
+        decodeAuto.gyroTurnToAngle(-90);
 
-            decodeAuto.intakeRun();
+        decodeAuto.intakeRun();
 //            sleep(1000);
-            decodeAuto.PinpointY(1400);
-            decodeAuto.PinpointY(-1000);
+        decodeAuto.PinpointY(1400);
+        decodeAuto.PinpointY(-1000);
 /*            odo.setPosY(0,DistanceUnit.MM);
             gyroTurnToAngle(90);
             decodeAuto.driveToPos(1260.634,100);
@@ -75,7 +75,7 @@ public class AutoRed extends LinearOpMode {
             decodeAuto.shootAutoArtifactNear();
             decodeAuto.gyroTurnToAngle(-45);
 */
-            loopFinished = true;
+        loopFinished = true;
 //        } else {
 //            return;
 //        }
@@ -264,52 +264,52 @@ public class AutoRed extends LinearOpMode {
 
 
     private void gyroTurnToAngle(double turnAngle) {
-            double error, currentHeadingAngle, driveMotorsPower;
-            imu.resetYaw();
+        double error, currentHeadingAngle, driveMotorsPower;
+        imu.resetYaw();
 
-            error = turnAngle;
+        error = turnAngle;
 
-            while (opModeIsActive() && ((error > 1) || (error < -1))) {
-                odo.update();
-                telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
-                telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
+        while (opModeIsActive() && ((error > 1) || (error < -1))) {
+            odo.update();
+            telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
 //                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
-                telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-                telemetry.update();
+            telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.update();
 
-driveMotorsPower = error / 200;
+            driveMotorsPower = error / 200;
 
-                if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
-                    driveMotorsPower = 0.2;
-                } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
-                    driveMotorsPower = -0.2;
-                }
-
-                driveMotorsPower = error / 50;
-
-                if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
-                    driveMotorsPower = 0.35;
-                } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
-                    driveMotorsPower = -0.35;
-                }
-                // Positive power causes left turn
-                frontLeftMotor.setPower(-driveMotorsPower);
-                backLeftMotor.setPower(-driveMotorsPower);
-                frontRightMotor.setPower(driveMotorsPower);
-                backRightMotor.setPower(driveMotorsPower);
-
-                currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-                error = turnAngle - currentHeadingAngle;
+            if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.2;
+            } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.2;
             }
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
 
+            driveMotorsPower = error / 50;
 
+            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.35;
+            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.35;
+            }
+            // Positive power causes left turn
+            frontLeftMotor.setPower(-driveMotorsPower);
+            backLeftMotor.setPower(-driveMotorsPower);
+            frontRightMotor.setPower(driveMotorsPower);
+            backRightMotor.setPower(driveMotorsPower);
+
+            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            error = turnAngle - currentHeadingAngle;
         }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
 
-        private void initAuto() {
+
+    }
+
+    private void initAuto() {
         decodeAuto = new DecodeAuto(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
@@ -360,4 +360,3 @@ driveMotorsPower = error / 200;
 
     }
 }
-
