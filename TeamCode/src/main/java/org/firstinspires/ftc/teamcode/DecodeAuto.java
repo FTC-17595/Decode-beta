@@ -85,6 +85,14 @@ public class DecodeAuto {
             outtakeMotor.setVelocity(0);
         }
     }
+    public void OuttakeSystemNear(boolean run) {
+        if (run) {
+            outtakeMotor.setVelocity(AutoConstants.SHORT_RANGE_VELOCITY);
+//                        outtakeMotor.setVelocity(1000);
+        } else {
+            outtakeMotor.setVelocity(0);
+        }
+    }
 
     public void shootingSystem(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
@@ -141,7 +149,7 @@ public class DecodeAuto {
         }
 
     }
-    public void shootAutoArtifact(){
+    public void shootAutoArtifactFar(){
         while (opModeIsActive()) {
             OuttakeSystemFar(true);
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
@@ -159,6 +167,31 @@ public class DecodeAuto {
             sleep((long) AutoConstants.FLAP_SLEEP);
             intakeSystemAuto(true, false);
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+        }
+
+    }
+    public void shootAutoArtifactNear(){
+        while (opModeIsActive()) {
+            OuttakeSystemNear(true);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            intakeSystemAuto(true, false);
+            OuttakeSystemNear(true);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            OuttakeSystemNear(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            intakeSystemAuto(true, false);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
@@ -192,6 +225,7 @@ public class DecodeAuto {
 
             intakeMotor.setPower(1);
             containerMotor.setPower(0.8);
+//            while (intakeMotor.getPower() > 0.2) {}
 
     }
 
@@ -313,6 +347,7 @@ public class DecodeAuto {
 
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+
             linearOpMode.telemetry.addData("Position", data);
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
 
@@ -337,12 +372,13 @@ public class DecodeAuto {
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
-        odo.resetPosAndIMU();
+//        odo.resetPosAndIMU();
     }
+
 
     public void PinpointY(double target) {
 
-
+        odo.setPosY(0,DistanceUnit.MM);
 
         double margin = target - odo.getPosY(DistanceUnit.MM);
 
@@ -353,11 +389,12 @@ public class DecodeAuto {
 
             Pose2D pos = odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+
             linearOpMode.telemetry.addData("Position", data);
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
 
             double direction = Math.signum(margin);
-            double power = 0.5 * direction;
+            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
             double current = odo.getPosY(DistanceUnit.MM);
             margin = target - current;
 
@@ -379,6 +416,53 @@ public class DecodeAuto {
         backRightMotor.setPower(0);
 //        odo.resetPosAndIMU();
     }
+
+//    public void PinpointY(double target, double speed) {
+//
+////        odo.resetPosAndIMU();
+//
+//        double margin = target + odo.getPosY(DistanceUnit.MM);
+//
+//
+//        while (opModeIsActive() && abs(margin) > 30) {
+//
+//            odo.update();
+//
+//            Pose2D pos = odo.getPosition();
+//            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+//            linearOpMode.telemetry.addData("Target:", target);
+//            linearOpMode.telemetry.addData("Y:", pos.getY(DistanceUnit.MM));
+//            linearOpMode.telemetry.addData("Position", data);
+//            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+//            linearOpMode.telemetry.addData("Margin:",margin);
+//
+//            double direction = Math.signum(margin);
+//            double power = 0.5 * direction;
+//            double current = pos.getY(DistanceUnit.MM);
+//            margin = target + current;
+//            double factor = speed/100;
+//            linearOpMode.telemetry.addData("Margin", margin);
+//
+//            linearOpMode.telemetry.update();
+//
+//
+//            frontLeftMotor.setPower(power*factor);
+//            backLeftMotor.setPower(power*factor);
+//            frontRightMotor.setPower(power*factor);
+//            backRightMotor.setPower(power*factor);
+////            frontLeftMotor.setPower(power);
+////            backLeftMotor.setPower(power);
+////            frontRightMotor.setPower(power);
+////            backRightMotor.setPower(power);
+//
+//        }
+//        frontLeftMotor.setPower(0);
+//        backLeftMotor.setPower(0);
+//        frontRightMotor.setPower(0);
+//        backRightMotor.setPower(0);
+//
+//        // odo.resetPosAndIMU();
+//    }
 //    public void gyroTurnToAngle(double turnAngle) {
 //        double error, currentHeadingAngle, driveMotorsPower;
 //        imu.resetYaw();
