@@ -14,10 +14,6 @@ public class ArtifactHandlingSystem {
     private final Servo flapServo;
     private final LinearOpMode linearOpMode;
     private double launchVelocity;
-    private ShootingState shootingState = ShootingState.IDLE;
-    private long stateStartTime = 0;
-    private int artifactsFired = 0;
-    private boolean useFeedForCurrent = false;
     private boolean lastSwitchState = false;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
@@ -94,113 +90,83 @@ public class ArtifactHandlingSystem {
         }
     }
 
-    public boolean autoShootingSystemTeleOp(boolean startShootingSequence) {
-        // Initialize the sequence when trigger is pressed
-        if (startShootingSequence && shootingState == ShootingState.IDLE) {
-            shootingState = ShootingState.SPINUP;
-            stateStartTime = System.currentTimeMillis();
-            artifactsFired = 0;
-            linearOpMode.telemetry.addLine("Starting auto-shoot sequence...");
+    public void autoShootingSystemTeleOp(boolean autoShoot) {
+        if (autoShoot) {
+            shootingSystem(1f, 0f);
+            linearOpMode.sleep(TeleOpConstants.SPINUP_MS);
+
+            if (prepareArtifact(false)) {
+                return;
+            }
+
+            fireArtifact();
+
+            for (int i = 1; i < 4 && linearOpMode.opModeIsActive(); i++) {
+                if (prepareArtifact(true)) {
+                    break;
+                }
+                fireArtifact();
+            }
+
+            shootingSystem(0f, 0f);
+            intakeSystem(false, false);
+            flapSystem(false);
+        }
+    }
+
+    private boolean prepareArtifact(boolean useFeed) {
+        if (!linearOpMode.opModeIsActive()) {
             return true;
         }
 
-        // State machine logic
-        long currentTime = System.currentTimeMillis();
-        long elapsed = currentTime - stateStartTime;
+        if (useFeed) {
+            intakeSystem(true, false);
+            linearOpMode.sleep(TeleOpConstants.FEED_MS);
+            intakeSystem(false, false);
+        } /* else { */
+//            linearOpMode.sleep(TeleOpConstants.FEED_MS);
+//        }
 
-        switch (shootingState) {
-            case IDLE:
-                // Do nothing, waiting for trigger
-                return false;
+        if (!linearOpMode.opModeIsActive()) {
+            return true;
+        }
 
-            case SPINUP:
-                // Start the shooter motor and wait for it to reach target velocity
-                shootingSystem(1f, 0f);
-                linearOpMode.telemetry.addData("State", "Spinning up shooter...");
-                linearOpMode.telemetry.addData("Time remaining", "%.1f s", (TeleOpConstants.SPINUP_MS - elapsed) / 1000.0);
+        linearOpMode.sleep(TeleOpConstants.FEED_SETTLE_MS);
 
-                if (elapsed >= TeleOpConstants.SPINUP_MS) {
-                    shootingState = ShootingState.PREPARE_FIRST;
-                    stateStartTime = currentTime;
-                    useFeedForCurrent = false; // First artifact doesn't use feed
-                }
-                return true;
+        if (!linearOpMode.opModeIsActive()) {
+            return true;
+        }
 
-            case PREPARE_FIRST:
-            case PREPARE_NEXT:
-                // Prepare the artifact for firing
-                boolean isFirst = (shootingState == ShootingState.PREPARE_FIRST);
+        linearOpMode.sleep(TeleOpConstants.PREFIRE_WAIT_MS);
+        return !linearOpMode.opModeIsActive();
+    }
 
-                if (useFeedForCurrent && elapsed < TeleOpConstants.FEED_MS) {
-                    // Run intake/container to feed next artifact
-                    intakeSystem(true, false);
-                    linearOpMode.telemetry.addData("State", "Feeding artifact %d...", artifactsFired + 1);
-                } else if (elapsed < TeleOpConstants.FEED_MS) {
-                    // For first artifact, just wait (no feed needed)
-                    intakeSystem(false, false);
-                    linearOpMode.telemetry.addData("State", "Preparing artifact %d...", artifactsFired + 1);
-                } else if (elapsed < TeleOpConstants.FEED_MS + TeleOpConstants.FEED_SETTLE_MS) {
-                    // Stop intake and let artifact settle
-                    intakeSystem(false, false);
-                    linearOpMode.telemetry.addData("State", "Settling artifact %d...", artifactsFired + 1);
-                } else if (elapsed >= TeleOpConstants.FEED_MS + TeleOpConstants.FEED_SETTLE_MS + TeleOpConstants.PREFIRE_WAIT_MS) {
-                    // Preparation complete, move to fire state
-                    shootingState = isFirst ? ShootingState.FIRE_FIRST : ShootingState.FIRE_NEXT;
-                    stateStartTime = currentTime;
-                }
-                return true;
+    private void fireArtifact() {
+        if (!linearOpMode.opModeIsActive()) {
+            return;
+        }
+        waitForMotor();
+        flapSystem(true);
+        linearOpMode.sleep(TeleOpConstants.SERVO_UP_MS);
+        flapSystem(false);
+        linearOpMode.sleep(TeleOpConstants.SERVO_RESET_MS);
+    }
 
-            case FIRE_FIRST:
-            case FIRE_NEXT:
-                // Execute the firing sequence (raise flap, wait, lower flap)
-                if (elapsed < TeleOpConstants.SERVO_UP_MS) {
-                    // Raise the flap to release artifact
-                    flapSystem(true);
-                    linearOpMode.telemetry.addData("State", "Firing artifact %d - raising flap", artifactsFired + 1);
-                } else if (elapsed < TeleOpConstants.SERVO_UP_MS + TeleOpConstants.SERVO_RESET_MS) {
-                    // Lower the flap back down
-                    flapSystem(false);
-                    linearOpMode.telemetry.addData("State", "Firing artifact %d - resetting flap", artifactsFired + 1);
-                } else {
-                    // Firing complete
-                    artifactsFired++;
-                    linearOpMode.telemetry.addData("Artifacts Fired", artifactsFired);
+    private void waitForMotor() {
+        while (outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+                outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+                linearOpMode.opModeIsActive()) {
 
-                    // Check if we should continue or complete
-                    if (artifactsFired >= TeleOpConstants.MAX_ARTIFACTS) {
-                        shootingState = ShootingState.COOLDOWN;
-                    } else {
-                        shootingState = ShootingState.PREPARE_NEXT;
-                        useFeedForCurrent = true; // All subsequent artifacts use feed
-                    }
-                    stateStartTime = currentTime;
-                }
-                return true;
+            linearOpMode.telemetry.addData("Outtake Velocity", outtakeMotor.getVelocity());
+            linearOpMode.telemetry.addData("Outtake Target Velocity", outtakeMotor.getTargetPosition());
+            linearOpMode.telemetry.addData("Launch Velocity", launchVelocity);
+            linearOpMode.telemetry.addData("Velocity -", outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
+            linearOpMode.telemetry.addData("Velocity +", outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
+            linearOpMode.telemetry.addData("Velocity T/F", outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+                    outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
 
-            case COOLDOWN:
-                // Brief cooldown before completing
-                if (elapsed >= 100) {
-                    shootingState = ShootingState.COMPLETE;
-                    stateStartTime = currentTime;
-                }
-                return true;
-
-            case COMPLETE:
-                // Shutdown all systems and return to idle
-                shootingSystem(0f, 0f);
-                intakeSystem(false, false);
-                flapSystem(false);
-                linearOpMode.telemetry.addData("Auto-shoot", "Complete! %d artifacts fired", artifactsFired);
-
-                // Stay in complete state briefly so user can see the message
-                if (elapsed >= 1000) {
-                    shootingState = ShootingState.IDLE;
-                }
-                return false;
-
-            default:
-                shootingState = ShootingState.IDLE;
-                return false;
+            linearOpMode.telemetry.update();
+            linearOpMode.sleep(10);
         }
     }
 

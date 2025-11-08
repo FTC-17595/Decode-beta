@@ -28,6 +28,8 @@ public class ColorDetection {
     }
 
     public void celebrateToggle(boolean celebrate) throws InterruptedException {
+        boolean wasCelebrateOn = celebrateOn;
+
         if (celebrate && !previousCelebrate) {
             celebrateOn = !celebrateOn;
         }
@@ -35,12 +37,21 @@ public class ColorDetection {
         previousCelebrate = celebrate;
 
         if (celebrateOn) {
-            Random random = new Random();
-            double randomColor = TeleOpConstants.RED + (TeleOpConstants.VIOLET - TeleOpConstants.RED) * random.nextDouble();
-            rgbIndicator.setPosition(randomColor);
+            long currentTime = System.currentTimeMillis();
+            double cyclePosition = (currentTime % TeleOpConstants.CELEBRATION_SPEED) / TeleOpConstants.CELEBRATION_SPEED;
 
-            // Wait for 500 milliseconds
+            double triangleWave = cyclePosition < 0.5 ? cyclePosition * 2 : 2 - (cyclePosition * 2);
+
+            double rainbowColor = TeleOpConstants.RED + (TeleOpConstants.VIOLET - TeleOpConstants.RED) * triangleWave;
+
+            rgbIndicator.setPosition(rainbowColor);
+            outtakeIndicator.setPosition(rainbowColor);
+
             Thread.sleep(250);
+        } else if (wasCelebrateOn) {
+            // Clear both indicators when celebration is turned off
+            rgbIndicator.setPosition(TeleOpConstants.BLANK);
+            outtakeIndicator.setPosition(TeleOpConstants.BLANK);
         }
     }
 
@@ -75,6 +86,11 @@ public class ColorDetection {
 
 
     public void setRGBIndicator() {
+        // Don't update if celebrating
+        if (celebrateOn) {
+            return;
+        }
+
         String detectedColor = detectColor();
 
         switch (detectedColor) {
@@ -91,6 +107,11 @@ public class ColorDetection {
     }
 
     public void setOuttakeIndicatorWithVelocity(double targetVelocity, double actualVelocity) {
+        // Don't update if celebrating
+        if (celebrateOn) {
+            return;
+        }
+
         // Check velocity status first (highest priority)
         if (targetVelocity == 0) {
             // Motor not being commanded - blank
