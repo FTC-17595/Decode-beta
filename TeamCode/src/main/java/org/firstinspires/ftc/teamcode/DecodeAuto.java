@@ -418,6 +418,47 @@ public class DecodeAuto {
 //        odo.resetPosAndIMU();
     }
 
+    public void PinpointYBlue(double target) {
+
+        odo.setPosY(0,DistanceUnit.MM);
+
+        double margin = target + odo.getPosY(DistanceUnit.MM);
+
+
+        while (opModeIsActive() && abs(margin) > 100) {
+
+            odo.update();
+
+            Pose2D pos = odo.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+
+            linearOpMode.telemetry.addData("Position", data);
+            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+
+            double direction = Math.signum(margin);
+            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
+            double current = odo.getPosY(DistanceUnit.MM);
+            margin = target + current;
+
+            linearOpMode.telemetry.addData("Margin", margin);
+
+            linearOpMode.telemetry.update();
+
+
+            frontLeftMotor.setPower(power);
+            backLeftMotor.setPower(power);
+            frontRightMotor.setPower(power);
+            backRightMotor.setPower(power);
+
+
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+//        odo.resetPosAndIMU();
+    }
+
 //    public void PinpointY(double target, double speed) {
 //
 ////        odo.resetPosAndIMU();

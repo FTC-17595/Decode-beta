@@ -55,39 +55,26 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
-//        while (opModeIsActive() && !isStopRequested() ) {
+//        if (opModeIsActive() && (loopFinished = false)) {
 
         decodeAuto.shootAutoArtifactFar();
-//        decodeAuto.shootAutoArtifactSingle();
-//            sleep(600);
-        decodeAuto.PinpointX(200);
-        decodeAuto.gyroTurnToAngle(-30);
+
+        decodeAuto.gyroTurnToAngle(-22);
         odo.resetPosAndIMU();
         decodeAuto.PinpointX(607);
         decodeAuto.gyroTurnToAngle(90);
 
         decodeAuto.intakeRun();
 //            sleep(1000);
-        decodeAuto.PinpointY(-1200);
-        decodeAuto.PinpointY(1200);
-        gyroTurnToAngle(-90);
-        odo.setPosY(0,DistanceUnit.MM);
-        decodeAuto.driveToPos(1260.634,-159.126);
-        decodeAuto.gyroTurnToAngle(45);
-        decodeAuto.shootAutoArtifactNear();
-        decodeAuto.gyroTurnToAngle(45);
-
-//            driveToPos(400);
-//            decodeAuto.intakeStop();
-//            sleep(200);
-//            decodeAuto.gyroTurnToAngle(-90);
-//            sleep(500);
-//            decodeAuto.intakeRun();
-//            decodeAuto.PinpointY(1000);
-//            sleep(500);
-//            decodeAuto.intakeStop();
-//            decodeAuto.gyroTurnToAngle(90);
-//            decodeAuto.driveToPos(400, -500);
+        decodeAuto.PinpointYBlue(1150);
+        decodeAuto.PinpointYBlue(-1000);
+/*            odo.setPosY(0,DistanceUnit.MM);
+            gyroTurnToAngle(90);
+            decodeAuto.driveToPos(1260.634,100);
+            decodeAuto.gyroTurnToAngle(-45);
+            decodeAuto.shootAutoArtifactNear();
+            decodeAuto.gyroTurnToAngle(-45);
+*/
         loopFinished = true;
 //        } else {
 //            return;
