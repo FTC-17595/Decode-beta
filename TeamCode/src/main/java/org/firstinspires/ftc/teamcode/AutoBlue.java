@@ -57,37 +57,42 @@ public class AutoBlue extends LinearOpMode {
         waitForStart();
 //        while (opModeIsActive() && !isStopRequested() ) {
 
+        //Shoots the artifact from the far range
         decodeAuto.shootAutoArtifactFar();
-//        decodeAuto.shootAutoArtifactSingle();
-//            sleep(600);
-        decodeAuto.PinpointX(200);
-        decodeAuto.gyroTurnToAngle(-30);
-        odo.resetPosAndIMU();
-        decodeAuto.PinpointX(607);
-        decodeAuto.gyroTurnToAngle(90);
 
+        //Moves the robot slightly forward to avoid hitting the wall while turning
+        decodeAuto.PinpointX(200);
+        //Turns to be aligned with the field
+        decodeAuto.gyroTurnToAngle(-30);
+        //Resets the position and IMU of the robot
+        odo.resetPosAndIMU();
+        //Accounts for the distance the robot moved forward
+        odo.setPosX(200,DistanceUnit.MM);
+
+        //Moves & picks up the first set of artifacts
+        decodeAuto.PinpointX(407);
+        decodeAuto.gyroTurnToAngle(90);
         decodeAuto.intakeRun();
-//            sleep(1000);
         decodeAuto.PinpointY(-1200);
+
+        //Moves back to the original position
         decodeAuto.PinpointY(1200);
         gyroTurnToAngle(-90);
+
+        //Resets the Y position of the robot to 0
         odo.setPosY(0,DistanceUnit.MM);
+        
+        //Will spin up the motor for the outtake system to be ready for the next shot
+        decodeAuto.OuttakeSystemNear(true);
+
+        //Drives and shoots the artifact from the near range
         decodeAuto.driveToPos(1260.634,-159.126);
         decodeAuto.gyroTurnToAngle(45);
         decodeAuto.shootAutoArtifactNear();
+        //Aligns the robot to the driver so that I don't have to manually turn the robot to the driver
         decodeAuto.gyroTurnToAngle(45);
 
-//            driveToPos(400);
-//            decodeAuto.intakeStop();
-//            sleep(200);
-//            decodeAuto.gyroTurnToAngle(-90);
-//            sleep(500);
-//            decodeAuto.intakeRun();
-//            decodeAuto.PinpointY(1000);
-//            sleep(500);
-//            decodeAuto.intakeStop();
-//            decodeAuto.gyroTurnToAngle(90);
-//            decodeAuto.driveToPos(400, -500);
+
         loopFinished = true;
 //        } else {
 //            return;
