@@ -55,7 +55,7 @@ public class AutoRed extends LinearOpMode {
 
 
         waitForStart();
-        if (opModeIsActive() && (loopFinished = false)) {
+//        if (opModeIsActive() && (loopFinished = false)) {
 
             decodeAuto.shootAutoArtifactFar();
 //        decodeAuto.shootAutoArtifactSingle();
@@ -91,7 +91,7 @@ public class AutoRed extends LinearOpMode {
             loopFinished = true;
 //        } else {
 //            return;
-        }
+//        }
 
 
 

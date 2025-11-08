@@ -21,4 +21,5 @@ public class TeleOpConstants {
     final static long FEED_SETTLE_MS = 150;
     final static long PREFIRE_WAIT_MS = 200;
     final static int MAX_ARTIFACTS = 4;
+    final static double CELEBRATION_SPEED = 5000;
 }

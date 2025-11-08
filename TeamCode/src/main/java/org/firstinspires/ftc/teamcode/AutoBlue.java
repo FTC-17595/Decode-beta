@@ -55,7 +55,7 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
-        while (opModeIsActive() && !isStopRequested() ) {
+//        while (opModeIsActive() && !isStopRequested() ) {
 
         decodeAuto.shootAutoArtifactFar();
 //        decodeAuto.shootAutoArtifactSingle();
@@ -91,7 +91,7 @@ public class AutoBlue extends LinearOpMode {
         loopFinished = true;
 //        } else {
 //            return;
-        }
+//        }
 
 
 
