@@ -337,7 +337,7 @@ public class DecodeAuto {
 
     public void PinpointX(double target) {
 
-
+        odo.setPosX(0, DistanceUnit.MM);
 
         double margin = target + odo.getPosX(DistanceUnit.MM);
 
