@@ -171,6 +171,7 @@ public class DecodeAuto {
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
+            OuttakeSystemFar(false);
 //        }
 
     }
@@ -264,8 +265,8 @@ public class DecodeAuto {
             // Compute distance from target in X and Y, scaled down for motor power
             // The 0.001 factor converts cm error into a smaller motor power signal
             // Negative Y compensates for coordinate orientation differences
-            double x = 0.0001 * (targetX + odo.getPosX(DistanceUnit.MM));
-            double y = 0.0001 * (targetY - odo.getPosY(DistanceUnit.MM));
+            double x = 0.001 * (targetX + odo.getPosX(DistanceUnit.MM));
+            double y = 0.001 * (targetY - odo.getPosY(DistanceUnit.MM));
 
             // Get the robot's heading (rotation angle) from the IMU in radians
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
