@@ -150,29 +150,45 @@ public class DecodeAuto {
 
     }
     public void shootAutoArtifactFar(){
-//        while (opModeIsActive()) {
+        while (opModeIsActive()) {
             OuttakeSystemFar(true);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                }
+
+            }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
             intakeSystemAuto(true, false);
             OuttakeSystemFar(true);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                }
+
+            }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             OuttakeSystemFar(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             intakeSystemAuto(true, false);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
+            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                }
+
+            }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
             OuttakeSystemFar(false);
-//        }
+            break;
+        }
 
     }
     public void shootAutoArtifactNear(){
