@@ -151,7 +151,7 @@ public class DecodeAuto {
     }
     boolean loopFinished = true;
     public void shootAutoArtifactFar(){
-        while (opModeIsActive() && (loopFinished)) {
+        // while (opModeIsActive() && (loopFinished)) {
             OuttakeSystemFar(true);
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
                 if (!opModeIsActive()) {
@@ -191,9 +191,9 @@ public class DecodeAuto {
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
             OuttakeSystemFar(false);
-            loopFinished = false;
-            break;
-        }
+//            loopFinished = false;
+//            break;
+//        }
 
     }
     public void shootAutoArtifactNear(){

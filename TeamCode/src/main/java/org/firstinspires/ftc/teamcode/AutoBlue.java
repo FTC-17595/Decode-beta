@@ -57,30 +57,29 @@ public class AutoBlue extends LinearOpMode {
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
 
-        decodeAuto.shootAutoArtifactFar();
 
-        decodeAuto.gyroTurnToAngle(-22);
-        odo.resetPosAndIMU();
-        decodeAuto.PinpointX(607);
-        decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.shootAutoArtifactFar();
 
-        decodeAuto.intakeRun();
+            decodeAuto.gyroTurnToAngle(-22);
+            odo.resetPosAndIMU();
+            decodeAuto.PinpointX(607);
+            decodeAuto.gyroTurnToAngle(90);
+
+            decodeAuto.intakeRun();
 //            sleep(1000);
-        decodeAuto.PinpointYBlue(1150);
-        sleep(700);
-        decodeAuto.intakeSystemAuto(false,false);
-        decodeAuto.PinpointYBlue(-1000);
-        decodeAuto.gyroTurnToAngle(-90);
-        decodeAuto.PinpointX(-200);
-        decodeAuto.gyroTurnToAngle(-31);
-        decodeAuto.shootAutoArtifactFar();
-        decodeAuto.gyroTurnToAngle(31);
-        sleep(500);
-        odo.resetPosAndIMU();
-        decodeAuto.PinpointX(180);
-        decodeAuto.gyroTurnToAngle(-90);
-        loopFinished = false;
-        isStopRequested();
+            decodeAuto.PinpointYBlue(900);
+            sleep(700);
+            decodeAuto.intakeSystemAuto(false,false);
+            decodeAuto.PinpointYBlue(-800);
+            gyroTurnToAngle(-90);
+            decodeAuto.PinpointX(-350);
+            decodeAuto.gyroTurnToAngle(19);
+            decodeAuto.shootAutoArtifactFar();
+            decodeAuto.gyroTurnToAngle(-19);
+            decodeAuto.PinpointX(100);
+            decodeAuto.gyroTurnToAngle(90);
+            loopFinished = true;
+
 //        } else {
 //            return;
         }

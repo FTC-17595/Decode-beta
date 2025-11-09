@@ -67,19 +67,16 @@ public class AutoRed extends LinearOpMode {
         decodeAuto.intakeRun();
 //            sleep(1000);
         decodeAuto.PinpointY(1300);
-        sleep(700);
-        decodeAuto.intakeSystemAuto(false,false);
-        decodeAuto.PinpointY(-1220);
-        gyroTurnToAngle(90);
-        decodeAuto.PinpointX(-200);
-        gyroTurnToAngle(-31);
-        decodeAuto.shootAutoArtifactFar();
-        gyroTurnToAngle(31);
-        sleep(500);
-        odo.resetPosAndIMU();
-        decodeAuto.PinpointX(180);
-        decodeAuto.gyroTurnToAngle(-90);
-
+            sleep(700);
+            decodeAuto.intakeSystemAuto(false,false);
+            decodeAuto.PinpointY(-1150);
+            gyroTurnToAngle(90);
+            decodeAuto.PinpointX(-350);
+            gyroTurnToAngle(-19);
+            decodeAuto.shootAutoArtifactFar();
+            gyroTurnToAngle(19);
+            decodeAuto.PinpointX(100);
+            gyroTurnToAngle(-90);
         loopFinished = false;
 //        } else {
 //            return;
