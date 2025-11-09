@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+//import org.firstinspires.ftc.teamcode.TeleOpConstants.MAX_VELOCITY;
+
 @TeleOp(name = "Encoder Limit Test")
+@Disabled
 public class EncoderLimitTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         DcMotorEx dcMotor = hardwareMap.get(DcMotorEx.class, "outtakeMotor");
         dcMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
+//        TeleOpConstants TeleOpConstants;
         // Configure motor for velocity control
         dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

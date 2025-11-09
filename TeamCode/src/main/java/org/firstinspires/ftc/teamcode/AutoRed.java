@@ -24,11 +24,11 @@ public class AutoRed extends LinearOpMode {
     boolean PPG = false;
     boolean  PGP = false;
     boolean GPP = false;
-    boolean loopFinished = false;
+    boolean loopFinished = true;
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException{
 
         initAuto();
         waitForStart();
@@ -55,7 +55,7 @@ public class AutoRed extends LinearOpMode {
 
 
         waitForStart();
-//        if (opModeIsActive() && (loopFinished = false)) {
+        if (opModeIsActive() && (loopFinished = true)) {
 
         decodeAuto.shootAutoArtifactFar();
 
@@ -79,17 +79,11 @@ public class AutoRed extends LinearOpMode {
         odo.resetPosAndIMU();
         decodeAuto.PinpointX(180);
         decodeAuto.gyroTurnToAngle(-90);
-/*            odo.setPosY(0,DistanceUnit.MM);
-            gyroTurnToAngle(90);
-            decodeAuto.driveToPos(1260.634,100);
-            decodeAuto.gyroTurnToAngle(-45);
-            decodeAuto.shootAutoArtifactNear();
-            decodeAuto.gyroTurnToAngle(-45);
-*/
-        loopFinished = true;
+
+        loopFinished = false;
 //        } else {
 //            return;
-//        }
+        }
 
 
 
