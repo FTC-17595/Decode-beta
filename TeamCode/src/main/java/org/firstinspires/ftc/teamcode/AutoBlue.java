@@ -67,14 +67,16 @@ public class AutoBlue extends LinearOpMode {
         decodeAuto.intakeRun();
 //            sleep(1000);
         decodeAuto.PinpointYBlue(1150);
+        sleep(700);
+        decodeAuto.intakeSystemAuto(false,false);
         decodeAuto.PinpointYBlue(-1000);
-/*            odo.setPosY(0,DistanceUnit.MM);
-            gyroTurnToAngle(90);
-            decodeAuto.driveToPos(1260.634,100);
-            decodeAuto.gyroTurnToAngle(-45);
-            decodeAuto.shootAutoArtifactNear();
-            decodeAuto.gyroTurnToAngle(-45);
-*/
+        gyroTurnToAngle(-90);
+        decodeAuto.PinpointX(-375);
+        decodeAuto.gyroTurnToAngle(22);
+        decodeAuto.shootAutoArtifactFar();
+        decodeAuto.gyroTurnToAngle(-22);
+        decodeAuto.PinpointX(300);
+        decodeAuto.gyroTurnToAngle(90);
         loopFinished = true;
 //        } else {
 //            return;
