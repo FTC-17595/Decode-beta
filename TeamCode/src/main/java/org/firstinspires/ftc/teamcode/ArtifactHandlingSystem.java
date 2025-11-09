@@ -4,7 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 public class ArtifactHandlingSystem {
 
@@ -14,6 +16,7 @@ public class ArtifactHandlingSystem {
     private final Servo flapServo;
     private final LinearOpMode linearOpMode;
     private double launchVelocity;
+    private double autoLaunchVelocity;
     private boolean lastSwitchState = false;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
@@ -25,6 +28,10 @@ public class ArtifactHandlingSystem {
     }
 
     public void configureMotorModes() {
+        MotorConfigurationType config = outtakeMotor.getMotorType().clone();
+        config.setAchieveableMaxRPMFraction(1.0);
+        outtakeMotor.setMotorType(config);
+
         outtakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -39,6 +46,17 @@ public class ArtifactHandlingSystem {
         flapServo.setDirection(Servo.Direction.FORWARD);
 
         launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
+        autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
+
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(
+                TeleOpConstants.kP,
+                TeleOpConstants.kI,
+                TeleOpConstants.kD,
+                TeleOpConstants.kF
+        );
+
+        outtakeMotor.setVelocityPIDFCoefficients(TeleOpConstants.kP, TeleOpConstants.kI,TeleOpConstants.kD, TeleOpConstants.kF);
+        outtakeMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     }
 
     public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact) {
@@ -153,17 +171,17 @@ public class ArtifactHandlingSystem {
     }
 
     private void waitForMotor() {
-        while (outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
-                outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+        while (outtakeMotor.getVelocity() > autoLaunchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+                outtakeMotor.getVelocity() < autoLaunchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
                 linearOpMode.opModeIsActive()) {
 
             linearOpMode.telemetry.addData("Outtake Velocity", outtakeMotor.getVelocity());
             linearOpMode.telemetry.addData("Outtake Target Velocity", outtakeMotor.getTargetPosition());
-            linearOpMode.telemetry.addData("Launch Velocity", launchVelocity);
-            linearOpMode.telemetry.addData("Velocity -", outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
-            linearOpMode.telemetry.addData("Velocity +", outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
-            linearOpMode.telemetry.addData("Velocity T/F", outtakeMotor.getVelocity() > launchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
-                    outtakeMotor.getVelocity() < launchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
+            linearOpMode.telemetry.addData("Launch Velocity", autoLaunchVelocity);
+            linearOpMode.telemetry.addData("Velocity -", outtakeMotor.getVelocity() > autoLaunchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
+            linearOpMode.telemetry.addData("Velocity +", outtakeMotor.getVelocity() < autoLaunchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
+            linearOpMode.telemetry.addData("Velocity T/F", outtakeMotor.getVelocity() > autoLaunchVelocity - TeleOpConstants.WAIT_FOR_MOTOR_OFFSET &&
+                    outtakeMotor.getVelocity() < autoLaunchVelocity + TeleOpConstants.WAIT_FOR_MOTOR_OFFSET);
 
             linearOpMode.telemetry.update();
             linearOpMode.sleep(10);
@@ -177,7 +195,7 @@ public class ArtifactHandlingSystem {
             launchVelocity -= TeleOpConstants.VELOCITY_INCREMENT;
         }
         // Clamp velocity to safe operating limits
-        // Max theoretical = 11,200 ticks/sec;
+        // Max theoretical = 2,300 ticks/sec;
         launchVelocity = Math.max(0, Math.min(launchVelocity, TeleOpConstants.MAX_VELOCITY));
     }
 
@@ -187,6 +205,10 @@ public class ArtifactHandlingSystem {
             launchVelocity = (launchVelocity == TeleOpConstants.SHORT_RANGE_VELOCITY)
                     ? TeleOpConstants.LONG_RANGE_VELOCITY
                     : TeleOpConstants.SHORT_RANGE_VELOCITY;
+
+            autoLaunchVelocity = (autoLaunchVelocity == TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY)
+                    ? TeleOpConstants.AUTO_LONG_RANGE_VELOCITY
+                    : TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
         }
         lastSwitchState = switch_f;
     }
@@ -218,8 +240,10 @@ public class ArtifactHandlingSystem {
 
     public void displayTelemetry() {
         linearOpMode.telemetry.addData("Outtake Target Velocity", "%.0f ticks/sec", launchVelocity);
+        linearOpMode.telemetry.addData("Outtake AUTO Target Velocity", "%.0f ticks/sec", autoLaunchVelocity);
         linearOpMode.telemetry.addData("Outtake Actual Velocity", "%.0f ticks/sec", outtakeMotor.getVelocity());
         linearOpMode.telemetry.addData("Velocity Error", "%.0f ticks/sec", launchVelocity - outtakeMotor.getVelocity());
+        linearOpMode.telemetry.addData("AUTO Velocity Error", "%.0f ticks/sec", autoLaunchVelocity - outtakeMotor.getVelocity());
         linearOpMode.telemetry.addData("Outtake Current Draw", "%.2f A", outtakeMotor.getCurrent(org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit.AMPS));
         linearOpMode.telemetry.addData("Outtake Position", outtakeMotor.getCurrentPosition());
         linearOpMode.telemetry.addData("Velocity %", "%.1f%%", (outtakeMotor.getVelocity() / TeleOpConstants.MAX_VELOCITY) * 100);
