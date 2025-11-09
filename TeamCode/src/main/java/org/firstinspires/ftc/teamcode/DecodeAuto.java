@@ -367,6 +367,7 @@ public class DecodeAuto {
 
             linearOpMode.telemetry.addData("Position", data);
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+            linearOpMode.telemetry.addData("Margin", margin);
 
             double direction = Math.signum(margin);
             double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
