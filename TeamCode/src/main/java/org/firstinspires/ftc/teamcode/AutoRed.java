@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Blue Alliance")
+@Autonomous(name = "Autonomous - Red Alliance")
 public class AutoRed extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
@@ -24,11 +24,11 @@ public class AutoRed extends LinearOpMode {
     boolean PPG = false;
     boolean  PGP = false;
     boolean GPP = false;
-    boolean loopFinished = false;
+    boolean loopFinished = true;
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException{
 
         initAuto();
         waitForStart();
@@ -55,7 +55,7 @@ public class AutoRed extends LinearOpMode {
 
 
         waitForStart();
-//        if (opModeIsActive() && (loopFinished = false)) {
+        if (opModeIsActive() && (loopFinished = true)) {
 
         decodeAuto.shootAutoArtifactFar();
 
@@ -66,29 +66,24 @@ public class AutoRed extends LinearOpMode {
 
         decodeAuto.intakeRun();
 //            sleep(1000);
-        decodeAuto.PinpointY(1400);
+        decodeAuto.PinpointY(1300);
         sleep(700);
         decodeAuto.intakeSystemAuto(false,false);
-        decodeAuto.PinpointY(-1400);
+        decodeAuto.PinpointY(-1220);
         gyroTurnToAngle(90);
-        decodeAuto.PinpointX(-150);
-        gyroTurnToAngle(-22);
+        decodeAuto.PinpointX(-200);
+        gyroTurnToAngle(-31);
         decodeAuto.shootAutoArtifactFar();
-        gyroTurnToAngle(22);
+        gyroTurnToAngle(31);
         sleep(500);
-        decodeAuto.PinpointX(100);
+        odo.resetPosAndIMU();
+        decodeAuto.PinpointX(180);
         decodeAuto.gyroTurnToAngle(-90);
-/*            odo.setPosY(0,DistanceUnit.MM);
-            gyroTurnToAngle(90);
-            decodeAuto.driveToPos(1260.634,100);
-            decodeAuto.gyroTurnToAngle(-45);
-            decodeAuto.shootAutoArtifactNear();
-            decodeAuto.gyroTurnToAngle(-45);
-*/
-        loopFinished = true;
+
+        loopFinished = false;
 //        } else {
 //            return;
-//        }
+        }
 
 
 

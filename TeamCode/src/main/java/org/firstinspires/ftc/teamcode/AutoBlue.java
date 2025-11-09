@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Red Alliance")
+@Autonomous(name = "Autonomous - Blue Alliance")
 public class AutoBlue extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
@@ -24,7 +24,7 @@ public class AutoBlue extends LinearOpMode {
     boolean PPG = false;
     boolean  PGP = false;
     boolean GPP = false;
-    boolean loopFinished = false;
+    boolean loopFinished = true;
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
@@ -55,7 +55,7 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
-//        while (!isStopRequested() && (loopFinished = false)) {
+        while (!isStopRequested() && (loopFinished = true)) {
 
         decodeAuto.shootAutoArtifactFar();
 
@@ -70,18 +70,20 @@ public class AutoBlue extends LinearOpMode {
         sleep(700);
         decodeAuto.intakeSystemAuto(false,false);
         decodeAuto.PinpointYBlue(-1000);
-        gyroTurnToAngle(-90);
-        decodeAuto.PinpointX(-375);
-        decodeAuto.gyroTurnToAngle(22);
-        decodeAuto.shootAutoArtifactFar();
-        decodeAuto.gyroTurnToAngle(-22);
-        sleep(500);
-        decodeAuto.PinpointX(100);
         decodeAuto.gyroTurnToAngle(-90);
-        loopFinished = true;
+        decodeAuto.PinpointX(-200);
+        decodeAuto.gyroTurnToAngle(-31);
+        decodeAuto.shootAutoArtifactFar();
+        decodeAuto.gyroTurnToAngle(31);
+        sleep(500);
+        odo.resetPosAndIMU();
+        decodeAuto.PinpointX(180);
+        decodeAuto.gyroTurnToAngle(-90);
+        loopFinished = false;
+        isStopRequested();
 //        } else {
 //            return;
-//        }
+        }
 
 
 

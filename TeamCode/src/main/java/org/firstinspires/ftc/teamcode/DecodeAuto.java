@@ -149,12 +149,14 @@ public class DecodeAuto {
         }
 
     }
+    boolean loopFinished = true;
     public void shootAutoArtifactFar(){
-        while (opModeIsActive()) {
+        while (opModeIsActive() && (loopFinished)) {
             OuttakeSystemFar(true);
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
                 if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
+                    return;
                 }
 
             }
@@ -167,6 +169,7 @@ public class DecodeAuto {
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
                 if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
+                    return;
                 }
 
             }
@@ -179,6 +182,7 @@ public class DecodeAuto {
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
                 if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
+                    return;
                 }
 
             }
@@ -187,6 +191,7 @@ public class DecodeAuto {
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
             OuttakeSystemFar(false);
+            loopFinished = false;
             break;
         }
 
@@ -367,6 +372,7 @@ public class DecodeAuto {
 
             linearOpMode.telemetry.addData("Position", data);
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+            linearOpMode.telemetry.addData("Margin", margin);
 
             double direction = Math.signum(margin);
             double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
