@@ -28,7 +28,7 @@ public class AutoBlue extends LinearOpMode {
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         initAuto();
         waitForStart();
@@ -55,7 +55,7 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
-//        if (opModeIsActive() && (loopFinished = false)) {
+//        while (!isStopRequested() && (loopFinished = false)) {
 
         decodeAuto.shootAutoArtifactFar();
 
@@ -75,8 +75,9 @@ public class AutoBlue extends LinearOpMode {
         decodeAuto.gyroTurnToAngle(22);
         decodeAuto.shootAutoArtifactFar();
         decodeAuto.gyroTurnToAngle(-22);
-        decodeAuto.PinpointX(300);
-        decodeAuto.gyroTurnToAngle(90);
+        sleep(500);
+        decodeAuto.PinpointX(100);
+        decodeAuto.gyroTurnToAngle(-90);
         loopFinished = true;
 //        } else {
 //            return;
