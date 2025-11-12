@@ -207,7 +207,7 @@ public class DecodeAuto {
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
+            sleep(1000);
             intakeSystemAuto(true, false);
             OuttakeSystemNear(true);
             while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
@@ -358,8 +358,9 @@ public class DecodeAuto {
     public void autoShootArtifactsFar() {
 
         AutoflapSystem(true);
+
     }
-    private void AlignToTag(AprilTagDetection tag) {
+    public void AlignToTag(AprilTagDetection tag/*, double tagID */) {
         double error, drivePower;
 
 
