@@ -151,8 +151,8 @@ public class ConceptAprilTagEasy extends LinearOpMode {
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-//                telemetry.addData("Yaw", detection.ftcPose.yaw);
-//                telemetry.update();
+                telemetry.addData("Yaw", detection.ftcPose.yaw);
+                telemetry.update();
                 telemetry.addLine(String.format("Yaw", detection.ftcPose.yaw));
             }
         }   // end for() loop
