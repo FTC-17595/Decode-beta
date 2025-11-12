@@ -66,7 +66,7 @@ public class AutoRed extends LinearOpMode {
         // Update odometry before starting
         odo.update();
 
-        boolean telemAdded = true;  // Flag so telemetry is printed only once
+        boolean telemAdded = false;  // Flag so telemetry is printed only once
 
         // Keep driving while opmode is active AND the robot is more than 30 cm away in X or Y
         while (opModeIsActive() &&
@@ -122,7 +122,6 @@ public class AutoRed extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
-            // Optionally, you could update telemetry here for debugging
 
         }
 
@@ -183,9 +182,8 @@ public class AutoRed extends LinearOpMode {
     }
 
     private AprilTagDetection getLatestTag() {
-        if (tagProcessor.getDetections().size() > 0) {
-            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
-            return aprilTagDetection;
+        if (!tagProcessor.getDetections().isEmpty()) {
+            return tagProcessor.getDetections().get(0);
         }
         return null;
     }
@@ -239,7 +237,8 @@ public class AutoRed extends LinearOpMode {
         private void initAuto() {
         decodeAuto = new DecodeAuto(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        // odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1 // don't wanna remove this
+        // odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
+        // Keeping the above comment in case it is needed again
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
