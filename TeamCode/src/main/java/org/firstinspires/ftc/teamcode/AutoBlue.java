@@ -32,34 +32,14 @@ public class AutoBlue extends LinearOpMode {
 
         initAuto();
         waitForStart();
-//        Thread intakeThread = new Thread(() -> {
-//142 65
-//            while (opModeIsActive()) {
-//                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-//
-//                // Keep it running while opmode is active
-//                // You can add conditions here if needed
-//                sleep(1000);
-//            }
-//
-//        });
-        if(isStopRequested()) return;
-//        tagProcessor = new AprilTagProcessor.Builder()
-//                .setDrawAxes(true)
-//                .setDrawCubeProjection(true)
-//                .setDrawTagID(true)
-//                .setDrawTagOutline(true)
-//                .build();
-//
-//        AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
+        if(isStopRequested()) return;
 
         waitForStart();
-//        while (opModeIsActive() && !isStopRequested() ) {
+
 
         decodeAuto.shootAutoArtifactFar();
-//        decodeAuto.shootAutoArtifactSingle();
-//            sleep(600);
+
         decodeAuto.PinpointX(200);
         decodeAuto.gyroTurnToAngle(-30);
         odo.resetPosAndIMU();
@@ -67,7 +47,7 @@ public class AutoBlue extends LinearOpMode {
         decodeAuto.gyroTurnToAngle(90);
 
         decodeAuto.intakeRun();
-//            sleep(1000);
+
         decodeAuto.PinpointY(-1200);
         decodeAuto.PinpointY(1200);
         gyroTurnToAngle(-90);
@@ -77,70 +57,8 @@ public class AutoBlue extends LinearOpMode {
         decodeAuto.shootAutoArtifactNear();
         decodeAuto.gyroTurnToAngle(45);
 
-//            driveToPos(400);
-//            decodeAuto.intakeStop();
-//            sleep(200);
-//            decodeAuto.gyroTurnToAngle(-90);
-//            sleep(500);
-//            decodeAuto.intakeRun();
-//            decodeAuto.PinpointY(1000);
-//            sleep(500);
-//            decodeAuto.intakeStop();
-//            decodeAuto.gyroTurnToAngle(90);
-//            decodeAuto.driveToPos(400, -500);
+
         loopFinished = true;
-//        } else {
-//            return;
-//        }
-
-
-
-
-//
-//        if (tag.id == 21) {
-//            GPP = true;
-//
-//        } else if (tag.id == 22) {
-//            PGP = true;
-//
-//        } else if (tag.id == 23){
-//            PPG = true;
-//        }
-//
-//        driveToPos(SHOOT_X, SHOOT_Y);
-//            gyroTurnToAngle(110);
-//
-//            ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
-//            decodeAuto.shootAutoArtifact();
-//
-//
-//
-//
-//
-//
-//
-//        if (PPG == true) {
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//            // the PPG line
-//        } else if (PGP == true) {
-//
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//
-//        } else if (GPP == true) {
-//            // The GPP line
-//            driveToPos(12,12);
-//        }
-//
 
     }
 
@@ -206,9 +124,7 @@ public class AutoBlue extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             // Optionally, you could update telemetry here for debugging
-//            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
-//            telemetry.addData("X:", odo.getPosX(DistanceUnit.MM));
-//            telemetry.update();
+
         }
 
         // Stop all motors when target position is reached or opmode ends
@@ -325,7 +241,7 @@ public class AutoBlue extends LinearOpMode {
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
+        //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1 // don't wanna remove this
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
@@ -350,7 +266,6 @@ public class AutoBlue extends LinearOpMode {
 
         // Retrieve the IMU from the hardware map
         this.imu = hardwareMap.get(IMU.class, "imu");
-        //        imu = (IMU) hardwareMap.get(BNO055IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
