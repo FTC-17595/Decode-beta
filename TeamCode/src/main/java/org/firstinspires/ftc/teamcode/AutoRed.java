@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -19,11 +20,15 @@ public class AutoRed extends LinearOpMode {
     private DecodeAuto decodeAuto;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+
+    RobotAnimations obj;
+
     int counter = 0;
     boolean PPG = false;
     boolean PGP = false;
     boolean GPP = false;
     boolean loopFinished = true;
+
     IMU imu;
     AprilTagProcessor tagProcessor;
 
@@ -34,62 +39,80 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         if (isStopRequested()) return;
 
-        waitForStart();
-        if (opModeIsActive() && (loopFinished = true)) {
+        if (opModeIsActive() && loopFinished) {
+
+            boolean showComplete = false;
 
             decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(22); // facing forward
+            decodeAuto.gyroTurnToAngle(22);
             odo.resetPosAndIMU();
-            decodeAuto.PinpointX(607); // move forward
-            decodeAuto.gyroTurnToAngle(-90); // turn left, face artifacts
+            decodeAuto.PinpointX(607);
+            decodeAuto.gyroTurnToAngle(-90);
             decodeAuto.intakeRun();
-            decodeAuto.PinpointY(1300); // move left with intake
+            decodeAuto.PinpointY(1300);
             sleep(700);
             decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1220); // move right
-            gyroTurnToAngle(90); // facing forward
-            decodeAuto.PinpointX(-200); // move backward
-            gyroTurnToAngle(-31); // face goal
+            decodeAuto.PinpointY(-1220);
+
+            decodeAuto.gyroTurnToAngle(90);
+
+            decodeAuto.PinpointX(-200);
+            decodeAuto.gyroTurnToAngle(-31);
             decodeAuto.shootAutoArtifactFar();
-            gyroTurnToAngle(31); // face forward
+            decodeAuto.gyroTurnToAngle(31);
             sleep(500);
+
             odo.resetPosAndIMU();
-            decodeAuto.PinpointX(180); // move forward
-            decodeAuto.gyroTurnToAngle(-90); // turn left, face artifacts
+            decodeAuto.PinpointX(180);
+            decodeAuto.gyroTurnToAngle(-90);
             decodeAuto.intakeRun();
-            decodeAuto.PinpointY(-1000); // move left facing artifacts running intake
+            decodeAuto.PinpointY(-1000);
             sleep(700);
             decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1100); // move right
-            decodeAuto.gyroTurnToAngle(90); // turn right, facing forward
-            decodeAuto.PinpointX(-400); // move backward
-            decodeAuto.gyroTurnToAngle(-35); // turn left facing goal
+            decodeAuto.PinpointY(-1100);
+            decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.PinpointX(-400);
+            decodeAuto.gyroTurnToAngle(-35);
             decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(35); // turn right facing forward
+            decodeAuto.gyroTurnToAngle(35);
+
             odo.resetPosAndIMU();
-            decodeAuto.PinpointX(180); // move forward
-            decodeAuto.gyroTurnToAngle(-90); // turn left, face artifacts
+            decodeAuto.PinpointX(180);
+            decodeAuto.gyroTurnToAngle(-90);
             decodeAuto.intakeRun();
-            decodeAuto.PinpointY(-1000); // move left facing artifacts running intake
+            decodeAuto.PinpointY(-1000);
             sleep(700);
             decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1100); // move right
-            decodeAuto.gyroTurnToAngle(90); // turn right, facing forward
-            decodeAuto.PinpointX(-600); // move backward
-            decodeAuto.gyroTurnToAngle(-35); // turn left facing goal
+            decodeAuto.PinpointY(-1100);
+            decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.PinpointX(-600);
+            decodeAuto.gyroTurnToAngle(-35);
             decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(35); // turn right facing forward
+            decodeAuto.gyroTurnToAngle(35);
+            decodeAuto.PinpointX(-600);
+
             loopFinished = false;
+
             try {
-                telemetry.addLine("Good boy. Auto complete.");
+                showComplete = true;
+                if (showComplete) {
+                    telemetry.addLine("Gooooood booooooy. Auto complete.");
+                    telemetry.update();
+                    sleep(1000);
+                    showComplete = false;
+                }
                 telemetry.update();
-                MyClass obj = new MyClass();
+
                 obj.celebrateToggle(true);
+                sleep(500);
+                obj.celebrateToggle(false);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     private void driveToPos(double targetX, double targetY) {
         odo.update();
@@ -103,6 +126,7 @@ public class AutoRed extends LinearOpMode {
             double x = 0.001 * (targetX + odo.getPosX(DistanceUnit.MM));
             double y = -0.001 * (targetY - odo.getPosY(DistanceUnit.MM));
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
             double rotY = y * Math.cos(-botHeading) - x * Math.sin(-botHeading);
             double rotX = y * Math.sin(-botHeading) + x * Math.cos(-botHeading);
 
@@ -115,14 +139,11 @@ public class AutoRed extends LinearOpMode {
                 telemAdded = true;
             }
 
-            if (Math.abs(rotX) < 0.15) {
-                rotX = Math.signum(rotX) * 0.15;
-            }
-            if (Math.abs(rotY) < 0.15) {
-                rotY = Math.signum(rotY) * 0.15;
-            }
+            if (Math.abs(rotX) < 0.15) rotX = Math.signum(rotX) * 0.15;
+            if (Math.abs(rotY) < 0.15) rotY = Math.signum(rotY) * 0.15;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x), 1);
+
             double frontLeftPower = (rotX + rotY) / denominator;
             double backLeftPower = (rotX - rotY) / denominator;
             double frontRightPower = (rotX - rotY) / denominator;
@@ -140,12 +161,13 @@ public class AutoRed extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
+
     private void AlignToTag(AprilTagDetection tag) {
-        double error, drivePower;
-        error = tag.ftcPose.yaw;
+        double error = tag.ftcPose.yaw;
 
         while (opModeIsActive() && Math.abs(error) > 1.0) {
             odo.update();
+
             AprilTagDetection currentTag = getLatestTag();
             if (currentTag == null) {
                 telemetry.addLine("Tag lost — stopping alignment.");
@@ -153,13 +175,10 @@ public class AutoRed extends LinearOpMode {
             }
 
             error = currentTag.ftcPose.yaw;
-            drivePower = error / 50.0;
+            double drivePower = error / 50.0;
 
-            if (drivePower > 0) {
-                drivePower = Math.max(drivePower, 0.35);
-            } else if (drivePower < 0) {
-                drivePower = Math.min(drivePower, -0.35);
-            }
+            if (drivePower > 0) drivePower = Math.max(drivePower, 0.35);
+            else drivePower = Math.min(drivePower, -0.35);
 
             frontLeftMotor.setPower(-drivePower);
             backLeftMotor.setPower(-drivePower);
@@ -179,57 +198,22 @@ public class AutoRed extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
+
     private AprilTagDetection getLatestTag() {
         if (tagProcessor.getDetections().size() > 0) {
-            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
-            return aprilTagDetection;
+            return tagProcessor.getDetections().get(0);
         }
         return null;
     }
 
-    private void gyroTurnToAngle(double turnAngle) {
-        double error, currentHeadingAngle, driveMotorsPower;
-        imu.resetYaw();
-        error = turnAngle;
-
-        while (opModeIsActive() && ((error > 1) || (error < -1))) {
-            odo.update();
-            telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
-            telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
-            telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.update();
-
-            driveMotorsPower = error / 200;
-            if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
-                driveMotorsPower = 0.2;
-            } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
-                driveMotorsPower = -0.2;
-            }
-
-            driveMotorsPower = error / 50;
-            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
-                driveMotorsPower = 0.35;
-            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
-                driveMotorsPower = -0.35;
-            }
-
-            frontLeftMotor.setPower(-driveMotorsPower);
-            backLeftMotor.setPower(-driveMotorsPower);
-            frontRightMotor.setPower(driveMotorsPower);
-            backRightMotor.setPower(driveMotorsPower);
-
-            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            error = turnAngle - currentHeadingAngle;
-        }
-
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-    }
 
     private void initAuto() {
+
         decodeAuto = new DecodeAuto(this);
+
+        // Added: Build obj so it works
+        obj = new RobotAnimations(this);
+
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         odo.setOffsets(65, 142, DistanceUnit.MM);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -238,10 +222,10 @@ public class AutoRed extends LinearOpMode {
         odo.resetPosAndIMU();
         odo.recalibrateIMU();
 
-        this.frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        this.backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        this.frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        this.backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -251,12 +235,12 @@ public class AutoRed extends LinearOpMode {
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        this.imu.initialize(parameters);
-        this.imu.resetYaw();
+        imu.initialize(parameters);
+        imu.resetYaw();
 
         ElapsedTime timer = new ElapsedTime();
         if (timer.seconds() >= 1.0) {
