@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Blue Alliance")
-public class AutoBlue extends LinearOpMode {
+@Autonomous(name = "Near - Red Alliance")
+public class AutoRedNear extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
     GoBildaPinpointDriver odo;
@@ -58,27 +58,24 @@ public class AutoBlue extends LinearOpMode {
         while (!isStopRequested() && (loopFinished = true)) {
 
 
-            decodeAuto.shootAutoArtifactFar();
-
-            decodeAuto.gyroTurnToAngle(-22);
-            odo.resetPosAndIMU();
-            decodeAuto.PinpointX(607);
-            decodeAuto.gyroTurnToAngle(90);
-
-            decodeAuto.intakeRun();
-//            sleep(1000);
-            decodeAuto.PinpointYBlue(900);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false,false);
-            decodeAuto.PinpointYBlue(-800);
-            gyroTurnToAngle(-90);
-            decodeAuto.PinpointX(-350);
-            decodeAuto.gyroTurnToAngle(19);
-            decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(-19);
-            decodeAuto.PinpointX(100);
-            decodeAuto.gyroTurnToAngle(90);
-            loopFinished = true;
+            odo.setPosX(0,DistanceUnit.MM);
+            decodeAuto.PinpointX(-1500);
+//            decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.shootAutoArtifactNear();
+//            decodeAuto.intakeRun();
+////            sleep(1000);
+//            decodeAuto.PinpointYBlue(900);
+//            sleep(700);
+//            decodeAuto.intakeSystemAuto(false,false);
+//            decodeAuto.PinpointYBlue(-800);
+//            gyroTurnToAngle(-90);
+//            decodeAuto.PinpointX(-350);
+//            decodeAuto.gyroTurnToAngle(19);
+//            decodeAuto.shootAutoArtifactFar();
+//            decodeAuto.gyroTurnToAngle(-19);
+//            decodeAuto.PinpointX(100);
+//            decodeAuto.gyroTurnToAngle(90);
+//            loopFinished = true;
 
 //        } else {
 //            return;

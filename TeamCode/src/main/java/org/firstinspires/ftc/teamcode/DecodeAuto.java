@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 import static java.lang.Math.abs;
+import static java.lang.Math.signum;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +12,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -32,6 +35,7 @@ public class DecodeAuto {
 
     GoBildaPinpointDriver odo;
     IMU imu;
+    AprilTagProcessor tagProcessor;
 
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     public DecodeAuto(LinearOpMode linearOpMode) {
@@ -151,7 +155,7 @@ public class DecodeAuto {
     }
     boolean loopFinished = true;
     public void shootAutoArtifactFar(){
-        while (opModeIsActive() && (loopFinished)) {
+        // while (opModeIsActive() && (loopFinished)) {
             OuttakeSystemFar(true);
             while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
                 if (!opModeIsActive()) {
@@ -191,9 +195,9 @@ public class DecodeAuto {
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
             OuttakeSystemFar(false);
-            loopFinished = false;
-            break;
-        }
+//            loopFinished = false;
+//            break;
+//        }
 
     }
     public void shootAutoArtifactNear(){
@@ -203,7 +207,7 @@ public class DecodeAuto {
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
+            sleep(1000);
             intakeSystemAuto(true, false);
             OuttakeSystemNear(true);
             while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
@@ -354,6 +358,62 @@ public class DecodeAuto {
     public void autoShootArtifactsFar() {
 
         AutoflapSystem(true);
+
+    }
+    public void AlignToTag(AprilTagDetection tag/*, double tagID */) {
+        double error, drivePower;
+
+
+        error = tag.ftcPose.yaw;
+
+        while (opModeIsActive() && Math.abs(error) > 1.0) {
+            odo.update();
+
+
+            AprilTagDetection currentTag = getLatestTag();
+            if (currentTag == null) {
+                linearOpMode.telemetry.addLine("Tag lost — stopping alignment.");
+                break;
+            }
+
+            error = currentTag.ftcPose.yaw;
+
+
+            drivePower = signum(error);
+
+
+            if (drivePower > 0) {
+                drivePower = Math.max(drivePower, 0.35);
+            } else if (drivePower < 0) {
+                drivePower = Math.min(drivePower, -0.35);
+            }
+
+
+            frontLeftMotor.setPower(-drivePower);
+            backLeftMotor.setPower(-drivePower);
+            frontRightMotor.setPower(drivePower);
+            backRightMotor.setPower(drivePower);
+
+            linearOpMode.telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
+            linearOpMode.telemetry.addData("X:", -odo.getPosX(DistanceUnit.MM));
+            linearOpMode.telemetry.addData("Tag Yaw", error);
+            linearOpMode.telemetry.addData("Drive Power", drivePower);
+            linearOpMode.telemetry.update();
+        }
+
+
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+    }
+
+    private AprilTagDetection getLatestTag() {
+        if (tagProcessor.getDetections().size() > 0) {
+            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
+            return aprilTagDetection;
+        }
+        return null;
     }
 
     public void PinpointX(double target) {
