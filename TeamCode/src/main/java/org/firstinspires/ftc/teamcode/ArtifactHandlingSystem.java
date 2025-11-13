@@ -106,7 +106,7 @@ public class ArtifactHandlingSystem {
         if (shootArtifact > 0.1) {
             outtakeMotor.setVelocity(launchVelocity);
         } else if (rejectArtifact > 0.1) {
-            outtakeMotor.setVelocity(-launchVelocity);
+            outtakeMotor.setVelocity(-100);
         } else {
             outtakeMotor.setVelocity(0);
         }
