@@ -40,6 +40,6 @@ public class TeleOpConstants {
     final static double ALIGN_BEARING_TOLERANCE_DEG = 1.5;
     final static double ALIGN_MAX_STRAFE_POWER = 0.35;
     final static double ALIGN_MAX_TURN_POWER = 0.25;
-    final static double CAMERA_OFFSET_X_IN = -125.0 / 25.4;
+    final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
 }
