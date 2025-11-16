@@ -22,7 +22,7 @@ public class AlignToTag extends LinearOpMode {
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
     boolean PPG = false;
-    boolean  PGP = false;
+    boolean PGP = false;
     boolean GPP = false;
     boolean loopFinished = true;
     IMU imu;
