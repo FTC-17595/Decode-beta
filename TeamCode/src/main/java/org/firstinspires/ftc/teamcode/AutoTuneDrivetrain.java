@@ -287,3 +287,25 @@ public class AutoTuneDrivetrain extends LinearOpMode {
         rr.setPower(-p);
     }
 }
+
+/* List of Outputs from ChatGPT
+
+| Phase              | Output Name                  | Units    | Source                       |
+| ------------------ | ---------------------------- | -------- | ---------------------------- |
+| kS tuning          | Power                        | [-1,1]   | Motor power                  |
+| kS tuning          | Velocity mm/s                | mm/s     | `pinpoint.getVelY()`         |
+| Translation PID    | P Test                       | unitless | Current P gain test          |
+| Translation PID    | Error mm                     | mm       | TARGET_DIST_MM - posY        |
+| Translation PID    | Output                       | [-1,1]   | Motor power applied          |
+| Heading PID        | Heading P Test               | unitless | Current P gain test          |
+| Heading PID        | Heading Error deg            | degrees  | TARGET_HEADING_DEG - heading |
+| Heading PID        | Output                       | [-1,1]   | Motor power applied          |
+| Translation PID    | Translation Error mm (graph) | mm       | TelemetryPacket              |
+| Translation PID    | Translation Output (graph)   | [-1,1]   | TelemetryPacket              |
+| Heading PID        | Heading Error deg (graph)    | degrees  | TelemetryPacket              |
+| Heading PID        | Heading Output (graph)       | [-1,1]   | TelemetryPacket              |
+| Final tuned values | kS                           | unitless | Telemetry                    |
+| Final tuned values | kP/kI/kD                     | unitless | Telemetry                    |
+| Final tuned values | kPH/kIH/kDH                  | unitless | Telemetry                    |
+
+ */
