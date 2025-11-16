@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class RobotControls {
     private final LinearOpMode linearOpMode;
+    private final FtcDashboard dashboard;
 
     public RobotControls(LinearOpMode linearOpMode) {
         this.linearOpMode = linearOpMode;
+        this.dashboard = FtcDashboard.getInstance();
     }
 
     boolean intakeArtifact;
@@ -19,6 +23,11 @@ public class RobotControls {
     boolean switchLaunchPower;
     boolean celebrate;
     boolean autoShoot;
+    boolean alignRobot;
+    boolean applyRecommendedVelocity;
+
+    private boolean lastLeftBumper = false;
+
     public void updateControls() {
         intakeArtifact = linearOpMode.gamepad2.a;
         flapArtifact = linearOpMode.gamepad2.b;
@@ -30,5 +39,39 @@ public class RobotControls {
         increaseFactor = linearOpMode.gamepad2.dpad_up;
         decreaseFactor = linearOpMode.gamepad2.dpad_down;
         autoShoot = linearOpMode.gamepad2.right_bumper;
+        alignRobot = linearOpMode.gamepad1.b;
+        boolean currentLeftBumper = linearOpMode.gamepad2.left_bumper;
+        applyRecommendedVelocity = currentLeftBumper && !lastLeftBumper;
+        lastLeftBumper = currentLeftBumper;
+    }
+
+    public void displayTelemetry() {
+        linearOpMode.telemetry.addData("Intake (A)", intakeArtifact);
+        linearOpMode.telemetry.addData("Reject Intake (Y)", rejectIntakeArtifact);
+        linearOpMode.telemetry.addData("Flap (B)", flapArtifact);
+        linearOpMode.telemetry.addData("Shoot Trigger", shootArtifact);
+        linearOpMode.telemetry.addData("Motor Brake Trigger", motorBrake);
+        linearOpMode.telemetry.addData("Increase Velocity (DPad Up)", increaseFactor);
+        linearOpMode.telemetry.addData("Decrease Velocity (DPad Down)", decreaseFactor);
+        linearOpMode.telemetry.addData("Switch Launch Power (X)", switchLaunchPower);
+        linearOpMode.telemetry.addData("Celebrate (Back)", celebrate);
+        linearOpMode.telemetry.addData("Auto Shoot (RB)", autoShoot);
+        linearOpMode.telemetry.addData("Align Robot (gamepad1 B)", alignRobot);
+        linearOpMode.telemetry.addData("Apply Recommended Velocity (LB)", applyRecommendedVelocity);
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("intakeArtifact", intakeArtifact);
+        packet.put("rejectIntakeArtifact", rejectIntakeArtifact);
+        packet.put("flapArtifact", flapArtifact);
+        packet.put("shootTrigger", shootArtifact);
+        packet.put("motorBrake", motorBrake);
+        packet.put("increaseFactor", increaseFactor);
+        packet.put("decreaseFactor", decreaseFactor);
+        packet.put("switchLaunchPower", switchLaunchPower);
+        packet.put("celebrate", celebrate);
+        packet.put("autoShoot", autoShoot);
+        packet.put("alignRobot", alignRobot);
+        packet.put("applyRecommendedVelocity", applyRecommendedVelocity);
+        dashboard.sendTelemetryPacket(packet);
     }
 }
