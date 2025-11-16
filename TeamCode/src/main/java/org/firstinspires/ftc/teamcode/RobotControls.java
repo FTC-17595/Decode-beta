@@ -24,6 +24,9 @@ public class RobotControls {
     boolean celebrate;
     boolean autoShoot;
     boolean alignRobot;
+    boolean applyRecommendedVelocity;
+
+    private boolean lastLeftBumper = false;
 
     public void updateControls() {
         intakeArtifact = linearOpMode.gamepad2.a;
@@ -37,6 +40,9 @@ public class RobotControls {
         decreaseFactor = linearOpMode.gamepad2.dpad_down;
         autoShoot = linearOpMode.gamepad2.right_bumper;
         alignRobot = linearOpMode.gamepad1.b;
+        boolean currentLeftBumper = linearOpMode.gamepad2.left_bumper;
+        applyRecommendedVelocity = currentLeftBumper && !lastLeftBumper;
+        lastLeftBumper = currentLeftBumper;
     }
 
     public void displayTelemetry() {
@@ -51,6 +57,7 @@ public class RobotControls {
         linearOpMode.telemetry.addData("Celebrate (Back)", celebrate);
         linearOpMode.telemetry.addData("Auto Shoot (RB)", autoShoot);
         linearOpMode.telemetry.addData("Align Robot (gamepad1 B)", alignRobot);
+        linearOpMode.telemetry.addData("Apply Recommended Velocity (LB)", applyRecommendedVelocity);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("intakeArtifact", intakeArtifact);
@@ -64,6 +71,7 @@ public class RobotControls {
         packet.put("celebrate", celebrate);
         packet.put("autoShoot", autoShoot);
         packet.put("alignRobot", alignRobot);
+        packet.put("applyRecommendedVelocity", applyRecommendedVelocity);
         dashboard.sendTelemetryPacket(packet);
     }
 }

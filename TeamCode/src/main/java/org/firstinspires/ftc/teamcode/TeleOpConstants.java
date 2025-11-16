@@ -28,8 +28,8 @@ public class TeleOpConstants {
     final static double kI = 0.15;
     final static double kD = 7.5;
     final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.88;
-    final static double OPENCV_IMAGE_WIDTH = 640;
-    final static double OPENCV_IMAGE_HEIGHT = 480;
+    final static double OPENCV_IMAGE_WIDTH = 1280;
+    final static double OPENCV_IMAGE_HEIGHT = 720;
     final static double ALIGN_STRAFE_KP = 0.02;
     final static double ALIGN_STRAFE_KI = 0.0;
     final static double ALIGN_STRAFE_KD = 0.001;
@@ -42,4 +42,7 @@ public class TeleOpConstants {
     final static double ALIGN_MAX_TURN_POWER = 0.25;
     final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
+    final static double CAMERA_OFFSET_Z_IN = 0.0;
+    final static double ALIGN_RANGE_SHORT_IN = 105.959618;
+    final static double ALIGN_RANGE_LONG_IN = 150.351811;
 }

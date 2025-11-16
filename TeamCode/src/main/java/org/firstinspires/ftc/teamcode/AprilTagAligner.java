@@ -50,6 +50,8 @@ public class AprilTagAligner {
     private double lastTurnCommand = 0.0;
     private double lastStrafeError = 0.0;
     private double lastTurnError = 0.0;
+    private double lastShooterRange = 0.0;
+    private double lastRecommendedVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
 
     private boolean controllersPrimed = false;
 
@@ -71,6 +73,7 @@ public class AprilTagAligner {
                         (int) TeleOpConstants.OPENCV_IMAGE_WIDTH,
                         (int) TeleOpConstants.OPENCV_IMAGE_HEIGHT))
                 .setCamera(linearOpMode.hardwareMap.get(WebcamName.class, webcamName))
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
                 .enableLiveView(true)
                 .build();
 
@@ -93,6 +96,8 @@ public class AprilTagAligner {
 
             lastStrafeError = 0.0;
             lastTurnError = 0.0;
+            lastShooterRange = 0.0;
+            lastRecommendedVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
         } else {
             lastStrafeError = currentDetection.ftcPose.x;
             lastTurnError = currentDetection.ftcPose.bearing;
@@ -124,9 +129,11 @@ public class AprilTagAligner {
 
         double rawStrafe = currentDetection.ftcPose.x;
         double rawForward = currentDetection.ftcPose.y;
+        double rawVertical = currentDetection.ftcPose.z;
 
         double adjustedStrafe = rawStrafe + TeleOpConstants.CAMERA_OFFSET_X_IN;
         double adjustedForward = rawForward + TeleOpConstants.CAMERA_OFFSET_Y_IN;
+        double adjustedVertical = rawVertical + TeleOpConstants.CAMERA_OFFSET_Z_IN;
 
         double turnError = Math.toDegrees(Math.atan2(adjustedStrafe, adjustedForward));
 
@@ -147,6 +154,12 @@ public class AprilTagAligner {
 
         lastStrafeCommand = appliedStrafeCommand;
         lastTurnCommand = appliedTurnCommand;
+
+        lastShooterRange = Math.sqrt(
+                adjustedStrafe * adjustedStrafe +
+                        adjustedForward * adjustedForward +
+                        adjustedVertical * adjustedVertical);
+        lastRecommendedVelocity = computeRecommendedVelocity(lastShooterRange);
 
         driveTrain.driveRobotCentric(0.0, appliedStrafeCommand, appliedTurnCommand);
 
@@ -192,6 +205,8 @@ public class AprilTagAligner {
 
         linearOpMode.telemetry.addData("Align Error", "strafe=%.2f in, turn=%.2f deg", lastStrafeError, lastTurnError);
         linearOpMode.telemetry.addData("Align Cmd", "strafe=%.2f, turn=%.2f", lastStrafeCommand, lastTurnCommand);
+        linearOpMode.telemetry.addData("Align Shooter Range (in)", "%.2f", lastShooterRange);
+        linearOpMode.telemetry.addData("Align Recommended Velocity", "%.0f", lastRecommendedVelocity);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("state", lastState.name());
@@ -199,6 +214,8 @@ public class AprilTagAligner {
         packet.put("turnErrorDeg", lastTurnError);
         packet.put("strafeCommand", lastStrafeCommand);
         packet.put("turnCommand", lastTurnCommand);
+        packet.put("shooterRangeIn", lastShooterRange);
+        packet.put("recommendedVelocity", lastRecommendedVelocity);
         if (lastDetection != null) {
             packet.put("tagId", lastDetection.id);
             packet.put("tagRangeIn", lastDetection.ftcPose.range);
@@ -221,6 +238,31 @@ public class AprilTagAligner {
                 TeleOpConstants.ALIGN_TURN_KP,
                 TeleOpConstants.ALIGN_TURN_KI,
                 TeleOpConstants.ALIGN_TURN_KD);
+    }
+
+    private double computeRecommendedVelocity(double shooterRangeIn) {
+        double minRange = TeleOpConstants.ALIGN_RANGE_SHORT_IN;
+        double maxRange = TeleOpConstants.ALIGN_RANGE_LONG_IN;
+        double minVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
+        double maxVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
+
+        if (shooterRangeIn <= minRange) {
+            return minVelocity;
+        }
+        if (shooterRangeIn >= maxRange) {
+            return maxVelocity;
+        }
+
+        double t = (shooterRangeIn - minRange) / (maxRange - minRange);
+        return minVelocity + t * (maxVelocity - minVelocity);
+    }
+
+    public double getRecommendedVelocity() {
+        return lastRecommendedVelocity;
+    }
+
+    public double getShooterRange() {
+        return lastShooterRange;
     }
 }
 

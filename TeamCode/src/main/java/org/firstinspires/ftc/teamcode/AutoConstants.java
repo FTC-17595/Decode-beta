@@ -19,6 +19,6 @@ public class AutoConstants {
     final static double SHORT_RANGE_VELOCITY =1100;
     final static double LONG_RANGE_VELOCITY = 1265; // Please don't edit this part
     final static double SHOOTING_SPINUP_TIME = 2000;
-    final static double FLAP_SLEEP = 500;
+    final static double FLAP_SLEEP = 1000;
 
 }

@@ -106,7 +106,7 @@ public class ArtifactHandlingSystem {
         if (shootArtifact > 0.1) {
             outtakeMotor.setVelocity(launchVelocity);
         } else if (rejectArtifact > 0.1) {
-            outtakeMotor.setVelocity(-launchVelocity);
+            outtakeMotor.setVelocity(-500);
         } else {
             outtakeMotor.setVelocity(0);
         }
@@ -215,6 +215,22 @@ public class ArtifactHandlingSystem {
                     : TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
         }
         lastSwitchState = switch_f;
+    }
+
+    public void setLaunchVelocity(double velocity) {
+        launchVelocity = Math.max(0, Math.min(velocity, TeleOpConstants.MAX_VELOCITY));
+    }
+
+    public void applyRecommendedVelocity(boolean applyRequest, AprilTagAligner aligner) {
+        if (!applyRequest || aligner == null) {
+            return;
+        }
+
+        double range = aligner.getShooterRange();
+        double recommendedVelocity = aligner.getRecommendedVelocity();
+        if (range > 0.0 && recommendedVelocity > 0.0) {
+            setLaunchVelocity(recommendedVelocity);
+        }
     }
 
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
