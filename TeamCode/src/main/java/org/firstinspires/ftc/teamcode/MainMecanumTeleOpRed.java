@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main Mecanum TeleOp Blue")
-public class MainMecanumTeleOpBlue extends LinearOpMode {
+@TeleOp(name = "Main Mecanum TeleOp Red")
+public class MainMecanumTeleOpRed extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
     private RobotControls robotControls;
@@ -18,7 +18,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
         robotControls = new RobotControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
-        aprilTagAligner = new AprilTagAligner(this, driveTrain, 20);
+        aprilTagAligner = new AprilTagAligner(this, driveTrain, 24);
 
         configureMotorModes();
 

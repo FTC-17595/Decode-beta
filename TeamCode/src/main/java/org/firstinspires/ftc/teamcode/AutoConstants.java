@@ -8,13 +8,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class AutoConstants {
     private LinearOpMode linearOpMode;
     GoBildaPinpointDriver odo;
-    static final double DRIVE_SPEED = 0.5;
+    static final double ARTIFACT_PICKUP_SPEED = 0.45;
     static final double TURN_SPEED = 0.5;
     static final double STRAFE_SPEED = 0.5;
     static final double LAUNCH_EXIT_SPEED = 0.8;
-    static final double CLASSIFIER_X = 1191.53394;
-    static final double CLASSIFIER_Y = -265.373;
+    static final double SHOOT_X = 1437;
+    static final double SHOOT_Y = -307.373;
     static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
     static final double AUTO_STRAFE_POWER = 0.5;
+    final static double SHORT_RANGE_VELOCITY =1100;
+    final static double LONG_RANGE_VELOCITY = 1265; // Please don't edit this part
+    final static double SHOOTING_SPINUP_TIME = 2000;
+    final static double FLAP_SLEEP = 1000;
 
 }

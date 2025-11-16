@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +15,7 @@ public class DriveTrain {
     private final IMU imu;
 
     private final LinearOpMode linearOpMode;
+    private final FtcDashboard dashboard;
     private int counter = 0;
 
     private double ROTATE_SPEED_ADJUSTER = TeleOpConstants.RIGHT_JOYSTICK_SPEED_ADJUSTER;
@@ -25,7 +28,7 @@ public class DriveTrain {
         backRightMotor = linearOpMode.hardwareMap.dcMotor.get("backRightMotor");
 
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         );
 
@@ -33,6 +36,7 @@ public class DriveTrain {
         imu.initialize(new IMU.Parameters(orientation));
 
         this.linearOpMode = linearOpMode;
+        this.dashboard = FtcDashboard.getInstance();
     }
 
     public void configureMotorModes() {
@@ -156,6 +160,20 @@ public class DriveTrain {
         linearOpMode.telemetry.addData("Back Right Position", backRightMotor.getCurrentPosition());
 
         linearOpMode.telemetry.addData("Counter", counter);
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("leftStickX", linearOpMode.gamepad1.left_stick_x);
+        packet.put("leftStickY", linearOpMode.gamepad1.left_stick_y);
+        packet.put("rightStickX", linearOpMode.gamepad1.right_stick_x);
+        packet.put("rotateSpeedAdjust", ROTATE_SPEED_ADJUSTER);
+        packet.put("driveStrafeAdjust", DRIVE_AND_STRAFE_SPEED_ADJUSTER);
+        packet.put("yaw", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        packet.put("frontLeftPosition", frontLeftMotor.getCurrentPosition());
+        packet.put("frontRightPosition", frontRightMotor.getCurrentPosition());
+        packet.put("backLeftPosition", backLeftMotor.getCurrentPosition());
+        packet.put("backRightPosition", backRightMotor.getCurrentPosition());
+        packet.put("counter", counter);
+        dashboard.sendTelemetryPacket(packet);
     }
 
     public void setMotorPowers() {
@@ -187,6 +205,22 @@ public class DriveTrain {
             imu.resetYaw();
             counter++;
         }
+    }
+
+    public void driveRobotCentric(double forward, double strafe, double rotation) {
+        double frontLeftPower = forward + strafe + rotation;
+        double backLeftPower = forward - strafe + rotation;
+        double frontRightPower = forward - strafe - rotation;
+        double backRightPower = forward + strafe - rotation;
+
+        double max = Math.max(1.0, Math.max(
+                Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower)),
+                Math.max(Math.abs(backLeftPower), Math.abs(backRightPower))));
+
+        frontLeftMotor.setPower(frontLeftPower / max);
+        frontRightMotor.setPower(frontRightPower / max);
+        backLeftMotor.setPower(backLeftPower / max);
+        backRightMotor.setPower(backRightPower / max);
     }
 
     private void strafeLeft() {
