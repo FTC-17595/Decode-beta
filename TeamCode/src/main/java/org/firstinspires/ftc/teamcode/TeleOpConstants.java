@@ -10,7 +10,7 @@ public class TeleOpConstants {
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
     final static double BLUE = 0.611;
-    final static double SHORT_RANGE_VELOCITY = 1225;
+    final static double SHORT_RANGE_VELOCITY = 1195;
     final static double LONG_RANGE_VELOCITY = 1350;
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
@@ -42,7 +42,7 @@ public class TeleOpConstants {
     final static double ALIGN_MAX_TURN_POWER = 0.25;
     final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
-    final static double CAMERA_OFFSET_Z_IN = 0.0;
-    final static double ALIGN_RANGE_SHORT_IN = 105.959618;
-    final static double ALIGN_RANGE_LONG_IN = 150.351811;
+    final static double ALIGN_LONG_RANGE_MIN_IN = 45;
+    final static double ALIGN_LONG_RANGE_MAX_IN = 55;
+    public static double CAMERA_OFFSET_X_IN_RUNTIME = CAMERA_OFFSET_X_IN;
 }
