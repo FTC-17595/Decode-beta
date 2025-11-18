@@ -53,15 +53,12 @@ public class AutoRed extends LinearOpMode {
             sleep(700);
             decodeAuto.intakeSystemAuto(false, false);
             decodeAuto.PinpointY(-1220);
-
             decodeAuto.gyroTurnToAngle(90);
-
             decodeAuto.PinpointX(-200);
             decodeAuto.gyroTurnToAngle(-31);
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(31);
             sleep(500);
-
             odo.resetPosAndIMU();
             decodeAuto.PinpointX(180);
             decodeAuto.gyroTurnToAngle(-90);
@@ -75,7 +72,6 @@ public class AutoRed extends LinearOpMode {
             decodeAuto.gyroTurnToAngle(-35);
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(35);
-
             odo.resetPosAndIMU();
             decodeAuto.PinpointX(180);
             decodeAuto.gyroTurnToAngle(-90);
@@ -211,7 +207,6 @@ public class AutoRed extends LinearOpMode {
 
         decodeAuto = new DecodeAuto(this);
 
-        // Added: Build obj so it works
         obj = new RobotAnimations(this);
 
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");

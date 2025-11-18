@@ -56,28 +56,50 @@ public class AutoBlue extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
-
-
             decodeAuto.shootAutoArtifactFar();
-
             decodeAuto.gyroTurnToAngle(-22);
             odo.resetPosAndIMU();
             decodeAuto.PinpointX(607);
             decodeAuto.gyroTurnToAngle(90);
-
             decodeAuto.intakeRun();
-//            sleep(1000);
-            decodeAuto.PinpointYBlue(900);
+            decodeAuto.PinpointY(-1300);
             sleep(700);
-            decodeAuto.intakeSystemAuto(false,false);
-            decodeAuto.PinpointYBlue(-800);
-            gyroTurnToAngle(-90);
-            decodeAuto.PinpointX(-350);
-            decodeAuto.gyroTurnToAngle(19);
+            decodeAuto.intakeSystemAuto(false, false);
+            decodeAuto.PinpointY(1220);
+            decodeAuto.gyroTurnToAngle(-90);
+            decodeAuto.PinpointX(-200);
+            decodeAuto.gyroTurnToAngle(31);
             decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(-19);
-            decodeAuto.PinpointX(100);
+            decodeAuto.gyroTurnToAngle(-31);
+            sleep(500);
+            odo.resetPosAndIMU();
+            decodeAuto.PinpointX(180);
             decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.intakeRun();
+            decodeAuto.PinpointY(1000);
+            sleep(700);
+            decodeAuto.intakeSystemAuto(false, false);
+            decodeAuto.PinpointY(1100);
+            decodeAuto.gyroTurnToAngle(-90);
+            decodeAuto.PinpointX(-400);
+            decodeAuto.gyroTurnToAngle(35);
+            decodeAuto.shootAutoArtifactFar();
+            decodeAuto.gyroTurnToAngle(-35);
+            odo.resetPosAndIMU();
+            decodeAuto.PinpointX(180);
+            decodeAuto.gyroTurnToAngle(90);
+            decodeAuto.intakeRun();
+            decodeAuto.PinpointY(1000);
+            sleep(700);
+            decodeAuto.intakeSystemAuto(false, false);
+            decodeAuto.PinpointY(1100);
+            decodeAuto.gyroTurnToAngle(-90);
+            decodeAuto.PinpointX(-600);
+            decodeAuto.gyroTurnToAngle(35);
+            decodeAuto.shootAutoArtifactFar();
+            decodeAuto.gyroTurnToAngle(-35);
+            decodeAuto.PinpointX(-600);
+
             loopFinished = true;
 
 //        } else {
