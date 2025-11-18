@@ -10,7 +10,7 @@ public class TeleOpConstants {
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
     final static double BLUE = 0.611;
-    final static double SHORT_RANGE_VELOCITY = 1225;
+    final static double SHORT_RANGE_VELOCITY = 1195;
     final static double LONG_RANGE_VELOCITY = 1350;
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
@@ -28,4 +28,21 @@ public class TeleOpConstants {
     final static double kI = 0.15;
     final static double kD = 7.5;
     final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.88;
+    final static double OPENCV_IMAGE_WIDTH = 1280;
+    final static double OPENCV_IMAGE_HEIGHT = 720;
+    final static double ALIGN_STRAFE_KP = 0.02;
+    final static double ALIGN_STRAFE_KI = 0.0;
+    final static double ALIGN_STRAFE_KD = 0.001;
+    final static double ALIGN_TURN_KP = 0.01;
+    final static double ALIGN_TURN_KI = 0.0;
+    final static double ALIGN_TURN_KD = 0.0005;
+    final static double ALIGN_STRAFE_TOLERANCE_IN = 0.75;
+    final static double ALIGN_BEARING_TOLERANCE_DEG = 1.5;
+    final static double ALIGN_MAX_STRAFE_POWER = 0.35;
+    final static double ALIGN_MAX_TURN_POWER = 0.25;
+    final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
+    final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
+    final static double ALIGN_LONG_RANGE_MIN_IN = 45;
+    final static double ALIGN_LONG_RANGE_MAX_IN = 55;
+    public static double CAMERA_OFFSET_X_IN_RUNTIME = CAMERA_OFFSET_X_IN;
 }

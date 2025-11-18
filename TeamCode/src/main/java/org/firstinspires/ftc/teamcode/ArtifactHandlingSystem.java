@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -15,6 +17,7 @@ public class ArtifactHandlingSystem {
     private final DcMotor containerMotor;
     private final Servo flapServo;
     private final LinearOpMode linearOpMode;
+    private final FtcDashboard dashboard;
     private double launchVelocity;
     private double autoLaunchVelocity;
     private boolean lastSwitchState = false;
@@ -25,6 +28,7 @@ public class ArtifactHandlingSystem {
         this.containerMotor = linearOpMode.hardwareMap.dcMotor.get("containerMotor");
         this.flapServo = linearOpMode.hardwareMap.servo.get("flapServo");
         this.linearOpMode = linearOpMode;
+        this.dashboard = FtcDashboard.getInstance();
     }
 
     public void configureMotorModes() {
@@ -102,7 +106,7 @@ public class ArtifactHandlingSystem {
         if (shootArtifact > 0.1) {
             outtakeMotor.setVelocity(launchVelocity);
         } else if (rejectArtifact > 0.1) {
-            outtakeMotor.setVelocity(-launchVelocity);
+            outtakeMotor.setVelocity(-500);
         } else {
             outtakeMotor.setVelocity(0);
         }
@@ -119,7 +123,7 @@ public class ArtifactHandlingSystem {
 
             fireArtifact();
 
-            for (int i = 1; i < 4 && linearOpMode.opModeIsActive(); i++) {
+            for (int i = 1; i < 3 && linearOpMode.opModeIsActive(); i++) {
                 if (prepareArtifact(true)) {
                     break;
                 }
@@ -129,6 +133,23 @@ public class ArtifactHandlingSystem {
             shootingSystem(0f, 0f);
             intakeSystem(false, false);
             flapSystem(false);
+        }
+    }
+
+    public void updateLaunchVelocityForRange(double rangeInches) {
+        if (Double.isNaN(rangeInches) || rangeInches <= 0) {
+            return;
+        }
+
+        if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN
+                && rangeInches <= TeleOpConstants.ALIGN_LONG_RANGE_MAX_IN) {
+            launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
+            autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
+            TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 43.275 / 25.4;
+        } else {
+            launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
+            autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
+            TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -170.0 / 25.4;
         }
     }
 
@@ -213,6 +234,22 @@ public class ArtifactHandlingSystem {
         lastSwitchState = switch_f;
     }
 
+    public void setLaunchVelocity(double velocity) {
+        launchVelocity = Math.max(0, Math.min(velocity, TeleOpConstants.MAX_VELOCITY));
+    }
+
+    public void applyRecommendedVelocity(boolean applyRequest, AprilTagAligner aligner) {
+        if (!applyRequest || aligner == null) {
+            return;
+        }
+
+        double range = aligner.getShooterRange();
+        double recommendedVelocity = aligner.getRecommendedVelocity();
+        if (range > 0.0 && recommendedVelocity > 0.0) {
+            setLaunchVelocity(recommendedVelocity);
+        }
+    }
+
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
             outtakeMotor.setVelocity(AutoConstants.LONG_RANGE_VELOCITY);
@@ -252,5 +289,16 @@ public class ArtifactHandlingSystem {
         linearOpMode.telemetry.addData("Intake Motor Power", intakeMotor.getPower());
         linearOpMode.telemetry.addData("Container Motor Power", containerMotor.getPower());
         linearOpMode.telemetry.addData("Flap Servo Position", flapServo.getPosition());
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("targetVelocity", launchVelocity);
+        packet.put("autoTargetVelocity", autoLaunchVelocity);
+        packet.put("actualVelocity", outtakeMotor.getVelocity());
+        packet.put("velocityError", launchVelocity - outtakeMotor.getVelocity());
+        packet.put("autoVelocityError", autoLaunchVelocity - outtakeMotor.getVelocity());
+        packet.put("intakePower", intakeMotor.getPower());
+        packet.put("containerPower", containerMotor.getPower());
+        packet.put("flapPosition", flapServo.getPosition());
+        dashboard.sendTelemetryPacket(packet);
     }
 }

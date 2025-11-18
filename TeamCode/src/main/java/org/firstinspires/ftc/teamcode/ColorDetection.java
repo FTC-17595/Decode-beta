@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -18,6 +20,7 @@ public class ColorDetection {
     private boolean celebrateOn = false;
     private boolean previousCelebrate = false;
     private final LinearOpMode linearOpMode;
+    private final FtcDashboard dashboard;
 
     public ColorDetection(LinearOpMode linearOpMode) {
         colorSensor = linearOpMode.hardwareMap.get(ColorSensor.class, "colorSensor");
@@ -25,6 +28,7 @@ public class ColorDetection {
         outtakeIndicator = linearOpMode.hardwareMap.get(Servo.class, "outtakeIndicator");
 
         this.linearOpMode = linearOpMode;
+        this.dashboard = FtcDashboard.getInstance();
     }
 
     public void celebrateToggle(boolean celebrate) throws InterruptedException {
@@ -153,5 +157,17 @@ public class ColorDetection {
         linearOpMode.telemetry.addData("Value", hsv[2]);
         linearOpMode.telemetry.addData("RGB Position", getRGBIndicatorPosition());
         linearOpMode.telemetry.addData("Celebrate Mode", isCelebrateOn());
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("detectedColor", detectColor());
+        packet.put("red", red);
+        packet.put("green", green);
+        packet.put("blue", blue);
+        packet.put("hue", hsv[0]);
+        packet.put("saturation", hsv[1]);
+        packet.put("value", hsv[2]);
+        packet.put("rgbPosition", getRGBIndicatorPosition());
+        packet.put("celebrateMode", isCelebrateOn());
+        dashboard.sendTelemetryPacket(packet);
     }
 }
