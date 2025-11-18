@@ -23,7 +23,7 @@ public class AutoRed extends LinearOpMode {
 
     RobotAnimations obj;
 
-    int counter = 0;
+    int counter = 0
     boolean PPG = false;
     boolean PGP = false;
     boolean GPP = false;
