@@ -204,6 +204,8 @@ public class AlignToTag extends LinearOpMode {
             AprilTagDetection currentTag = getLatestTag();
             if (currentTag == null) {
                 telemetry.addLine("Tag lost — stopping alignment.");
+                telemetry.addline("Warning: Shooting may be inaccurate.")
+                telemetry.update();
                 break;
             }
 

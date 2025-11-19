@@ -17,13 +17,14 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @Autonomous(name = "Autonomous - Red Alliance")
 public class AutoRed extends LinearOpMode {
 
+    ElapsedTime runtime = new ElapsedTime();
     private DecodeAuto decodeAuto;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
 
     RobotAnimations obj;
 
-    int counter = 0
+    int counter = 0;
     boolean PPG = false;
     boolean PGP = false;
     boolean GPP = false;
@@ -34,15 +35,24 @@ public class AutoRed extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        void callFromAlignToTag();
+        AlignToTag alignToTag = new AlignToTag();
         initAuto();
         waitForStart();
+        runtime.reset();
+
         if (isStopRequested()) return;
 
         if (opModeIsActive() && loopFinished) {
+            if (runtime.seconds() >= 30.0) {
+                telemetry.addLine("Auto shut down: timer end");
+                telemetry.update();
+                requestOpModeStop();
+            }
 
             boolean showComplete = false;
 
+            alignToTag();
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(22);
             odo.resetPosAndIMU();
@@ -56,6 +66,7 @@ public class AutoRed extends LinearOpMode {
             decodeAuto.gyroTurnToAngle(90);
             decodeAuto.PinpointX(-200);
             decodeAuto.gyroTurnToAngle(-31);
+            alignToTag();
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(31);
             sleep(500);
@@ -70,6 +81,7 @@ public class AutoRed extends LinearOpMode {
             decodeAuto.gyroTurnToAngle(90);
             decodeAuto.PinpointX(-400);
             decodeAuto.gyroTurnToAngle(-35);
+            alignToTag();
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(35);
             odo.resetPosAndIMU();
@@ -83,6 +95,7 @@ public class AutoRed extends LinearOpMode {
             decodeAuto.gyroTurnToAngle(90);
             decodeAuto.PinpointX(-600);
             decodeAuto.gyroTurnToAngle(-35);
+            alignToTag();
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(35);
             decodeAuto.PinpointX(-600);
@@ -108,7 +121,6 @@ public class AutoRed extends LinearOpMode {
             }
         }
     }
-
 
     private void driveToPos(double targetX, double targetY) {
         odo.update();
@@ -157,7 +169,6 @@ public class AutoRed extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
-
     private void AlignToTag(AprilTagDetection tag) {
         double error = tag.ftcPose.yaw;
 
@@ -194,7 +205,6 @@ public class AutoRed extends LinearOpMode {
         backRightMotor.setPower(0);
     }
 
-
     private AprilTagDetection getLatestTag() {
         if (tagProcessor.getDetections().size() > 0) {
             return tagProcessor.getDetections().get(0);
@@ -202,11 +212,9 @@ public class AutoRed extends LinearOpMode {
         return null;
     }
 
-
     private void initAuto() {
 
         decodeAuto = new DecodeAuto(this);
-
         obj = new RobotAnimations(this);
 
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
