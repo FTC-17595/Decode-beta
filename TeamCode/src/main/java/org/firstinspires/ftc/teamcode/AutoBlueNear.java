@@ -18,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class AutoBlueNear extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -59,9 +60,18 @@ public class AutoBlueNear extends LinearOpMode {
 
 
             odo.setPosX(0,DistanceUnit.MM);
-            decodeAuto.PinpointX(-1500);
+            autoMovement.PinpointX(-1500);
 //            decodeAuto.gyroTurnToAngle(90);
             decodeAuto.shootAutoArtifactNear();
+            decodeAuto.gyroTurnToAngle(45);
+            odo.resetPosAndIMU();
+            decodeAuto.intakeSystemAuto(true,false);
+            autoMovement.PinpointX(800);
+            autoMovement.PinpointX(-700);
+            decodeAuto.intakeSystemAuto(false,false);
+            decodeAuto.gyroTurnToAngle(-41);
+            decodeAuto.shootAutoArtifactNear();
+
 //            decodeAuto.intakeRun();
 ////            sleep(1000);
 //            decodeAuto.PinpointYBlue(900);
@@ -312,6 +322,7 @@ public class AutoBlueNear extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
