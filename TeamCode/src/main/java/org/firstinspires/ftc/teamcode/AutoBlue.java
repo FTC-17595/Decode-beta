@@ -18,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class AutoBlue extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -57,12 +58,13 @@ public class AutoBlue extends LinearOpMode {
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
 
-
+            autoMovement.PinpointX(207);
+            decodeAuto.gyroTurnToAngle(24);
             decodeAuto.shootAutoArtifactFar();
 
             decodeAuto.gyroTurnToAngle(-22);
             odo.resetPosAndIMU();
-            decodeAuto.PinpointX(607);
+            autoMovement.PinpointX(607);
             decodeAuto.gyroTurnToAngle(90);
 
             decodeAuto.intakeRun();
@@ -72,11 +74,11 @@ public class AutoBlue extends LinearOpMode {
             decodeAuto.intakeSystemAuto(false,false);
             decodeAuto.PinpointYBlue(-800);
             gyroTurnToAngle(-90);
-            decodeAuto.PinpointX(-350);
+            autoMovement.PinpointX(-350);
             decodeAuto.gyroTurnToAngle(19);
             decodeAuto.shootAutoArtifactFar();
             decodeAuto.gyroTurnToAngle(-19);
-            decodeAuto.PinpointX(100);
+            autoMovement.PinpointX(100);
             decodeAuto.gyroTurnToAngle(90);
             loopFinished = true;
 
@@ -315,6 +317,7 @@ public class AutoBlue extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
