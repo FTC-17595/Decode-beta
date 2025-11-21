@@ -14,11 +14,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Red Alliance")
-public class AutoRed extends LinearOpMode {
+@Autonomous(name = "Autonomous - Shooting")
+public class shootTestingAuto extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
-    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -56,52 +55,13 @@ public class AutoRed extends LinearOpMode {
 //  TODO: If implemented, look for a commented thing in the initAuto();
 
         waitForStart();
-        try {
-            while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
-    //      Run up outtake while moving to shoot
-                decodeAuto.OuttakeSystemFar(true);
-                autoMovement.PinpointX(207);
-                autoMovement.gyroTurnToAngle(-23);
-        //      ============ SHOOT + 9 Points ===========
-                decodeAuto.shootAutoArtifactFar();
-        //      Move to pickup first set of Artifacts
-                decodeAuto.OuttakeSystemFar(true);
-                decodeAuto.gyroTurnToAngle(21.5);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(350);
-                autoMovement.gyroTurnToAngle(-92);
-        //      Run the intake while intaking artifacts
-                decodeAuto.intakeRun();
-                autoMovement.PinpointY(900,50);
-                sleep(700);
-                decodeAuto.intakeSystemAuto(false,false);
-    //          Spin up outtake while moving back to shoot
-
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-1050);
-                gyroTurnToAngle(90);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-250);
-                gyroTurnToAngle(-23);
-    //          ============ SHOOT + 9 points ===========
-                decodeAuto.shootAutoArtifactFar();
-                telemetry.addData("Shooting Complete",null);
-                // Leave + 3 Points
-                gyroTurnToAngle(28);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(400);
-                gyroTurnToAngle(-90);
-                loopFinished = false;
-            }
-        } finally {
-            // Always stop all motors when opmode ends, regardless of how it ends
-            decodeAuto.stopAllMotors();
-            // Also stop drive motors directly as a safety measure
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
+        if (opModeIsActive() && (loopFinished)) {
+            decodeAuto.shootAutoArtifactFar();
+            loopFinished = false;
+//        } else {
+//            return;
         }
+
 
 
 
@@ -333,7 +293,6 @@ public class AutoRed extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
-        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60

@@ -14,15 +14,33 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
 import java.util.Locale;
+import java.util.List;
 
 public class DecodeAuto {
 
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
+    /**
+     * The variable to store our instance of the AprilTag processor.
+     */
+    private AprilTagProcessor aprilTag;
+
+    /**
+     * The variable to store our instance of the vision portal.
+     */
+    private VisionPortal visionPortal;
     private final DcMotorEx outtakeMotor;
     private  DcMotor intakeMotor;
     private  DcMotor containerMotor;
@@ -46,24 +64,37 @@ public class DecodeAuto {
         this.frontRightMotor = linearOpMode.hardwareMap.get(DcMotor.class, "frontRightMotor");
         this.backLeftMotor = linearOpMode.hardwareMap.get(DcMotor.class, "backLeftMotor");
         this.backRightMotor = linearOpMode.hardwareMap.get(DcMotor.class, "backRightMotor");
-
+//        tagProcessor = new AprilTagProcessor();
         this.outtakeMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "outtakeMotor");
         this.intakeMotor = linearOpMode.hardwareMap.get(DcMotor.class, "intakeMotor");
         this.containerMotor = linearOpMode.hardwareMap.get(DcMotor.class, "containerMotor");
         this.flapServo = linearOpMode.hardwareMap.get(Servo.class, "flapServo");
-        
+
+       MotorConfigurationType config = outtakeMotor.getMotorType().clone();
+       config.setAchieveableMaxRPMFraction(1.0);
+       outtakeMotor.setMotorType(config);
+
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         containerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        outtakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         outtakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         containerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flapServo.setDirection(Servo.Direction.FORWARD);
-//        leftContainerMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-//        rightContainerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
         outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(
+          AutoConstants.kP,
+          AutoConstants.kI,
+          AutoConstants.kD,
+          AutoConstants.kF
+        );
 
+        outtakeMotor.setVelocityPIDFCoefficients(AutoConstants.kP, AutoConstants.kI, AutoConstants.kD, AutoConstants.kF);
+        outtakeMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         launchVelocity = AutoConstants.LONG_RANGE_VELOCITY;
 
 
@@ -79,7 +110,132 @@ public class DecodeAuto {
 //        } else {
 //            outtakeMotor.setPower(0);
 //        }
-//    }
+//
+private void initAprilTag() {
+
+    // Create the AprilTag processor the easy way.
+    aprilTag = AprilTagProcessor.easyCreateWithDefaults();
+
+    // Create the vision portal the easy way.
+    if (USE_WEBCAM) {
+        visionPortal = VisionPortal.easyCreateWithDefaults(
+                linearOpMode.hardwareMap.get(WebcamName.class, "Webcam"), aprilTag);
+    } else {
+        visionPortal = VisionPortal.easyCreateWithDefaults(
+                BuiltinCameraDirection.BACK, aprilTag);
+    }
+
+}   // end method initAprilTag()
+private void stopMotors() {
+    frontLeftMotor.setPower(0);
+    backLeftMotor.setPower(0);
+    frontRightMotor.setPower(0);
+    backRightMotor.setPower(0);
+}
+    public void alignToAprilTag(int desiredTagId) {
+
+        // 1. Wait until the correct tag is seen
+        AprilTagDetection tag = null;
+
+        while (opModeIsActive()) {
+
+            if (!tagProcessor.getDetections().isEmpty()) {
+                for (AprilTagDetection t : tagProcessor.getDetections()) {
+                    if (t.id == desiredTagId) {
+                        tag = t;
+                        break;
+                    }
+                }
+            }
+
+            if (tag != null) break; // Found the tag
+
+            linearOpMode.telemetry.addLine("Searching for Tag " + desiredTagId + "...");
+            linearOpMode.telemetry.update();
+        }
+    }
+    public void alignToAprilTagPixels(int desiredTagId) {
+
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        
+        initAprilTag();
+        for (AprilTagDetection detection : tagProcessor.getDetections()) {
+
+
+
+//        if (tag == null) return;
+            // 2. Rotate until yaw error is small
+            double error = detection.center.y;
+
+            while (opModeIsActive() && Math.abs(error) > 1.0) {
+
+                // Update latest tag reading
+//                AprilTagDetection updated = getLatestTagById(desiredTagId);
+
+
+                error = detection.center.y;
+
+                // Scale turning power from yaw error
+                double power = error / 45.0;
+
+                // Minimum power so robot doesn’t stall
+                if (power > 0) power = Math.max(power, 0.22);
+                else power = Math.min(power, -0.22);
+
+                // Apply turning power
+                frontLeftMotor.setPower(-power);
+                backLeftMotor.setPower(-power);
+                frontRightMotor.setPower(power);
+                backRightMotor.setPower(power);
+
+                linearOpMode.telemetry.addData("Tag ID",  detection.id);
+                linearOpMode.telemetry.addData("Yaw Error", error);
+                linearOpMode.telemetry.addData("Turn Power", power);
+                linearOpMode.telemetry.update();
+            }
+        }
+        stopMotors();
+    }
+
+    public void setTagProcessor(AprilTagProcessor processor) {
+        this.tagProcessor = processor;
+    }
+
+
+    private AprilTagDetection getLatestTagById(int id) {
+        for (AprilTagDetection t : tagProcessor.getDetections()) {
+            if (t.id == id) return t;
+        }
+        return null;
+    }
+
+    private AprilTagDetection getLatestTag() {
+        if (tagProcessor.getDetections().size() > 0) {
+            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
+            return aprilTagDetection;
+        }
+        return null;
+    }
+    private void telemetryAprilTag() {
+
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        linearOpMode.telemetry.addData("# AprilTags Detected", currentDetections.size());
+
+        // Step through the list of detections and display info for each one.
+        for (AprilTagDetection detection : currentDetections) {
+            if (detection.metadata != null) {
+                linearOpMode.telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+                linearOpMode.telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+                linearOpMode.telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+                linearOpMode.telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                linearOpMode.telemetry.update();
+            } else {
+                linearOpMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+                linearOpMode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+                linearOpMode.telemetry.addLine(String.format("Yaw", detection.ftcPose.yaw));
+            }
+        }
+    }
 
     public void OuttakeSystemFar(boolean run) {
         if (run) {
@@ -153,77 +309,184 @@ public class DecodeAuto {
         }
 
     }
-    boolean loopFinished = true;
-    public void shootAutoArtifactFar(){
-        // while (opModeIsActive() && (loopFinished)) {
-            OuttakeSystemFar(true);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
-                if (!opModeIsActive()) {
-                    OuttakeSystemFar(false);
-                    return;
-                }
 
+/*public void shootAutoArtifactFarRework() {
+
+    // Spin up shooter once for all three shots
+    OuttakeSystemFar(true);
+
+    // ----- SHOT 1 -----
+    waitForVelocity(AutoConstants.LONG_RANGE_VELOCITY);
+    AutoflapSystem(true);
+    sleep(500);
+    AutoflapSystem(false);
+    sleep((long)AutoConstants.FLAP_SLEEP + 500);
+
+    // ----- SHOT 2 -----
+    intakeSystemAuto(true, false);
+    waitForVelocity(AutoConstants.LONG_RANGE_VELOCITY);
+    AutoflapSystem(true);
+    intakeStop();
+    sleep((long)AutoConstants.FLAP_SLEEP);
+    AutoflapSystem(false);
+    sleep((long)AutoConstants.FLAP_SLEEP);
+
+    // ----- SHOT 3 -----
+    intakeSystemAuto(true, false);
+    waitForVelocity(AutoConstants.LONG_RANGE_VELOCITY);
+    AutoflapSystem(true);
+    sleep((long)AutoConstants.FLAP_SLEEP);
+    AutoflapSystem(false);
+    sleep((long)AutoConstants.FLAP_SLEEP);
+
+    // Turn off systems
+    OuttakeSystemFar(false);
+    intakeStop();
+}
+*/
+/*
+        public void shootAutoArtifactFar(){
+            boolean loopState = true;
+            while (opModeIsActive() && loopState) {
+                OuttakeSystemFar(true);
+                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 5,1700);
+                AutoflapSystem(true);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                AutoflapSystem(false);
+                sleep(2000);
+                intakeSystemAuto(true, false);
+                OuttakeSystemFar(true);
+                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 5,1700);
+                AutoflapSystem(true);
+                intakeSystemAuto(false,false);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                AutoflapSystem(false);
+                OuttakeSystemFar(true);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                intakeSystemAuto(true, false);
+                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 5,1700);
+                AutoflapSystem(true);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                AutoflapSystem(false);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                OuttakeSystemFar(true);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                intakeSystemAuto(true, false);
+                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 5,1700);
+                AutoflapSystem(true);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                AutoflapSystem(false);
+                sleep((long) AutoConstants.FLAP_SLEEP);
+                outtakeMotor.setPower(0);
+                loopState = false;
             }
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            intakeSystemAuto(true, false);
-            OuttakeSystemFar(true);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
-                if (!opModeIsActive()) {
-                    OuttakeSystemFar(false);
-                    return;
-                }
+        }
+*/
+    boolean loopState = true;
+    public void shootAutoArtifactFar() {
+        while (linearOpMode.opModeIsActive() && loopState)
+        // Spin up once
+        OuttakeSystemFar(true);
 
-            }
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            OuttakeSystemFar(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            intakeSystemAuto(true, false);
-            while (( AutoConstants.LONG_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {
-                if (!opModeIsActive()) {
-                    OuttakeSystemFar(false);
-                    return;
-                }
+        waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY,10,4000    );
+        // ===== SHOT 1 =====
+        AutoflapSystem(true);
+        sleep((long) AutoConstants.FLAP_SLEEP);
+        AutoflapSystem(false);
+        sleep((long) AutoConstants.FLAP_SLEEP);
 
-            }
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            OuttakeSystemFar(false);
-//            loopFinished = false;
-//            break;
-//        }
+        // ===== SHOT 2 =====
+        intakeSystemAuto(true, false);
+        sleep(AutoConstants.FEED_TIME_AUTO);
+        intakeStop();
+        waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 1500);
 
+        AutoflapSystem(true);
+        sleep((long) AutoConstants.FLAP_SLEEP);
+        AutoflapSystem(false);
+        sleep((long) AutoConstants.FLAP_SLEEP);
+
+        // ===== SHOT 3 =====
+        intakeSystemAuto(true, false);
+        waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
+        intakeStop();
+        sleep(1500);
+        AutoflapSystem(true);
+        sleep((long) AutoConstants.FLAP_SLEEP);
+        AutoflapSystem(false);
+        sleep((long) AutoConstants.FLAP_SLEEP);
+
+        // Stop systems
+        OuttakeSystemFar(false);
+        intakeStop();
+        loopState = false;
     }
-    public void shootAutoArtifactNear(){
-        while (opModeIsActive()) {
-            OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            sleep(1000);
-            intakeSystemAuto(true, false);
-            OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            OuttakeSystemNear(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            intakeSystemAuto(true, false);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 5) {}
-            AutoflapSystem(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
+
+    public void shootAutoArtifactTriple() {
+        final int shotCount = 3;
+        final double targetVelocity = AutoConstants.LONG_RANGE_VELOCITY;
+        final double velocityTolerance = 5;
+        final long flapDelayMs = (long) AutoConstants.FLAP_SLEEP;
+        final long initialSpinupTimeoutMs = (long) AutoConstants.SHOOTING_SPINUP_TIME;
+        final long feedMs = TeleOpConstants.FEED_MS;
+        final long feedSettleMs = TeleOpConstants.FEED_SETTLE_MS;
+
+        OuttakeSystemFar(true);
+
+        if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, initialSpinupTimeoutMs)) {
+            OuttakeSystemFar(false);
+            return;
         }
 
+        for (int shot = 0; shot < shotCount && opModeIsActive(); shot++) {
+            AutoflapSystem(true);
+            sleep(flapDelayMs);
+            AutoflapSystem(false);
+            sleep(flapDelayMs);
+
+            if (shot < shotCount - 1 && opModeIsActive()) {
+                intakeSystemAuto(true, false);
+                sleep(feedMs);
+                intakeStop();
+                sleep(feedSettleMs);
+
+                if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, TeleOpConstants.SPINUP_MS)) {
+                    break;
+                }
+            }
+        }
+
+        OuttakeSystemFar(false);
+        intakeStop();
+    }
+
+    public void shootAutoArtifactNear(){
+            boolean loopState = true;
+        while (opModeIsActive() && loopState) {
+            OuttakeSystemNear(true);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 4) {}
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            sleep(2000);
+            intakeSystemAuto(true, false);
+            OuttakeSystemNear(true);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 2) {}
+            AutoflapSystem(true);
+            intakeSystemAuto(false,false);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            OuttakeSystemNear(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            intakeSystemAuto(true, false);
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 2) {}
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            outtakeMotor.setPower(0);
+            loopState = false;
+        }
     }
     public void shootAutoArtifactSingle(){
             OuttakeSystemFar(true);
@@ -408,97 +671,23 @@ public class DecodeAuto {
         backRightMotor.setPower(0);
     }
 
-    private AprilTagDetection getLatestTag() {
-        if (tagProcessor.getDetections().size() > 0) {
-            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
-            return aprilTagDetection;
+
+
+
+
+    private boolean waitForOuttakeVelocity(double targetVelocity, double tolerance, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        while (opModeIsActive() && abs(targetVelocity - outtakeMotor.getVelocity()) > tolerance) {
+            if (System.currentTimeMillis() - startTime > timeoutMs) {
+                return false;
+            }
+            sleep((long) 100);
         }
-        return null;
-    }
-
-    public void PinpointX(double target) {
-
-        odo.setPosX(0, DistanceUnit.MM);
-
-        double margin = target + odo.getPosX(DistanceUnit.MM);
-
-
-        while (opModeIsActive() && abs(margin) > 100) {
-
-            odo.update();
-
-            Pose2D pos = odo.getPosition();
-            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-
-            linearOpMode.telemetry.addData("Position", data);
-            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
-            linearOpMode.telemetry.addData("Margin", margin);
-
-            double direction = Math.signum(margin);
-            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
-            double current = odo.getPosX(DistanceUnit.MM);
-            margin = target + current;
-
-            linearOpMode.telemetry.addData("Margin", margin);
-
-            linearOpMode.telemetry.update();
-
-
-            frontLeftMotor.setPower(power);
-            backLeftMotor.setPower(power);
-            frontRightMotor.setPower(power);
-            backRightMotor.setPower(power);
-
-
-        }
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-//        odo.resetPosAndIMU();
+        return opModeIsActive();
     }
 
 
-    public void PinpointY(double target) {
 
-        odo.setPosY(0,DistanceUnit.MM);
-
-        double margin = target - odo.getPosY(DistanceUnit.MM);
-
-
-        while (opModeIsActive() && abs(margin) > 100) {
-
-            odo.update();
-
-            Pose2D pos = odo.getPosition();
-            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
-
-            linearOpMode.telemetry.addData("Position", data);
-            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
-
-            double direction = Math.signum(margin);
-            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
-            double current = odo.getPosY(DistanceUnit.MM);
-            margin = target - current;
-
-            linearOpMode.telemetry.addData("Margin", margin);
-
-            linearOpMode.telemetry.update();
-
-
-            frontLeftMotor.setPower(power);
-            backLeftMotor.setPower(power);
-            frontRightMotor.setPower(power);
-            backRightMotor.setPower(power);
-
-
-        }
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-//        odo.resetPosAndIMU();
-    }
 
     public void PinpointYBlue(double target) {
 
@@ -678,4 +867,13 @@ public class DecodeAuto {
     }
 
 
+    public void stopAllMotors() {
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+        outtakeMotor.setPower(0);
+        intakeMotor.setPower(0);
+        containerMotor.setPower(0);
+    }
 }
