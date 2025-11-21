@@ -68,8 +68,6 @@ public class AutoRedNear extends LinearOpMode {
             decodeAuto.PinpointY(-815);
             decodeAuto.gyroTurnToAngle(45);
             decodeAuto.shootAutoArtifactNear();
-//            decodeAuto.intakeRun();
-////            sleep(1000);
 //            decodeAuto.PinpointYBlue(900);
 //            sleep(700);
 //            decodeAuto.intakeSystemAuto(false,false);
