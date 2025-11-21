@@ -58,24 +58,24 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         try {
             while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
-                // Run up outtake while moving to shoot
+    //      Run up outtake while moving to shoot
                 decodeAuto.OuttakeSystemFar(true);
                 autoMovement.PinpointX(207);
                 autoMovement.gyroTurnToAngle(-23);
-                //============ SHOOT + 9 Points ===========
+        //      ============ SHOOT + 9 Points ===========
                 decodeAuto.shootAutoArtifactFar();
-                // Move to pickup first set of Artifacts
+        //      Move to pickup first set of Artifacts
                 decodeAuto.OuttakeSystemFar(true);
                 decodeAuto.gyroTurnToAngle(21.5);
                 odo.resetPosAndIMU();
                 autoMovement.PinpointX(350);
                 autoMovement.gyroTurnToAngle(-92);
-                // Run the intake while intaking artifacts
+        //      Run the intake while intaking artifacts
                 decodeAuto.intakeRun();
-                autoMovement.PinpointY(900, 50);
+                autoMovement.PinpointY(900,50);
                 sleep(700);
-                decodeAuto.intakeSystemAuto(false, false);
-                // Spin up outtake while moving back to shoot
+                decodeAuto.intakeSystemAuto(false,false);
+    //          Spin up outtake while moving back to shoot
 
                 odo.resetPosAndIMU();
                 autoMovement.PinpointX(-1050);
@@ -83,9 +83,9 @@ public class AutoRed extends LinearOpMode {
                 odo.resetPosAndIMU();
                 autoMovement.PinpointX(-250);
                 gyroTurnToAngle(-23);
-                // ============ SHOOT + 9 points ===========
+    //          ============ SHOOT + 9 points ===========
                 decodeAuto.shootAutoArtifactFar();
-                telemetry.addData("Shooting Complete", null);
+                telemetry.addData("Shooting Complete",null);
                 // Leave + 3 Points
                 gyroTurnToAngle(28);
                 odo.resetPosAndIMU();
@@ -93,9 +93,6 @@ public class AutoRed extends LinearOpMode {
                 gyroTurnToAngle(-90);
                 loopFinished = false;
             }
-        } catch (Exception e) {
-            telemetry.addLine(String.valueOf(e));
-            telemetry.update();
         } finally {
             // Always stop all motors when opmode ends, regardless of how it ends
             decodeAuto.stopAllMotors();
