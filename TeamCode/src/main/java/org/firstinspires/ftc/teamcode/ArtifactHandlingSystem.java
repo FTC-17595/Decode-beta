@@ -149,7 +149,7 @@ public class ArtifactHandlingSystem {
         } else {
             launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
             autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-            TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -170.0 / 25.4;
+            TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
         }
     }
 
