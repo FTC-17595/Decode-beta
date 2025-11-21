@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
-import static org.firstinspires.ftc.teamcode.AutoConstants.SHOOT_X;
-import static org.firstinspires.ftc.teamcode.AutoConstants.SHOOT_Y;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,56 +13,71 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Auto LM1") //hehehehe
-public class DecodeLM1Auto extends LinearOpMode {
+@Autonomous(name = "Pinpoint Test")
+@Disabled
+public class PinpointTest extends LinearOpMode {
 
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-    int counter = 0;
-    boolean PPG = false;
-    boolean  PGP = false;
-    boolean GPP = false;
+
     IMU imu;
-    AprilTagProcessor tagProcessor;
+//    AprilTagProcessor tagProcessor;
     @Override
     public void runOpMode() {
 
+    waitForStart();
         initAuto();
-        waitForStart();
-        if(isStopRequested()) return;
-        tagProcessor = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagID(true)
-                .setDrawTagOutline(true)
-                .build();
 
-        AprilTagDetection tag = tagProcessor.getDetections().get(0);
+        Thread th = new Thread(() -> {
+            while (opModeIsActive()) {
+                // update odometry here
+                telemetry.addData("x: ", odo.getPosX(DistanceUnit.MM));
+                telemetry.addData("y: ", odo.getPosY(DistanceUnit.MM));
+                telemetry.update();
+                // sleep so it doesn’t burn CPU
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    return;
+                }
 
+            }
+        });
 
+        th.start();
 
+        driveToPos(1000,0);
+////        while (opModeIsActive()) {
+////            telemetry.addData("x: ", odo.getPosX(DistanceUnit.MM));
+////            telemetry.addData("y: ", odo.getPosY(DistanceUnit.MM));
+//////            telemetry.addData("rotX: ", odo);
+//////            telemetry.addData("rotY: ", rotY);
+////            telemetry.update();
+//
+//        }
+    }
+        /* driveToPos(CLASSIFIER_X, CLASSIFIER_Y);
+        gyroTurnToAngle(110);
 
-        if (tag.id == 21) {
-            GPP = true;
-
-        } else if (tag.id == 22) {
-            PGP = true;
-
-        } else if (tag.id == 23){
-            PPG = true;
-        }
-
-//        driveToPos(SHOOT_X, SHOOT_Y);
-//        gyroTurnToAngle(110);
-        DecodeOdo autoFunctions = new DecodeOdo(linearOpMode);
         ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
         artifactSystem.shootAutoArtifact();
-        autoFunctions.gyroTurnToAngle(-10);
 
-/*      TODO: ADD IN THE VALUES FOR OBELISK
+        driveToPos(40, 23);
+
+        while (counter < 2) {
+            frontLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
+            backLeftMotor.setPower(AutoConstants.DRIVE_SPEED);
+            frontRightMotor.setPower(AutoConstants.DRIVE_SPEED);
+            backRightMotor.setPower(AutoConstants.DRIVE_SPEED);
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+
+
         if (PPG == true) {
             driveToPos(12,12);
             // the PPG line
@@ -77,9 +90,9 @@ public class DecodeLM1Auto extends LinearOpMode {
             driveToPos(12,12);
         }
 
-*/
-    }
 
+    }
+*/
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
     private void driveToPos(double targetX, double targetY) {
         // Update odometry before starting
@@ -89,8 +102,8 @@ public class DecodeLM1Auto extends LinearOpMode {
 
         // Keep driving while opmode is active AND the robot is more than 30 cm away in X or Y
         while (opModeIsActive() &&
-                (Math.abs(targetX - odo.getPosX(DistanceUnit.MM)) > 30 ||
-                        Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 30)) {
+                (Math.abs(targetX - odo.getPosX(DistanceUnit.MM)) > 100 ||
+                        Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 100)) {
 
             // Update odometry each loop to get the latest position
             odo.update();
@@ -109,13 +122,12 @@ public class DecodeLM1Auto extends LinearOpMode {
             double rotX = y * Math.sin(-botHeading) + x * Math.cos(-botHeading);
 
             // Add telemetry only once to avoid spamming output
-            if (!telemAdded) {
+            while (opModeIsActive()) {
                 telemetry.addData("x: ", x);
                 telemetry.addData("y: ", y);
                 telemetry.addData("rotX: ", rotX);
                 telemetry.addData("rotY: ", rotY);
                 telemetry.update();
-                telemAdded = true;
             }
 
             // Enforce a minimum power threshold so the robot doesn't stall
@@ -142,9 +154,7 @@ public class DecodeLM1Auto extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
 
             // Optionally, you could update telemetry here for debugging
-//            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
-//            telemetry.addData("X:", odo.getPosX(DistanceUnit.MM));
-//            telemetry.update();
+            telemetry.update();
         }
 
         // Stop all motors when target position is reached or opmode ends
@@ -155,110 +165,108 @@ public class DecodeLM1Auto extends LinearOpMode {
     }
 
 
-    private void AlignToTag(AprilTagDetection tag) {
-        double error, drivePower;
+//    private void AlignToTag(AprilTagDetection tag) {
+//        double error, drivePower;
+//
+//
+//        error = tag.ftcPose.yaw;
+//
+//        while (opModeIsActive() && Math.abs(error) > 1.0) {
+//            odo.update();
+//
+//
+//            AprilTagDetection currentTag = getLatestTag();
+//            if (currentTag == null) {
+//                telemetry.addLine("Tag lost — stopping alignment.");
+//                break;
+//            }
+//
+//            error = currentTag.ftcPose.yaw;
+//
+//
+//            drivePower = error / 50.0;
+//
+//
+//            if (drivePower > 0) {
+//                drivePower = Math.max(drivePower, 0.35);
+//            } else if (drivePower < 0) {
+//                drivePower = Math.min(drivePower, -0.35);
+//            }
+//
+//
+//            frontLeftMotor.setPower(-drivePower);
+//            backLeftMotor.setPower(-drivePower);
+//            frontRightMotor.setPower(drivePower);
+//            backRightMotor.setPower(drivePower);
+//
+//            telemetry.addData("Tag Yaw", error);
+//            telemetry.addData("Drive Power", drivePower);
+//            telemetry.update();
+//        }
+//
+//
+//        frontLeftMotor.setPower(0);
+//        backLeftMotor.setPower(0);
+//        frontRightMotor.setPower(0);
+//        backRightMotor.setPower(0);
+//    }
+//
+//    private AprilTagDetection getLatestTag() {
+//        if (tagProcessor.getDetections().size() > 0) {
+//            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
+//            return aprilTagDetection;
+//        }
+//        return null;
+//    }
 
 
-        error = tag.ftcPose.yaw;
+/*    private void gyroTurnToAngle(double turnAngle) {
+        double error, currentHeadingAngle, driveMotorsPower;
+        imu.resetYaw();
 
-        while (opModeIsActive() && Math.abs(error) > 1.0) {
+        error = turnAngle;
+
+        while (opModeIsActive() && ((error > 1) || (error < -1))) {
             odo.update();
-
-
-            AprilTagDetection currentTag = getLatestTag();
-            if (currentTag == null) {
-                telemetry.addLine("Tag lost — stopping alignment.");
-                break;
-            }
-
-            error = currentTag.ftcPose.yaw;
-
-
-            drivePower = error / 50.0;
-
-
-            if (drivePower > 0) {
-                drivePower = Math.max(drivePower, 0.35);
-            } else if (drivePower < 0) {
-                drivePower = Math.min(drivePower, -0.35);
-            }
-
-
-            frontLeftMotor.setPower(-drivePower);
-            backLeftMotor.setPower(-drivePower);
-            frontRightMotor.setPower(drivePower);
-            backRightMotor.setPower(drivePower);
-
-            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
-            telemetry.addData("X:", odo.getPosX(DistanceUnit.MM));
-            telemetry.addData("Tag Yaw", error);
-            telemetry.addData("Drive Power", drivePower);
+            telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
+            telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
+//                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
+            telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.update();
+
+            driveMotorsPower = error / 200;
+
+            if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.2;
+            } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.2;
+            }
+
+            driveMotorsPower = error / 50;
+
+            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.35;
+            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.35;
+            }
+            // Positive power causes left turn
+            frontLeftMotor.setPower(-driveMotorsPower);
+            backLeftMotor.setPower(-driveMotorsPower);
+            frontRightMotor.setPower(driveMotorsPower);
+            backRightMotor.setPower(driveMotorsPower);
+
+            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            error = turnAngle - currentHeadingAngle;
         }
-
-
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
+
+
     }
-
-    private AprilTagDetection getLatestTag() {
-        if (tagProcessor.getDetections().size() > 0) {
-            AprilTagDetection aprilTagDetection = tagProcessor.getDetections().get(0);
-            return aprilTagDetection;
-        }
-        return null;
-    }
-
-
-    private void gyroTurnToAngle(double turnAngle) {
-            double error, currentHeadingAngle, driveMotorsPower;
-            imu.resetYaw();
-
-            error = turnAngle;
-
-            while (opModeIsActive() && ((error > 1) || (error < -1))) {
-                odo.update();
-                telemetry.addData("X: ", odo.getPosX(DistanceUnit.MM));
-                telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
-//                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
-                telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-                telemetry.update();
-
-driveMotorsPower = error / 200;
-
-                if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
-                    driveMotorsPower = 0.2;
-                } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
-                    driveMotorsPower = -0.2;
-                }
-
-                driveMotorsPower = error / 50;
-
-                if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
-                    driveMotorsPower = 0.35;
-                } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
-                    driveMotorsPower = -0.35;
-                }
-                // Positive power causes left turn
-                frontLeftMotor.setPower(-driveMotorsPower);
-                backLeftMotor.setPower(-driveMotorsPower);
-                frontRightMotor.setPower(driveMotorsPower);
-                backRightMotor.setPower(driveMotorsPower);
-
-                currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-                error = turnAngle - currentHeadingAngle;
-            }
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
-
-
-        }
-
-        private void initAuto() {
+*/
+    private void initAuto() {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(150, 60, DistanceUnit.MM ); //took on 12/20 by Rohan
@@ -284,7 +292,7 @@ driveMotorsPower = error / 200;
 
 
         // Retrieve the IMU from the hardware map
-        IMU imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu");
         //        imu = (IMU) hardwareMap.get(BNO055IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -296,12 +304,12 @@ driveMotorsPower = error / 200;
 
         ElapsedTime timer = new ElapsedTime();
 
-        if (timer.seconds() >= 1.0) {
-            counter++;
-            timer.reset();
-            telemetry.addData("Counter:", counter);
-            telemetry.update();
-        }
+//        if (timer.seconds() >= 1.0) {
+//            counter++;
+//            timer.reset();
+//            telemetry.addData("Counter:", counter);
+//            telemetry.update();
+//        }
 
 
 
