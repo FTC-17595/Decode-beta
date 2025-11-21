@@ -43,6 +43,6 @@ public class TeleOpConstants {
     final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
     final static double ALIGN_LONG_RANGE_MIN_IN = 45;
-    final static double ALIGN_LONG_RANGE_MAX_IN = 55;
+    final static double ALIGN_LONG_RANGE_MAX_IN = 60;
     public static double CAMERA_OFFSET_X_IN_RUNTIME = CAMERA_OFFSET_X_IN;
 }

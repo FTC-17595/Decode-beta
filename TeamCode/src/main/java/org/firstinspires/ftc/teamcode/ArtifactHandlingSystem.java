@@ -238,18 +238,6 @@ public class ArtifactHandlingSystem {
         launchVelocity = Math.max(0, Math.min(velocity, TeleOpConstants.MAX_VELOCITY));
     }
 
-    public void applyRecommendedVelocity(boolean applyRequest, AprilTagAligner aligner) {
-        if (!applyRequest || aligner == null) {
-            return;
-        }
-
-        double range = aligner.getShooterRange();
-        double recommendedVelocity = aligner.getRecommendedVelocity();
-        if (range > 0.0 && recommendedVelocity > 0.0) {
-            setLaunchVelocity(recommendedVelocity);
-        }
-    }
-
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
             outtakeMotor.setVelocity(AutoConstants.LONG_RANGE_VELOCITY);

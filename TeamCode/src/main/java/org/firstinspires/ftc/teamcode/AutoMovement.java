@@ -143,6 +143,9 @@ public class AutoMovement {
         while (opModeIsActive() &&
                 (Math.abs(targetX + odo.getPosX(DistanceUnit.MM)) > 30 ||
                         Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 30)) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
 
             // Update odometry each loop to get the latest position
             odo.update();
@@ -229,6 +232,9 @@ public class AutoMovement {
 
 
         while (opModeIsActive() && abs(margin) > 100) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
 
             odo.update();
 
@@ -273,6 +279,9 @@ public class AutoMovement {
 
 
         while (opModeIsActive() && abs(margin) > 100) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
 
             odo.update();
 
@@ -314,6 +323,9 @@ public class AutoMovement {
 
 
         while (opModeIsActive() && abs(margin) > 100) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
 
             odo.update();
 
@@ -444,6 +456,10 @@ public class AutoMovement {
         error = turnAngle;
 
         while (opModeIsActive() && ((error > 1) || (error < -1))) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
+
             odo.update();
             linearOpMode.telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
             linearOpMode.telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
