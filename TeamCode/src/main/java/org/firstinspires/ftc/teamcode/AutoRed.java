@@ -33,15 +33,17 @@ public class AutoRed extends LinearOpMode {
     IMU imu;
     AprilTagProcessor tagProcessor;
 
+    private boolean stopIfNeeded() {
+        return !opModeIsActive() || runtime.seconds() >= 30.0;
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
-        void callFromAlignToTag();
+
         AlignToTag alignToTag = new AlignToTag();
         initAuto();
         waitForStart();
         runtime.reset();
-
-        if (isStopRequested()) return;
 
         if (opModeIsActive() && loopFinished) {
             if (runtime.seconds() >= 30.0) {
@@ -50,70 +52,168 @@ public class AutoRed extends LinearOpMode {
                 requestOpModeStop();
             }
 
-            boolean showComplete = false;
+            // ----IMPORTANT NOTE: ALL COMMENTS DESCRIBE MOVEMENT FIELD-ORIENTED FACING THE OBELISK---- //
 
-            alignToTag();
-            decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(22);
-            odo.resetPosAndIMU();
-            decodeAuto.PinpointX(607);
-            decodeAuto.gyroTurnToAngle(-90);
-            decodeAuto.intakeRun();
-            decodeAuto.PinpointY(1300);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1220);
-            decodeAuto.gyroTurnToAngle(90);
-            decodeAuto.PinpointX(-200);
-            decodeAuto.gyroTurnToAngle(-31);
-            alignToTag();
-            decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(31);
-            sleep(500);
-            odo.resetPosAndIMU();
-            decodeAuto.PinpointX(180);
-            decodeAuto.gyroTurnToAngle(-90);
-            decodeAuto.intakeRun();
-            decodeAuto.PinpointY(-1000);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1100);
-            decodeAuto.gyroTurnToAngle(90);
-            decodeAuto.PinpointX(-400);
-            decodeAuto.gyroTurnToAngle(-35);
-            alignToTag();
-            decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(35);
-            odo.resetPosAndIMU();
-            decodeAuto.PinpointX(180);
-            decodeAuto.gyroTurnToAngle(-90);
-            decodeAuto.intakeRun();
-            decodeAuto.PinpointY(-1000);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointY(-1100);
-            decodeAuto.gyroTurnToAngle(90);
-            decodeAuto.PinpointX(-600);
-            decodeAuto.gyroTurnToAngle(-35);
-            alignToTag();
-            decodeAuto.shootAutoArtifactFar();
-            decodeAuto.gyroTurnToAngle(35);
-            decodeAuto.PinpointX(-600);
+            decodeAuto.gyroTurnToAngle(-22); // turn right
+            if (stopIfNeeded()) return;
+
+            alignToTag(); // align for pos
+            if (stopIfNeeded()) return;
+
+            decodeAuto.shootAutoArtifactFar(); // shoot artifact(s)
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(22); // turn to face forward (left)
+            if (stopIfNeeded()) return;
+
+            odo.resetPosAndIMU(); // reset values
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(607); // move forward
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-90); // turn right 90 deg
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeRun(); // run intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(1300); // move right
+            if (stopIfNeeded()) return;
+
+            sleep(700); // wait 0.7 sec
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeSystemAuto(false, false); // turn off intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(-1220); // move left
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(90); // turn left
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(-200); // move backwards
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-31); // turn right
+            if (stopIfNeeded()) return;
+
+            alignToTag(); // align for pos
+            if (stopIfNeeded()) return;
+
+            decodeAuto.shootAutoArtifactFar(); // shoot artifact(s)
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(31); // turn to face forward (left)
+            if (stopIfNeeded()) return;
+
+            sleep(500); // wait 0.5 sec
+            if (stopIfNeeded()) return;
+
+            odo.resetPosAndIMU(); // reset values
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(180); //
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-90); // turn right
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeRun(); // run intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(1000); // move right
+            if (stopIfNeeded()) return;
+
+            sleep(700); // wait 0.7 sec
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeSystemAuto(false, false); // turn off intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(-1000); // move left
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(90); // turn left to face forward (left)
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(-400); // move backwards
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-35); // turn right
+            if (stopIfNeeded()) return;
+
+            alignToTag(); // align for pos
+            if (stopIfNeeded()) return;
+
+            decodeAuto.shootAutoArtifactFar(); // shoot artifact(s)
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(35); // turn to face forward (left)
+            if (stopIfNeeded()) return;
+
+            odo.resetPosAndIMU(); // reset values
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(180); // move forward
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-90); // turn right
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeRun(); // run intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(1000); // move right
+            if (stopIfNeeded()) return;
+
+            sleep(700); // wait 0.7 sec
+            if (stopIfNeeded()) return;
+
+            decodeAuto.intakeSystemAuto(false, false); // turn off intake
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointY(-1000); // move left
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(90); // turn to face forward
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(-600); // move backwards
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-35); // turn right
+            if (stopIfNeeded()) return;
+
+            alignToTag(); // align for pos
+            if (stopIfNeeded()) return;
+
+            decodeAuto.shootAutoArtifactFar(); // shoot artifact(s)
+            if (stopIfNeeded()) return;
+
+            decodeAuto.gyroTurnToAngle(-55); // turn right
+            if (stopIfNeeded()) return;
+
+            decodeAuto.PinpointX(-600); // move backwards
+            if (stopIfNeeded()) return;
+
+            odo.resetPosAndIMU(); // reset values
+            if (stopIfNeeded()) return;
 
             loopFinished = false;
 
             try {
-                showComplete = true;
-                if (showComplete) {
-                    telemetry.addLine("Gooooood booooooy. Auto complete.");
+                // u r good boy if auto works
+                if (runtime.seconds() >= 30.0) {
+                    telemetry.addLine("Gooooood booooooy. Auto complete. :)");
                     telemetry.update();
                     sleep(1000);
-                    showComplete = false;
                 }
                 telemetry.update();
 
                 obj.celebrateToggle(true);
-                sleep(500);
+                sleep(2500);
                 obj.celebrateToggle(false);
 
             } catch (InterruptedException e) {
@@ -172,7 +272,12 @@ public class AutoRed extends LinearOpMode {
     private void AlignToTag(AprilTagDetection tag) {
         double error = tag.ftcPose.yaw;
 
-        while (opModeIsActive() && Math.abs(error) > 1.0) {
+        ElapsedTime alignTimer = new ElapsedTime(); // timeout for fix #7
+
+        while (opModeIsActive() &&
+                alignTimer.seconds() < 2.0 &&
+                Math.abs(error) > 1.0) {
+
             odo.update();
 
             AprilTagDetection currentTag = getLatestTag();
