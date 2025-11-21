@@ -39,6 +39,7 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
         while (opModeIsActive()) {
             robotControls.updateControls();
             aprilTagAligner.updateDetection();
+            artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches());
 
             driveTrain.adjustTurnSpeed();
             driveTrain.resetYaw();
@@ -56,7 +57,6 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
                     artifactHandlingSystem.getActualVelocity()
             );
             aprilTagAligner.align(robotControls.alignRobot);
-            artifactHandlingSystem.applyRecommendedVelocity(robotControls.applyRecommendedVelocity, aprilTagAligner);
 
             displayTelemetry();
         }
