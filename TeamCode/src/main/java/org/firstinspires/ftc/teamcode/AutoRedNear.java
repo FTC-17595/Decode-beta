@@ -60,7 +60,6 @@ public class AutoRedNear extends LinearOpMode {
 
             odo.setPosX(0,DistanceUnit.MM);
             decodeAuto.PinpointX(-800);
-//            decodeAuto.gyroTurnToAngle(90);
             decodeAuto.shootAutoArtifactNear();
             decodeAuto.gyroTurnToAngle(-45);
             decodeAuto.intakeRun();
