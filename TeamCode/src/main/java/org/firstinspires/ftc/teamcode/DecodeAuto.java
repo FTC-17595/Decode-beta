@@ -407,9 +407,9 @@ private void stopMotors() {
                 // ===== SHOT 2 =====
                 intakeSystemAuto(true, false);
                 sleep(AutoConstants.FEED_TIME_AUTO);
-                intakeStop();
+                // intakeStop();
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 10) ) {
+                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
 
 
                         if (!opModeIsActive()) {
@@ -424,17 +424,17 @@ private void stopMotors() {
                 sleep((long) AutoConstants.FLAP_SLEEP);
 
                 // ===== SHOT 3 =====
-                intakeSystemAuto(true, false);
-                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
+                //intakeSystemAuto(true, false);
+               // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
                 while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8)) {
                     if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
                     return;
+                    }
                 }
-            }
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY,10,2000);
-                intakeStop();
-                sleep(1500);
+                //intakeStop();
+                //sleep(1500);
                 AutoflapSystem(true);
                 sleep((long) AutoConstants.FLAP_SLEEP);
                 AutoflapSystem(false);

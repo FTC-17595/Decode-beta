@@ -26,7 +26,7 @@ public class AutoConstants {
     final static double kD = 7.5;
     final static  double kF = 32767 / MAX_VELOCITY * 0.88;
     final static double SHOOTING_SPINUP_TIME = 2000;
-    final static double FLAP_SLEEP = 1000;
+    final static double FLAP_SLEEP = 250;
     final static long FEED_TIME_AUTO = 900;
 
 }
