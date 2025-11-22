@@ -14,11 +14,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Blue Alliance")
-public class AutoBlue extends LinearOpMode {
+@Autonomous(name = "Autonomous - Shooting")
+public class shootTestingAuto extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
-    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -29,10 +28,10 @@ public class AutoBlue extends LinearOpMode {
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException{
 
         initAuto();
-        waitForStart();
+//        waitForStart();
 //        Thread intakeThread = new Thread(() -> {
 //142 65
 //            while (opModeIsActive()) {
@@ -53,42 +52,14 @@ public class AutoBlue extends LinearOpMode {
 //                .build();
 //
 //        AprilTagDetection tag = tagProcessor.getDetections().get(0);
-
+//  TODO: If implemented, look for a commented thing in the initAuto();
 
         waitForStart();
-        try{
-        while (!isStopRequested() && (loopFinished = true)) {
-            decodeAuto.OuttakeSystemFar(true);
-            autoMovement.PinpointX(207);
-            decodeAuto.gyroTurnToAngle(21);
+        if (opModeIsActive() && (loopFinished)) {
             decodeAuto.shootAutoArtifactFar();
-
-            decodeAuto.gyroTurnToAngle(-21);
-            odo.resetPosAndIMU();
-            autoMovement.PinpointX(400);
-            decodeAuto.gyroTurnToAngle(90);
-
-            decodeAuto.intakeRun();
-//            sleep(1000);
-            decodeAuto.OuttakeSystemFar(true);
-            decodeAuto.PinpointYBlue(900);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointYBlue(-800);
-            gyroTurnToAngle(-90);
-            autoMovement.PinpointX(-400);
-            decodeAuto.gyroTurnToAngle(19);
-            decodeAuto.shootAutoArtifactFar();
-            odo.resetPosAndIMU();
-            autoMovement.PinpointX(200);
-            loopFinished = true;
-        }
+            loopFinished = false;
 //        } else {
 //            return;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-
         }
 
 
@@ -322,7 +293,6 @@ public class AutoBlue extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
-        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
@@ -357,6 +327,7 @@ public class AutoBlue extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         this.imu.initialize(parameters);
         this.imu.resetYaw();
+//        tagProcessor = AprilTagProcessor.easyCreateWithDefaults();
 
         ElapsedTime timer = new ElapsedTime();
 
@@ -372,4 +343,3 @@ public class AutoBlue extends LinearOpMode {
 
     }
 }
-

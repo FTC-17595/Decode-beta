@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class AutoConstants {
+
     private LinearOpMode linearOpMode;
     GoBildaPinpointDriver odo;
     static final double ARTIFACT_PICKUP_SPEED = 0.45;
@@ -16,9 +17,16 @@ public class AutoConstants {
     static final double SHOOT_Y = -307.373;
     static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
     static final double AUTO_STRAFE_POWER = 0.5;
-    final static double SHORT_RANGE_VELOCITY =1100;
-    final static double LONG_RANGE_VELOCITY = 1265; // Please don't edit this part
+    final static double SHORT_RANGE_VELOCITY =1185;
+    final static double LONG_RANGE_VELOCITY = 1335; // Please don't edit this part
+//    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
+    final static double MAX_VELOCITY = 2300;
+    final static  double kP = 18;
+    final static  double kI = 0.15;
+    final static double kD = 7.5;
+    final static  double kF = 32767 / MAX_VELOCITY * 0.88;
     final static double SHOOTING_SPINUP_TIME = 2000;
-    final static double FLAP_SLEEP = 1000;
+    final static double FLAP_SLEEP = 250;
+    final static long FEED_TIME_AUTO = 900;
 
 }

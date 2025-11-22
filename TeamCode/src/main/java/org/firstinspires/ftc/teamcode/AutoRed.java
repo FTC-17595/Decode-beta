@@ -18,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class AutoRed extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -31,7 +32,7 @@ public class AutoRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
 
         initAuto();
-        waitForStart();
+//        waitForStart();
 //        Thread intakeThread = new Thread(() -> {
 //142 65
 //            while (opModeIsActive()) {
@@ -52,36 +53,65 @@ public class AutoRed extends LinearOpMode {
 //                .build();
 //
 //        AprilTagDetection tag = tagProcessor.getDetections().get(0);
-
+//  TODO: If implemented, look for a commented thing in the initAuto();
 
         waitForStart();
-        if (opModeIsActive() && (loopFinished = true)) {
+        try {
+            while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
+    //      Run up outtake while moving to shoot
+                decodeAuto.OuttakeSystemFar(true);
+                autoMovement.PinpointX(207);
+                autoMovement.gyroTurnToAngle(-23);
+        //      ============ SHOOT + 9 Points ===========
+                decodeAuto.shootAutoArtifactFar();
+        //      Move to pickup first set of Artifacts
+                decodeAuto.OuttakeSystemFar(true);
+                decodeAuto.gyroTurnToAngle(21.5);
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(350);
+                autoMovement.gyroTurnToAngle(-92);
+        //      Run the intake while intaking artifacts
+                decodeAuto.intakeRun();
+                autoMovement.PinpointY(800,50);
+                sleep(700);
+                decodeAuto.intakeSystemAuto(false,false);
+/*
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(500);
+*/
+/*
+ */
+    //          Spin up outtake while moving back to shoot
 
-        decodeAuto.shootAutoArtifactFar();
-
-        decodeAuto.gyroTurnToAngle(22);
-        odo.resetPosAndIMU();
-        decodeAuto.PinpointX(607);
-        decodeAuto.gyroTurnToAngle(-90);
-
-        decodeAuto.intakeRun();
-//            sleep(1000);
-        decodeAuto.PinpointY(1300);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false,false);
-            decodeAuto.PinpointY(-1150);
-            gyroTurnToAngle(90);
-            decodeAuto.PinpointX(-350);
-            gyroTurnToAngle(-19);
-            decodeAuto.shootAutoArtifactFar();
-            gyroTurnToAngle(19);
-            decodeAuto.PinpointX(100);
-            gyroTurnToAngle(-90);
-        loopFinished = false;
-//        } else {
-//            return;
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(-750);
+                gyroTurnToAngle(90);
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(-250);
+                gyroTurnToAngle(-23);
+    //          ============ SHOOT + 9 points ===========
+                decodeAuto.setShootState(true);
+                decodeAuto.shootAutoArtifactFar();
+                telemetry.addData("Shooting Complete",null);
+                // Leave + 3 Points
+                gyroTurnToAngle(28);
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(400);
+                gyroTurnToAngle(-90);
+                loopFinished = false;
+            }
+        } catch(Exception e){
+//            decodeAuto.stopAllMotors();
         }
-
+         finally {
+            // Always stop all motors when opmode ends, regardless of how it ends
+//            decodeAuto.stopAllMotors();
+//            // Also stop drive motors directly as a safety measure
+//            frontLeftMotor.setPower(0);
+//            backLeftMotor.setPower(0);
+//            frontRightMotor.setPower(0);
+//            backRightMotor.setPower(0);
+        }
 
 
 
@@ -313,6 +343,7 @@ public class AutoRed extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
@@ -347,6 +378,7 @@ public class AutoRed extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         this.imu.initialize(parameters);
         this.imu.resetYaw();
+//        tagProcessor = AprilTagProcessor.easyCreateWithDefaults();
 
         ElapsedTime timer = new ElapsedTime();
 

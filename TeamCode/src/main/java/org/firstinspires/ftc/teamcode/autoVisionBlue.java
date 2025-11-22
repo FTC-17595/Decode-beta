@@ -3,22 +3,28 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Near - Blue Alliance")
-public class AutoBlueNear extends LinearOpMode {
+@Autonomous(name = "Autonomous - Vision")
+@Disabled
+public class autoVisionBlue extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
-    private AutoMovement autoMovement;
+    private DriveTrain driveTrain;
+    private AprilTagAligner aprilTagAligner;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -32,46 +38,64 @@ public class AutoBlueNear extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         initAuto();
+        
+        telemetry.addLine("Waiting for start...");
+        telemetry.update();
         waitForStart();
-//        Thread intakeThread = new Thread(() -> {
-//142 65
-//            while (opModeIsActive()) {
-//                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
+        
+        if (isStopRequested()) {
+            return;
+        }
+        
+        // Align to AprilTag with timeout
+        ElapsedTime alignmentTimer = new ElapsedTime();
+        double alignmentTimeout = 10.0; // 10 second timeout
+        
+        telemetry.addLine("Starting alignment...");
+        telemetry.update();
+        
+        // Loop until aligned, timeout, or opmode stops
+//        while (opModeIsActive() &&
+//               !aprilTagAligner.isAligned() &&
+//               alignmentTimer.seconds() < alignmentTimeout) {
 //
-//                // Keep it running while opmode is active
-//                // You can add conditions here if needed
-//                sleep(1000);
-//            }
+//            // Update detection before aligning
+//            aprilTagAligner.updateDetection();
+//            // Perform alignment
+//            aprilTagAligner.alignToTag();
 //
-//        });
-        if(isStopRequested()) return;
-//        tagProcessor = new AprilTagProcessor.Builder()
-//                .setDrawAxes(true)
-//                .setDrawCubeProjection(true)
-//                .setDrawTagID(true)
-//                .setDrawTagOutline(true)
-//                .build();
+//            // Display telemetry for debugging
+//            aprilTagAligner.displayTelemetry();
+//            telemetry.addData("Alignment Time", "%.1f / %.1f sec", alignmentTimer.seconds(), alignmentTimeout);
+//            telemetry.addData("Alignment Status", aprilTagAligner.getAlignState());
+//            telemetry.update();
 //
-//        AprilTagDetection tag = tagProcessor.getDetections().get(0);
+//            // Small delay to prevent overwhelming the loop
+//            sleep(20);
+//        }
+//
+//        // Stop alignment when done or timeout
+//        aprilTagAligner.stopAlign();
+//
+//        // Stop all motors
+//        driveTrain.driveRobotCentric(0.0, 0.0, 0.0);
+//
+//        if (aprilTagAligner.isAligned()) {
+//            telemetry.addLine("Alignment complete!");
+//        } else if (alignmentTimer.seconds() >= alignmentTimeout) {
+//            telemetry.addLine("Alignment timeout reached");
+//        } else {
+//            telemetry.addLine("OpMode stopped");
+//        }
+//        telemetry.update();
+//        sleep(1000);
 
-
-        waitForStart();
-        while (!isStopRequested() && (loopFinished = true)) {
-
-
-            odo.setPosX(0,DistanceUnit.MM);
-            autoMovement.PinpointX(-1500);
+        // Continue with rest of autonomous code here
+//            decodeAuto.gyroTurnToAngle(-22);
+//            odo.resetPosAndIMU();
+//            decodeAuto.PinpointX(607);
 //            decodeAuto.gyroTurnToAngle(90);
-            decodeAuto.shootAutoArtifactNear();
-            decodeAuto.gyroTurnToAngle(45);
-            odo.resetPosAndIMU();
-            decodeAuto.intakeSystemAuto(true,false);
-            autoMovement.PinpointX(800);
-            autoMovement.PinpointX(-700);
-            decodeAuto.intakeSystemAuto(false,false);
-            decodeAuto.gyroTurnToAngle(-41);
-            decodeAuto.shootAutoArtifactNear();
-
+//
 //            decodeAuto.intakeRun();
 ////            sleep(1000);
 //            decodeAuto.PinpointYBlue(900);
@@ -85,61 +109,34 @@ public class AutoBlueNear extends LinearOpMode {
 //            decodeAuto.gyroTurnToAngle(-19);
 //            decodeAuto.PinpointX(100);
 //            decodeAuto.gyroTurnToAngle(90);
-//            loopFinished = true;
 
-//        } else {
-//            return;
+
+
+
+/*  TODO: Add in logic for the vision
+        if (PPG == true) {
+            driveToPos(-514.710,678.612);
+            gyroTurnToAngle(-23);
+            driveToPos(-514.710,700.612);
+            driveToPos(0,0);
+            gyroTurnToAngle(23);
+            decodeAuto.shootAutoArtifact();
+            // the PPG line
+        } else if (PGP == true) {
+
+            driveToPos(-514.710,678.612);
+            gyroTurnToAngle(-23);
+            driveToPos(-514.710,700.612);
+            driveToPos(0,0);
+            gyroTurnToAngle(23);
+            decodeAuto.shootAutoArtifact();
+
+        } else if (GPP == true) {
+            // The GPP line
+            driveToPos(12,12);
         }
 
-
-
-
-//
-//        if (tag.id == 21) {
-//            GPP = true;
-//
-//        } else if (tag.id == 22) {
-//            PGP = true;
-//
-//        } else if (tag.id == 23){
-//            PPG = true;
-//        }
-//
-//        driveToPos(SHOOT_X, SHOOT_Y);
-//            gyroTurnToAngle(110);
-//
-//            ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
-//            decodeAuto.shootAutoArtifact();
-//
-//
-//
-//
-//
-//
-//
-//        if (PPG == true) {
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//            // the PPG line
-//        } else if (PGP == true) {
-//
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//
-//        } else if (GPP == true) {
-//            // The GPP line
-//            driveToPos(12,12);
-//        }
-//
-
+*/
     }
 
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
@@ -320,56 +317,140 @@ public class AutoBlueNear extends LinearOpMode {
 
     }
 
-    private void initAuto() {
-        decodeAuto = new DecodeAuto(this);
-        autoMovement = new AutoMovement(this);
-        this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        odo.resetPosAndIMU();
-        odo.recalibrateIMU();
+//    private void initAuto() {
+//        decodeAuto = new DecodeAuto(this);
+//        this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+//        //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
+//        odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
+//        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+//        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+//                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        odo.resetPosAndIMU();
+//        odo.recalibrateIMU();
+//
+//        this.frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+//        this.backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
+//        this.frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+//        this.backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+//
+//        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//
+//
+//
+//        // Retrieve the IMU from the hardware map
+//        this.imu = hardwareMap.get(IMU.class, "imu");
+//        //        imu = (IMU) hardwareMap.get(BNO055IMU.class, "imu");
+//        // Adjust the orientation parameters to match your robot
+//        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+//                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+//        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+//        this.imu.initialize(parameters);
+//        this.imu.resetYaw();
+//        // ---------------- APRILTAG SETUP ----------------
+//        tagProcessor = new AprilTagProcessor.Builder()
+//                .setDrawTagID(true)
+//                .setDrawAxes(true)
+//                .build();
+//
+//        VisionPortal visionPortal = new VisionPortal.Builder()
+//                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+//                .addProcessor(tagProcessor)
+//                .build();
+//
+//        ElapsedTime timer = new ElapsedTime();
+//
+//        if (timer.seconds() >= 1.0) {
+//            counter++;
+//            timer.reset();
+//            telemetry.addData("Counter:", counter);
+//            telemetry.update();
+//        }
+//        tagProcessor = new AprilTagProcessor.Builder()
+//                .setDrawTagID(true)
+//                .setDrawAxes(true)
+//                .build();
+//
+//        VisionPortal visionPortal = new VisionPortal.Builder()
+//                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+//                .addProcessor(tagProcessor)
+//                .build();
+//
+//// FIX: pass processor to DecodeAuto instance
+//        decodeAuto.setTagProcessor(tagProcessor);
+//
+//
+//
+//
+//
+//    }
+private void initAuto() {
 
-        this.frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        this.backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        this.frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        this.backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
+    // Initialize DecodeAuto helper
+    decodeAuto = new DecodeAuto(this);
+    driveTrain = new DriveTrain(this);
+    driveTrain.configureMotorModes(); // Configure DriveTrain motors
+    aprilTagAligner = new AprilTagAligner(this, driveTrain, 24);
 
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    // -----------------------
+    // ODOMETRY / PINPOINT
+    // -----------------------
+    odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    odo.setOffsets(65, 142, DistanceUnit.MM);
+    odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+    odo.setEncoderDirections(
+            GoBildaPinpointDriver.EncoderDirection.FORWARD,
+            GoBildaPinpointDriver.EncoderDirection.REVERSED
+    );
 
-
-
-        // Retrieve the IMU from the hardware map
-        this.imu = hardwareMap.get(IMU.class, "imu");
-        //        imu = (IMU) hardwareMap.get(BNO055IMU.class, "imu");
-        // Adjust the orientation parameters to match your robot
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        this.imu.initialize(parameters);
-        this.imu.resetYaw();
-
-        ElapsedTime timer = new ElapsedTime();
-
-        if (timer.seconds() >= 1.0) {
-            counter++;
-            timer.reset();
-            telemetry.addData("Counter:", counter);
-            telemetry.update();
-        }
+    odo.resetPosAndIMU();
+    odo.recalibrateIMU();
 
 
+    // -----------------------
+    // MOTORS
+    // -----------------------
+    frontLeftMotor  = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+    backLeftMotor   = hardwareMap.get(DcMotor.class, "backLeftMotor");
+    frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
+    backRightMotor  = hardwareMap.get(DcMotor.class, "backRightMotor");
+
+    frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+    // Reverse the left side
+    frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
-    }
+    // -----------------------
+    // IMU
+    // -----------------------
+    imu = hardwareMap.get(IMU.class, "imu");
+
+    IMU.Parameters imuParams = new IMU.Parameters(
+            new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                    RevHubOrientationOnRobot.UsbFacingDirection.UP
+            )
+    );
+
+    imu.initialize(imuParams);
+    imu.resetYaw();
+
+
+    telemetry.addLine("Auto Initialized");
+    telemetry.update();
+}
+
 }
 
