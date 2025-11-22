@@ -56,6 +56,7 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
+        try{
         while (!isStopRequested() && (loopFinished = true)) {
 
             autoMovement.PinpointX(207);
@@ -71,7 +72,7 @@ public class AutoBlue extends LinearOpMode {
 //            sleep(1000);
             decodeAuto.PinpointYBlue(900);
             sleep(700);
-            decodeAuto.intakeSystemAuto(false,false);
+            decodeAuto.intakeSystemAuto(false, false);
             decodeAuto.PinpointYBlue(-800);
             gyroTurnToAngle(-90);
             autoMovement.PinpointX(-350);
@@ -81,9 +82,13 @@ public class AutoBlue extends LinearOpMode {
             autoMovement.PinpointX(100);
             decodeAuto.gyroTurnToAngle(90);
             loopFinished = true;
-
+        }
 //        } else {
 //            return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+
         }
 
 

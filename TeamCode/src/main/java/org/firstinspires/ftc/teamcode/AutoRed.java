@@ -72,18 +72,25 @@ public class AutoRed extends LinearOpMode {
                 autoMovement.gyroTurnToAngle(-92);
         //      Run the intake while intaking artifacts
                 decodeAuto.intakeRun();
-                autoMovement.PinpointY(900,50);
+                autoMovement.PinpointY(800,50);
                 sleep(700);
                 decodeAuto.intakeSystemAuto(false,false);
+/*
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(500);
+*/
+/*
+ */
     //          Spin up outtake while moving back to shoot
 
                 odo.resetPosAndIMU();
-                autoMovement.PinpointX(-1050);
+                autoMovement.PinpointX(-750);
                 gyroTurnToAngle(90);
                 odo.resetPosAndIMU();
                 autoMovement.PinpointX(-250);
                 gyroTurnToAngle(-23);
     //          ============ SHOOT + 9 points ===========
+                decodeAuto.setShootState(true);
                 decodeAuto.shootAutoArtifactFar();
                 telemetry.addData("Shooting Complete",null);
                 // Leave + 3 Points
@@ -93,14 +100,17 @@ public class AutoRed extends LinearOpMode {
                 gyroTurnToAngle(-90);
                 loopFinished = false;
             }
-        } finally {
+        } catch(Exception e){
+//            decodeAuto.stopAllMotors();
+        }
+         finally {
             // Always stop all motors when opmode ends, regardless of how it ends
-            decodeAuto.stopAllMotors();
-            // Also stop drive motors directly as a safety measure
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
+//            decodeAuto.stopAllMotors();
+//            // Also stop drive motors directly as a safety measure
+//            frontLeftMotor.setPower(0);
+//            backLeftMotor.setPower(0);
+//            frontRightMotor.setPower(0);
+//            backRightMotor.setPower(0);
         }
 
 
