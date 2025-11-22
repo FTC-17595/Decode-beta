@@ -387,12 +387,17 @@ private void stopMotors() {
     }
     boolean loopState = true;
     public void shootAutoArtifactFar() {
-        while (opModeIsActive() && loopState) {
+//        while (opModeIsActive() && loopState) {
             // Spin up once
             try {
                 OuttakeSystemFar(true);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) && opModeIsActive()) {}
-                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 4000);
+                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+                    if (!opModeIsActive()) {
+                        OuttakeSystemFar(false);
+                        return;
+                    }
+                }
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 4000);
                 // ===== SHOT 1 =====
                 AutoflapSystem(true);
                 sleep((long) AutoConstants.FLAP_SLEEP);
@@ -404,11 +409,14 @@ private void stopMotors() {
                 sleep(AutoConstants.FEED_TIME_AUTO);
                 intakeStop();
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 1500);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) && opModeIsActive()) {
-                    if(!opModeIsActive()) {
-//                        sleep(50);
-                        return;
-                    }
+                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+
+
+                        if (!opModeIsActive()) {
+                            OuttakeSystemFar(false);
+                            return;
+                        }
+
                 }
                 AutoflapSystem(true);
                 sleep((long) AutoConstants.FLAP_SLEEP);
@@ -418,7 +426,12 @@ private void stopMotors() {
                 // ===== SHOT 3 =====
                 intakeSystemAuto(true, false);
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) && opModeIsActive()) {}
+                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8)) {
+                    if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                    return;
+                }
+            }
                 intakeStop();
                 sleep(1500);
                 AutoflapSystem(true);
@@ -435,7 +448,7 @@ private void stopMotors() {
             } finally {
 //                stopAllMotors();
             }
-        }
+//        }
 
     }
 
@@ -481,14 +494,24 @@ private void stopMotors() {
             boolean loopState = true;
         while (opModeIsActive() && loopState) {
             OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 4) {}
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                    return;
+                }
+            }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             sleep(2000);
             intakeSystemAuto(true, false);
             OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 2) {}
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                    return;
+                }
+            }
             AutoflapSystem(true);
             intakeSystemAuto(false,false);
             sleep((long) AutoConstants.FLAP_SLEEP);
@@ -496,7 +519,12 @@ private void stopMotors() {
             OuttakeSystemNear(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             intakeSystemAuto(true, false);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 2) {}
+            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                    return;
+                }
+            }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
@@ -706,11 +734,12 @@ private void stopMotors() {
 private boolean waitForOuttakeVelocity(double targetVelocity, double tolerance, long timeoutMs) {
     long startTime = System.currentTimeMillis();
 
-    while (opModeIsActive() &&
-            Math.abs(targetVelocity - outtakeMotor.getVelocity()) > tolerance && System.currentTimeMillis() - startTime > timeoutMs) {
+    while (Math.abs(targetVelocity - outtakeMotor.getVelocity()) > tolerance && System.currentTimeMillis() - startTime > timeoutMs) {
 
-
-        // Optional but safe
+        if (!opModeIsActive()) {
+            OuttakeSystemFar(false);
+            break;
+        }
     }
 
     return true;
@@ -726,6 +755,7 @@ private boolean waitForOuttakeVelocity(double targetVelocity, double tolerance, 
 
 
         while (opModeIsActive() && abs(margin) > 100) {
+
 
             odo.update();
 
