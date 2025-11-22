@@ -408,8 +408,8 @@ private void stopMotors() {
                 intakeSystemAuto(true, false);
                 sleep(AutoConstants.FEED_TIME_AUTO);
                 intakeStop();
-//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 1500);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
+                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 10) ) {
 
 
                         if (!opModeIsActive()) {
@@ -425,13 +425,14 @@ private void stopMotors() {
 
                 // ===== SHOT 3 =====
                 intakeSystemAuto(true, false);
-//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
+                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
                 while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8)) {
                     if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
                     return;
                 }
             }
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY,10,2000);
                 intakeStop();
                 sleep(1500);
                 AutoflapSystem(true);
