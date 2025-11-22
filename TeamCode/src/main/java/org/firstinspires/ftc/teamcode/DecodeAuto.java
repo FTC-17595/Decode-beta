@@ -386,12 +386,16 @@ private void stopMotors() {
         loopState = state;
     }
     boolean loopState = true;
-    public void shootAutoArtifactFar() {
+    public void shootAutoArtifactFar(double targetVelocity) {
 //        while (opModeIsActive() && loopState) {
             // Spin up once
             try {
                 OuttakeSystemFar(true);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8) ) {
+
+                    linearOpMode.telemetry.addLine("Velocity in while 1" + outtakeMotor.getVelocity() + "...");
+                    linearOpMode.telemetry.update();
+
                     if (!opModeIsActive()) {
                         OuttakeSystemFar(false);
                         return;
@@ -409,8 +413,10 @@ private void stopMotors() {
                 sleep(AutoConstants.FEED_TIME_AUTO);
                 // intakeStop();
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8) ) {
 
+                    linearOpMode.telemetry.addLine("Velocity in while 2" + outtakeMotor.getVelocity() + "...");
+                    linearOpMode.telemetry.update();
 
                         if (!opModeIsActive()) {
                             OuttakeSystemFar(false);
@@ -426,7 +432,11 @@ private void stopMotors() {
                 // ===== SHOT 3 =====
                 //intakeSystemAuto(true, false);
                // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
-                while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8)) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8)) {
+
+                    linearOpMode.telemetry.addLine("Velocity in while 3" + outtakeMotor.getVelocity() + "...");
+                    linearOpMode.telemetry.update();
+
                     if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
                     return;
@@ -491,49 +501,116 @@ private void stopMotors() {
         intakeStop();
     }
 
-    public void shootAutoArtifactNear(){
-            boolean loopState = true;
-        while (opModeIsActive() && loopState) {
+    public void shootAutoArtifactNear() {
+//        while (opModeIsActive() && loopState) {
+        // Spin up once
+        try {
             OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+            while ((abs(outtakeMotor.getVelocity() - AutoConstants.SHORT_RANGE_VELOCITY) > 8) ) {
                 if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
                     return;
                 }
             }
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 4000);
+            // ===== SHOT 1 =====
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
-            sleep(2000);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+
+            // ===== SHOT 2 =====
             intakeSystemAuto(true, false);
-            OuttakeSystemNear(true);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+            sleep(AutoConstants.FEED_TIME_AUTO);
+            // intakeStop();
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
+            while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8) ) {
+
+
                 if (!opModeIsActive()) {
                     OuttakeSystemFar(false);
                     return;
                 }
-            }
-            AutoflapSystem(true);
-            intakeSystemAuto(false,false);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            AutoflapSystem(false);
-            OuttakeSystemNear(true);
-            sleep((long) AutoConstants.FLAP_SLEEP);
-            intakeSystemAuto(true, false);
-            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
-                if (!opModeIsActive()) {
-                    OuttakeSystemFar(false);
-                    return;
-                }
+
             }
             AutoflapSystem(true);
             sleep((long) AutoConstants.FLAP_SLEEP);
             AutoflapSystem(false);
             sleep((long) AutoConstants.FLAP_SLEEP);
-            outtakeMotor.setPower(0);
+
+            // ===== SHOT 3 =====
+            //intakeSystemAuto(true, false);
+            // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
+            while ((abs(outtakeMotor.getVelocity() - AutoConstants.LONG_RANGE_VELOCITY) > 8)) {
+                if (!opModeIsActive()) {
+                    OuttakeSystemFar(false);
+                    return;
+                }
+            }
+//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY,10,2000);
+            //intakeStop();
+            //sleep(1500);
+            AutoflapSystem(true);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+            AutoflapSystem(false);
+            sleep((long) AutoConstants.FLAP_SLEEP);
+
+            // Stop systems
+            OuttakeSystemFar(false);
             loopState = false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+//                stopAllMotors();
+        } finally {
+//                stopAllMotors();
         }
+//        }
+
     }
+
+//    public void shootAutoArtifactNear(){
+//            boolean loopState = true;
+//        while (opModeIsActive() && loopState) {
+//            OuttakeSystemNear(true);
+//            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+//                if (!opModeIsActive()) {
+//                    OuttakeSystemFar(false);
+//                    return;
+//                }
+//            }
+//            AutoflapSystem(true);
+//            sleep((long) AutoConstants.FLAP_SLEEP);
+//            AutoflapSystem(false);
+//            sleep(2000);
+//            intakeSystemAuto(true, false);
+//            OuttakeSystemNear(true);
+//            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+//                if (!opModeIsActive()) {
+//                    OuttakeSystemFar(false);
+//                    return;
+//                }
+//            }
+//            AutoflapSystem(true);
+//            intakeSystemAuto(false,false);
+//            sleep((long) AutoConstants.FLAP_SLEEP);
+//            AutoflapSystem(false);
+//            OuttakeSystemNear(true);
+//            sleep((long) AutoConstants.FLAP_SLEEP);
+//            intakeSystemAuto(true, false);
+//            while (( AutoConstants.SHORT_RANGE_VELOCITY - outtakeMotor.getVelocity()) >= 8) {
+//                if (!opModeIsActive()) {
+//                    OuttakeSystemFar(false);
+//                    return;
+//                }
+//            }
+//            AutoflapSystem(true);
+//            sleep((long) AutoConstants.FLAP_SLEEP);
+//            AutoflapSystem(false);
+//            sleep((long) AutoConstants.FLAP_SLEEP);
+//            outtakeMotor.setPower(0);
+//            loopState = false;
+//        }
+//    }
     public void shootAutoArtifactSingle(){
             OuttakeSystemFar(true);
              sleep(3000);

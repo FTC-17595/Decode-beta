@@ -58,7 +58,8 @@ public class AutoBlueNear extends LinearOpMode {
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
 
-
+            decodeAuto.OuttakeSystemNear(true);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
             odo.setPosX(0,DistanceUnit.MM);
             autoMovement.PinpointX(-1500);
 //            decodeAuto.gyroTurnToAngle(90);
@@ -70,7 +71,7 @@ public class AutoBlueNear extends LinearOpMode {
             autoMovement.PinpointX(-700);
             decodeAuto.intakeSystemAuto(false,false);
             decodeAuto.gyroTurnToAngle(-41);
-            decodeAuto.shootAutoArtifactNear();
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
 
 //            decodeAuto.intakeRun();
 ////            sleep(1000);
