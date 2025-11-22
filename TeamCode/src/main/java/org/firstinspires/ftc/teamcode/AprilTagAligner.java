@@ -227,6 +227,10 @@ public class AprilTagAligner {
     public double getLastRangeInches() {
         return lastDetection != null ? lastDetection.ftcPose.range : Double.NaN;
     }
+
+    public double getTargetedTagId() {
+        return lastDetection != null ? lastDetection.id : Double.NaN;
+    }
 }
 
 

@@ -10,8 +10,8 @@ public class TeleOpConstants {
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
     final static double BLUE = 0.611;
-    final static double SHORT_RANGE_VELOCITY = 1195;
-    final static double LONG_RANGE_VELOCITY = 1350;
+    final static double SHORT_RANGE_VELOCITY = 1225;
+    final static double LONG_RANGE_VELOCITY = 1385;
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
     final static double MAX_VELOCITY = 2300.0;
@@ -24,10 +24,10 @@ public class TeleOpConstants {
     final static long PREFIRE_WAIT_MS = 200;
     final static double CELEBRATION_SPEED = 3500;
     final static int WAIT_FOR_MOTOR_OFFSET = 20;
-    final static double kP = 18.0;
-    final static double kI = 0.15;
-    final static double kD = 7.5;
-    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.88;
+    final static double kP = 28.0;
+    final static double kI = 0.00;
+    final static double kD = 12.0;
+    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.92;
     final static double OPENCV_IMAGE_WIDTH = 1280;
     final static double OPENCV_IMAGE_HEIGHT = 720;
     final static double ALIGN_STRAFE_KP = 0.02;

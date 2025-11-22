@@ -39,7 +39,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
         while (opModeIsActive()) {
             robotControls.updateControls();
             aprilTagAligner.updateDetection();
-            artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches());
+            artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches(), aprilTagAligner.getTargetedTagId());
 
             driveTrain.adjustTurnSpeed();
             driveTrain.resetYaw();
@@ -47,7 +47,6 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             artifactHandlingSystem.flapSystem(robotControls.flapArtifact);
             artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
-            artifactHandlingSystem.autoShootingSystemTeleOp(robotControls.autoShoot);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
             artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
