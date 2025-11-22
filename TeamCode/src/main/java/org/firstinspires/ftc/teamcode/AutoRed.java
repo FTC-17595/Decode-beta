@@ -63,7 +63,7 @@ public class AutoRed extends LinearOpMode {
                 autoMovement.PinpointX(207);
                 autoMovement.gyroTurnToAngle(-23);
         //      ============ SHOOT + 9 Points ===========
-                decodeAuto.shootAutoArtifactFar();
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
         //      Move to pickup first set of Artifacts
                 decodeAuto.OuttakeSystemFar(true);
                 decodeAuto.gyroTurnToAngle(21.5);
@@ -88,10 +88,10 @@ public class AutoRed extends LinearOpMode {
                 gyroTurnToAngle(90);
                 odo.resetPosAndIMU();
                 autoMovement.PinpointX(-250);
-                gyroTurnToAngle(-23);
+                gyroTurnToAngle(-21);
     //          ============ SHOOT + 9 points ===========
                 decodeAuto.setShootState(true);
-                decodeAuto.shootAutoArtifactFar();
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
                 telemetry.addData("Shooting Complete",null);
                 // Leave + 3 Points
                 gyroTurnToAngle(28);
