@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class SingleControllerMainMecanumTeleOpBlue extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
-    private RobotControls robotControls;
+    private SingleControllerControls robotControls;
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
     private AprilTagAligner aprilTagAligner;
@@ -15,7 +15,7 @@ public class SingleControllerMainMecanumTeleOpBlue extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
-        robotControls = new RobotControls(this);
+        robotControls = new SingleControllerControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
         aprilTagAligner = new AprilTagAligner(this, driveTrain, 20);
