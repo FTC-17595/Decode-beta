@@ -24,10 +24,10 @@ public class TeleOpConstants {
     final static long PREFIRE_WAIT_MS = 200;
     final static double CELEBRATION_SPEED = 3500;
     final static int WAIT_FOR_MOTOR_OFFSET = 20;
-    final static double kP = 28.0;
-    final static double kI = 0.00;
-    final static double kD = 12.0;
-    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.92;
+    final static double kP = 34.0; // Will test with this -> 36.0
+    final static double kI = 0.005;
+    final static double kD = 13.0;
+    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.93;
     final static double OPENCV_IMAGE_WIDTH = 1280;
     final static double OPENCV_IMAGE_HEIGHT = 720;
     final static double ALIGN_STRAFE_KP = 0.02;
