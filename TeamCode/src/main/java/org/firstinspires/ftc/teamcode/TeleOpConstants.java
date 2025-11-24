@@ -24,10 +24,10 @@ public class TeleOpConstants {
     final static long PREFIRE_WAIT_MS = 200;
     final static double CELEBRATION_SPEED = 3500;
     final static int WAIT_FOR_MOTOR_OFFSET = 20;
-    final static double kP = 34.0; // 7s: 18.0, 5s: 28.0, 3s: 34.0, 2.5s: 38.0, 2s: 44.0, 1.5s: 52.0, 1s: 60.0
-    final static double kI = 0.005; // 7s: 0.15, 5s: 0.00, 3s: 0.005, 2.5s: 0.003, 2s: 0.002, 1.5s: 0.000, 1s: 0.000
-    final static double kD = 13.0; // 7s: 7.5, 5s: 12.0, 3s: 13.0, 2.5s: 15.0, 2s: 17.0, 1.5s: 20.0, 1s: 24.0
-    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.93; // 7s: *0.88, 5s: *0.92, 3s: *0.93, 2.5s: *0.94, 2s: *0.95, 1.5s: *0.965, 1s: *0.98
+    final static double kP = 60.0; // 7s: 18.0, 5s: 28.0, 3s: 34.0, 2.5s: 38.0, 2s: 44.0, 1.5s: 52.0, 1s: 60.0
+    final static double kI = 0.000; // 7s: 0.15, 5s: 0.00, 3s: 0.005, 2.5s: 0.003, 2s: 0.002, 1.5s: 0.000, 1s: 0.000
+    final static double kD = 26.5; // 7s: 7.5, 5s: 12.0, 3s: 13.0, 2.5s: 15.0, 2s: 17.0, 1.5s: 20.0, 1s: 24.0
+    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.98; // 7s: *0.88, 5s: *0.92, 3s: *0.93, 2.5s: *0.94, 2s: *0.95, 1.5s: *0.965, 1s: *0.98
     final static double OPENCV_IMAGE_WIDTH = 1280;
     final static double OPENCV_IMAGE_HEIGHT = 720;
     final static double ALIGN_STRAFE_KP = 0.02;
