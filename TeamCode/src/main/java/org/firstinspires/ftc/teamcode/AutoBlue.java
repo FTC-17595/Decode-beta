@@ -59,26 +59,33 @@ public class AutoBlue extends LinearOpMode {
         try{
         while (!isStopRequested() && (loopFinished = true)) {
             decodeAuto.OuttakeSystemFar(true);
+
             autoMovement.PinpointX(207);
+
             decodeAuto.gyroTurnToAngle(21);
+
             decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
 
             decodeAuto.gyroTurnToAngle(-21);
+
             odo.resetPosAndIMU();
-            autoMovement.PinpointX(400);
+
+            autoMovement.PinpointX(425);
+
             decodeAuto.gyroTurnToAngle(90);
 
             decodeAuto.intakeRun();
 //            sleep(1000);
             decodeAuto.OuttakeSystemFar(true);
-            decodeAuto.PinpointYBlue(900);
+            decodeAuto.PinpointYBlue(900,50);
             sleep(700);
             decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointYBlue(-800);
+            decodeAuto.PinpointYBlue(-730,50);
             gyroTurnToAngle(-90);
-            autoMovement.PinpointX(-400);
+            autoMovement.PinpointX(-350);
             decodeAuto.gyroTurnToAngle(22);
             decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+            telemetry.addData("Shooting Complete",null);
             odo.resetPosAndIMU();
             autoMovement.PinpointX(200);
             loopFinished = true;

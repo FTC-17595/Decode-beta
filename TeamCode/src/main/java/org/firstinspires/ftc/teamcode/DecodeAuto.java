@@ -154,6 +154,7 @@ private void stopMotors() {
             linearOpMode.telemetry.update();
         }
     }
+
     public void alignToAprilTagPixels(int desiredTagId) {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -390,8 +391,8 @@ private void stopMotors() {
 //        while (opModeIsActive() && loopState) {
             // Spin up once
             try {
-                OuttakeSystemFar(true);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8) ) {
+
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12) ) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 1" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();
@@ -413,7 +414,7 @@ private void stopMotors() {
                 sleep(AutoConstants.FEED_TIME_AUTO);
                 // intakeStop();
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8) ) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12) ) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 2" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();
@@ -432,7 +433,7 @@ private void stopMotors() {
                 // ===== SHOT 3 =====
                 //intakeSystemAuto(true, false);
                // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 8)) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12)) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 3" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();
@@ -825,7 +826,7 @@ private boolean waitForOuttakeVelocity(double targetVelocity, double tolerance, 
 
 
 
-    public void PinpointYBlue(double target) {
+    public void PinpointYBlue(double target, double speed) {
 
         odo.setPosY(0,DistanceUnit.MM);
 
@@ -844,7 +845,7 @@ private boolean waitForOuttakeVelocity(double targetVelocity, double tolerance, 
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
 
             double direction = Math.signum(margin);
-            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
+            double power = (AutoConstants.ARTIFACT_PICKUP_SPEED * direction) ;
             double current = odo.getPosY(DistanceUnit.MM);
             margin = target + current;
 

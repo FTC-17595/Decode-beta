@@ -61,15 +61,15 @@ public class AutoRed extends LinearOpMode {
     //      Run up outtake while moving to shoot
                 decodeAuto.OuttakeSystemFar(true);
                 autoMovement.PinpointX(207);
-                autoMovement.gyroTurnToAngle(-23);
+                autoMovement.gyroTurnToAngle(-22);
         //      ============ SHOOT + 9 Points ===========
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
         //      Move to pickup first set of Artifacts
                 decodeAuto.OuttakeSystemFar(true);
                 decodeAuto.gyroTurnToAngle(21.5);
                 odo.resetPosAndIMU();
-                autoMovement.PinpointX(350);
-                autoMovement.gyroTurnToAngle(-92);
+                autoMovement.PinpointX(450);
+                autoMovement.gyroTurnToAngle(-90);
         //      Run the intake while intaking artifacts
                 decodeAuto.intakeRun();
                 autoMovement.PinpointY(800,50);
@@ -87,17 +87,17 @@ public class AutoRed extends LinearOpMode {
                 autoMovement.PinpointX(-750);
                 gyroTurnToAngle(90);
                 odo.resetPosAndIMU();
-                autoMovement.PinpointX(-250);
+                autoMovement.PinpointX(-350);
                 gyroTurnToAngle(-21);
     //          ============ SHOOT + 9 points ===========
                 decodeAuto.setShootState(true);
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
                 telemetry.addData("Shooting Complete",null);
                 // Leave + 3 Points
-                gyroTurnToAngle(28);
+//                gyroTurnToAngle(28);
                 odo.resetPosAndIMU();
-                autoMovement.PinpointX(400);
-                gyroTurnToAngle(-90);
+                autoMovement.PinpointX(200);
+                gyroTurnToAngle(-108);
                 loopFinished = false;
             }
         } catch(Exception e){
