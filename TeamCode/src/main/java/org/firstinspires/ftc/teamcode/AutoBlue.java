@@ -19,7 +19,7 @@ public class AutoBlue extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
 
-    private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     RobotAnimations obj;
@@ -46,145 +46,144 @@ public class AutoBlue extends LinearOpMode {
 
         if (opModeIsActive() && loopFinished && runtime.seconds() < 30) {
 
-            // ----IMPORTANT NOTE: ALL COMMENTS DESCRIBE MOVEMENT FIELD-ORIENTED FACING THE OBELISK---- //
-
             while (!isStopRequested() && loopFinished) {
 
-            alignToTag();
-            if (stopIfNeeded()) return;
+                alignToTag();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.shootAutoArtifactFar();
-            if (stopIfNeeded()) return;
+                autoMovement.shootAutoArtifactFar();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-22);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-22);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(607);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(1500);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeRun();
-            if (stopIfNeeded()) return;
+                autoMovement.intakeRun();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(-1300);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(-1300);
+                if (stopIfNeeded()) return;
 
-            sleep(700);
-            if (stopIfNeeded()) return;
+                sleep(700);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeSystemAuto(false, false);
-            if (stopIfNeeded()) return;
+                autoMovement.intakeSystemAuto(false, false);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(1220);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(1220);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(-200);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(-900);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(31);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(31);
+                if (stopIfNeeded()) return;
 
-            alignToTag();
-            if (stopIfNeeded()) return;
+                alignToTag();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.shootAutoArtifactFar();
-            if (stopIfNeeded()) return;
+                autoMovement.shootAutoArtifactFar();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-31);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-31);
+                if (stopIfNeeded()) return;
 
-            sleep(500);
-            if (stopIfNeeded()) return;
+                sleep(500);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(180);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(180);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeRun();
-            if (stopIfNeeded()) return;
+                autoMovement.intakeRun();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(-1000);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(-1000);
+                if (stopIfNeeded()) return;
 
-            sleep(700);
-            if (stopIfNeeded()) return;
+                sleep(700);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeSystemAuto(false, false);
-            if (stopIfNeeded()) return;
+                autoMovement.intakeSystemAuto(false, false);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(1000);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(1000);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(-400);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(-400);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(35);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(35);
+                if (stopIfNeeded()) return;
 
-            alignToTag();
-            if (stopIfNeeded()) return;
+                alignToTag();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.shootAutoArtifactFar();
-            if (stopIfNeeded()) return;
+                autoMovement.shootAutoArtifactFar();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-35);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-35);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(180);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(180);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeRun();
-            if (stopIfNeeded()) return;
+                autoMovement.intakeRun();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(-1000);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(-1000);
+                if (stopIfNeeded()) return;
 
-            sleep(700);
-            if (stopIfNeeded()) return;
+                sleep(700);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.intakeSystemAuto(false, false);
-            if (stopIfNeeded()) return;
+                autoMovement.intakeSystemAuto(false, false);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointY(1000);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointY(1000);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(-90);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(-90);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(-600);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(-600);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(35);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(35);
+                if (stopIfNeeded()) return;
 
-            alignToTag();
-            if (stopIfNeeded()) return;
+                alignToTag();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.shootAutoArtifactFar();
-            if (stopIfNeeded()) return;
+                autoMovement.shootAutoArtifactFar();
+                if (stopIfNeeded()) return;
 
-            decodeAuto.gyroTurnToAngle(55);
-            if (stopIfNeeded()) return;
+                autoMovement.gyroTurnToAngle(55);
+                if (stopIfNeeded()) return;
 
-            decodeAuto.PinpointX(-600);
-            if (stopIfNeeded()) return;
+                autoMovement.PinpointX(-600);
+                if (stopIfNeeded()) return;
 
-            odo.resetPosAndIMU();
+                odo.resetPosAndIMU();
 
-            loopFinished = true;
+                loopFinished = true;
+            }
         }
     }
 
@@ -239,12 +238,12 @@ public class AutoBlue extends LinearOpMode {
     private void AlignToTag(AprilTagDetection tag) {
         double error, drivePower;
 
-        ElapsedTime alignTimer = new ElapsedTime();  // FIX #7
+        ElapsedTime alignTimer = new ElapsedTime();
 
         error = tag.ftcPose.yaw;
 
         while (opModeIsActive() &&
-                alignTimer.seconds() < 2.0 &&   // FIX #7
+                alignTimer.seconds() < 2.0 &&
                 Math.abs(error) > 1.0) {
 
             odo.update();
@@ -299,11 +298,6 @@ public class AutoBlue extends LinearOpMode {
             telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.update();
 
-            driveMotorsPower = error / 200;
-
-            if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) driveMotorsPower = 0.2;
-            else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) driveMotorsPower = -0.2;
-
             driveMotorsPower = error / 50;
 
             if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) driveMotorsPower = 0.35;
@@ -324,7 +318,8 @@ public class AutoBlue extends LinearOpMode {
     }
 
     private void initAuto() {
-        decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
+
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         odo.setOffsets(65, 142, DistanceUnit.MM);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
