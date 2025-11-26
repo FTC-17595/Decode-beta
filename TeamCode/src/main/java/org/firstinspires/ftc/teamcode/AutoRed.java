@@ -62,7 +62,7 @@ public class AutoRed extends LinearOpMode {
             odo.resetPosAndIMU();
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointX(857);
+            autoMovement.PinpointX(1107);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(-90);
@@ -77,16 +77,13 @@ public class AutoRed extends LinearOpMode {
             sleep(700);
             if (stopIfNeeded()) return;
 
-            autoMovement.intakeSystemAuto(false, false);
-            if (stopIfNeeded()) return;
-
             autoMovement.PinpointY(-1420);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(90);
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointX(-350);
+            autoMovement.PinpointX(-550);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(-31);
