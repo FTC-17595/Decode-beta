@@ -141,7 +141,7 @@ public class ArtifactHandlingSystem {
             return;
         }
 
-        if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN
+        if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN // LONG
                 && rangeInches <= TeleOpConstants.ALIGN_LONG_RANGE_MAX_IN) {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
@@ -150,9 +150,9 @@ public class ArtifactHandlingSystem {
             } else { // RED
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 43.275 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -200.925 / 25.4;
             }
-        } else {
+        } else { // SHORT
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
