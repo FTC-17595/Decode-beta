@@ -191,7 +191,7 @@ public class AutoRed extends LinearOpMode {
             loopFinished = false;
 
             try {
-                if (runtime.seconds() >= 30.0) {
+                if (runtime.seconds() >= 29.0) {
                     telemetry.addLine("Gooooood booooooy. Auto complete. :)");
                     telemetry.update();
                     sleep(1000);
