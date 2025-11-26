@@ -226,12 +226,13 @@ public class AutoMovement {
 
     public void PinpointX(double target) {
 
-        odo.setPosX(0, DistanceUnit.MM);
+//        odo.setPosX(0, DistanceUnit.MM);
+//        sleep(700);
 
         double margin = target + odo.getPosX(DistanceUnit.MM);
 
 
-        while (opModeIsActive() && abs(margin) > 100) {
+        while (opModeIsActive() && abs(margin) > 50) {
             if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
                 break;
             }
@@ -246,7 +247,7 @@ public class AutoMovement {
             linearOpMode.telemetry.addData("Margin", margin);
 
             double direction = Math.signum(margin);
-            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
+            double power = direction * 0.8;
             double current = odo.getPosX(DistanceUnit.MM);
             margin = target + current;
 
