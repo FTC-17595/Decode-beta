@@ -71,7 +71,7 @@ public class AutoRed extends LinearOpMode {
             autoMovement.intakeRun();
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointY(1300);
+            autoMovement.PinpointY(1600);
             if (stopIfNeeded()) return;
 
             sleep(700);
@@ -80,7 +80,7 @@ public class AutoRed extends LinearOpMode {
             autoMovement.intakeSystemAuto(false, false);
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointY(-1220);
+            autoMovement.PinpointY(-1420);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(90);
