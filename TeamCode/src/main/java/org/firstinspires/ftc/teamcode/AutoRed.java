@@ -45,12 +45,7 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        if (opModeIsActive() && loopFinished) {
-            if (runtime.seconds() >= 30.0) {
-                telemetry.addLine("Auto shut down: timer end");
-                telemetry.update();
-                requestOpModeStop();
-            }
+        while (opModeIsActive() && loopFinished && runtime.seconds() < 30) {
 
             // ----IMPORTANT NOTE: ALL COMMENTS DESCRIBE MOVEMENT FIELD-ORIENTED FACING THE OBELISK---- //
 
@@ -111,9 +106,6 @@ public class AutoRed extends LinearOpMode {
             sleep(500); // wait 0.5 sec
             if (stopIfNeeded()) return;
 
-            odo.resetPosAndIMU(); // reset values
-            if (stopIfNeeded()) return;
-
             decodeAuto.PinpointX(180); //
             if (stopIfNeeded()) return;
 
@@ -151,9 +143,6 @@ public class AutoRed extends LinearOpMode {
             if (stopIfNeeded()) return;
 
             decodeAuto.gyroTurnToAngle(35); // turn to face forward (left)
-            if (stopIfNeeded()) return;
-
-            odo.resetPosAndIMU(); // reset values
             if (stopIfNeeded()) return;
 
             decodeAuto.PinpointX(180); // move forward

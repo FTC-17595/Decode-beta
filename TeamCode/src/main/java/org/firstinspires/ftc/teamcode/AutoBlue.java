@@ -17,9 +17,13 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 @Autonomous(name = "Autonomous - Blue Alliance")
 public class AutoBlue extends LinearOpMode {
 
+    ElapsedTime runtime = new ElapsedTime();
+
     private DecodeAuto decodeAuto;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
+    RobotAnimations obj;
+
     int counter = 0;
     boolean PPG = false;
     boolean PGP = false;
@@ -40,12 +44,7 @@ public class AutoBlue extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        if (opModeIsActive() && loopFinished) {
-            if (runtime.seconds() >= 30.0) {
-                telemetry.addLine("Auto shut down: timer end");
-                telemetry.update();
-                requestOpModeStop();
-            }
+        if (opModeIsActive() && loopFinished && runtime.seconds() < 30) {
 
             // ----IMPORTANT NOTE: ALL COMMENTS DESCRIBE MOVEMENT FIELD-ORIENTED FACING THE OBELISK---- //
 
@@ -58,9 +57,6 @@ public class AutoBlue extends LinearOpMode {
             if (stopIfNeeded()) return;
 
             decodeAuto.gyroTurnToAngle(-22);
-            if (stopIfNeeded()) return;
-
-            odo.resetPosAndIMU();
             if (stopIfNeeded()) return;
 
             decodeAuto.PinpointX(607);
@@ -105,9 +101,6 @@ public class AutoBlue extends LinearOpMode {
             sleep(500);
             if (stopIfNeeded()) return;
 
-            odo.resetPosAndIMU();
-            if (stopIfNeeded()) return;
-
             decodeAuto.PinpointX(180);
             if (stopIfNeeded()) return;
 
@@ -145,9 +138,6 @@ public class AutoBlue extends LinearOpMode {
             if (stopIfNeeded()) return;
 
             decodeAuto.gyroTurnToAngle(-35);
-            if (stopIfNeeded()) return;
-
-            odo.resetPosAndIMU();
             if (stopIfNeeded()) return;
 
             decodeAuto.PinpointX(180);
