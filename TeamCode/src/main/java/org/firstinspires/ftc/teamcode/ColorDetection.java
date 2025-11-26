@@ -123,7 +123,7 @@ public class ColorDetection {
             return;
         }
 
-        if (Math.abs(actualVelocity - targetVelocity) <= 10) {
+        if (Math.abs(actualVelocity - targetVelocity) <= 15) {
             // At target velocity - blue
             outtakeIndicator.setPosition(TeleOpConstants.BLUE);
             return;
