@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Red Alliance")
+@Autonomous(name = "AutoRed")
 public class AutoRed extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
@@ -208,7 +208,6 @@ public class AutoRed extends LinearOpMode {
         }
     }
 
-    // driveToPos, AlignToTag, getLatestTag stay unchanged
 
     private void initAuto() {
 
@@ -243,12 +242,6 @@ public class AutoRed extends LinearOpMode {
         imu.initialize(parameters);
         imu.resetYaw();
 
-        ElapsedTime timer = new ElapsedTime();
-        if (timer.seconds() >= 1.0) {
-            counter++;
-            timer.reset();
-            telemetry.addData("Counter:", counter);
-            telemetry.update();
         }
     }
 }

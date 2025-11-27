@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Blue Alliance")
+@Autonomous(name = "AutoBlue")
 public class AutoBlue extends LinearOpMode {
 
     ElapsedTime runtime = new ElapsedTime();
