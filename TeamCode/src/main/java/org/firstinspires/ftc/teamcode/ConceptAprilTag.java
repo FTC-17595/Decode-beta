@@ -119,7 +119,7 @@ public class ConceptAprilTag extends LinearOpMode {
     /**
      * Initialize the AprilTag processor.
      */
-    public void initAprilTag() {
+    private void initAprilTag() {
 
         // Create the AprilTag processor.
         aprilTag = new AprilTagProcessor.Builder()
