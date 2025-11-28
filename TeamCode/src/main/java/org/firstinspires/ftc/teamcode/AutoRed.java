@@ -21,16 +21,10 @@ public class AutoRed extends LinearOpMode {
     private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-
     RobotAnimations obj;
-    boolean PPG = false;
-    boolean PGP = false;
-    boolean GPP = false;
     boolean loopFinished = true;
-
     IMU imu;
     AprilTagProcessor tagProcessor;
-
     private boolean stopIfNeeded() {
         return !opModeIsActive() || runtime.seconds() >= 30.0;
     }
@@ -60,7 +54,7 @@ public class AutoRed extends LinearOpMode {
             odo.resetPosAndIMU();
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointX(1557);
+            autoMovement.PinpointX(907);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(-90);
@@ -69,19 +63,19 @@ public class AutoRed extends LinearOpMode {
             autoMovement.intakeRun();
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointY(1600);
+            autoMovement.PinpointY(1400);
             if (stopIfNeeded()) return;
 
             sleep(700);
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointY(-1600);
+            autoMovement.PinpointY(-1400);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(90);
             if (stopIfNeeded()) return;
 
-            autoMovement.PinpointX(-1400);
+            autoMovement.PinpointX(-800);
             if (stopIfNeeded()) return;
 
             autoMovement.gyroTurnToAngle(-20);
