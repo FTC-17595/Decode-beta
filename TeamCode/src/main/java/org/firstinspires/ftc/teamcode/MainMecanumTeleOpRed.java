@@ -47,7 +47,6 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
             artifactHandlingSystem.flapSystem(robotControls.flapArtifact);
             artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
-            artifactHandlingSystem.autoShootingSystemTeleOp(robotControls.autoShoot);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
             artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
