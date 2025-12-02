@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -20,6 +21,13 @@ public class DriveTrain {
 
     private double ROTATE_SPEED_ADJUSTER = TeleOpConstants.RIGHT_JOYSTICK_SPEED_ADJUSTER;
     private double DRIVE_AND_STRAFE_SPEED_ADJUSTER = TeleOpConstants.LEFT_JOYSTICK_SPEED_ADJUSTER;
+	private final SimplePIDController headingController = new SimplePIDController(
+			TeleOpConstants.HEADING_KP,
+			TeleOpConstants.HEADING_KI,
+			TeleOpConstants.HEADING_KD);
+	private final ElapsedTime headingTimer = new ElapsedTime();
+	private boolean headingHoldActive = false;
+	private double headingTargetDeg = 0.0;
 
     public DriveTrain(LinearOpMode linearOpMode) {
         frontLeftMotor = linearOpMode.hardwareMap.dcMotor.get("frontLeftMotor");
@@ -144,6 +152,16 @@ public class DriveTrain {
         return new Rotation(rotX, rotY);
     }
 
+	private static double wrapAngleDeg(double angleDeg) {
+		while (angleDeg <= -180.0) {
+			angleDeg += 360.0;
+		}
+		while (angleDeg > 180.0) {
+			angleDeg -= 360.0;
+		}
+		return angleDeg;
+	}
+
     public void displayTelemetry() {
         linearOpMode.telemetry.addData("Left Stick (X, Y)", "%5.2f, %5.2f", linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, -linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER);
         linearOpMode.telemetry.addData("Right Stick (Rotation)", "%5.2f", linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER);
@@ -153,6 +171,8 @@ public class DriveTrain {
         linearOpMode.telemetry.addData("Slow Mode", linearOpMode.gamepad1.right_bumper);
         linearOpMode.telemetry.addData("Yaw, Pitch, Roll", imu.getRobotYawPitchRollAngles());
         linearOpMode.telemetry.addData("Reset Yaw", linearOpMode.gamepad1.back);
+		linearOpMode.telemetry.addData("Heading Hold", headingHoldActive);
+		linearOpMode.telemetry.addData("Heading Target (deg)", headingTargetDeg);
 
         linearOpMode.telemetry.addData("Front Left Position", frontLeftMotor.getCurrentPosition());
         linearOpMode.telemetry.addData("Front Right Position", frontRightMotor.getCurrentPosition());
@@ -173,6 +193,8 @@ public class DriveTrain {
         packet.put("backLeftPosition", backLeftMotor.getCurrentPosition());
         packet.put("backRightPosition", backRightMotor.getCurrentPosition());
         packet.put("counter", counter);
+		packet.put("headingHold", headingHoldActive);
+		packet.put("headingTargetDeg", headingTargetDeg);
         dashboard.sendTelemetryPacket(packet);
     }
 
@@ -181,7 +203,61 @@ public class DriveTrain {
             return;
         }
 
-        Powers motorPower = getPowers(-linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER, linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER, linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER);
+		// Determine heading hold target based on D-pad (hold-to-maintain heading)
+		boolean up = linearOpMode.gamepad1.dpad_up;
+		boolean down = linearOpMode.gamepad1.dpad_down;
+		boolean left = linearOpMode.gamepad1.dpad_left;
+		boolean right = linearOpMode.gamepad1.dpad_right;
+
+		if (up || down || left || right) {
+			if (up) {
+				headingTargetDeg = 0.0;
+			} else if (left) {
+				headingTargetDeg = -90.0;
+			} else if (right) {
+				headingTargetDeg = 90.0;
+			} else { // down
+				headingTargetDeg = 180.0;
+			}
+			if (!headingHoldActive) {
+				headingController.reset();
+				headingTimer.reset();
+			}
+			headingHoldActive = true;
+		} else {
+			headingHoldActive = false;
+			headingController.reset();
+		}
+
+		// Compute rotation command: either driver right stick, or heading-hold PID if active
+		double rxCommand;
+		if (headingHoldActive) {
+			double currentYawDeg = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+			double errorDeg = wrapAngleDeg(headingTargetDeg - currentYawDeg);
+			double dt = headingTimer.seconds();
+			headingTimer.reset();
+			if (dt <= 0.0) {
+				dt = 1e-3;
+			}
+			double turn = headingController.calculate(errorDeg, dt);
+			// Apply deadband near target and clamp
+			if (Math.abs(errorDeg) <= TeleOpConstants.HEADING_TOLERANCE_DEG) {
+				turn = 0.0;
+			}
+			if (turn > TeleOpConstants.HEADING_MAX_TURN_POWER) {
+				turn = TeleOpConstants.HEADING_MAX_TURN_POWER;
+			} else if (turn < -TeleOpConstants.HEADING_MAX_TURN_POWER) {
+				turn = -TeleOpConstants.HEADING_MAX_TURN_POWER;
+			}
+			rxCommand = turn / ROTATE_SPEED_ADJUSTER;
+		} else {
+			rxCommand = linearOpMode.gamepad1.right_stick_x / ROTATE_SPEED_ADJUSTER;
+		}
+
+		Powers motorPower = getPowers(
+				-linearOpMode.gamepad1.left_stick_y / DRIVE_AND_STRAFE_SPEED_ADJUSTER,
+				linearOpMode.gamepad1.left_stick_x / DRIVE_AND_STRAFE_SPEED_ADJUSTER,
+				rxCommand);
         frontLeftMotor.setPower(motorPower.getFrontLeftPower());
         frontRightMotor.setPower(motorPower.getFrontRightPower());
         backLeftMotor.setPower(motorPower.getBackLeftPower());
