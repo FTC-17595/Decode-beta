@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main Mecanum TeleOp Red")
-public class MainMecanumTeleOpRed extends LinearOpMode {
+@TeleOp(name = "Single Controller Main Mecanum TeleOp Red")
+public class SingleControllerMainMecanumTeleOpRed extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
-    private RobotControls robotControls;
+    private SingleControllerControls robotControls;
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
     private AprilTagAligner aprilTagAligner;
@@ -15,7 +15,7 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
-        robotControls = new RobotControls(this);
+        robotControls = new SingleControllerControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
         aprilTagAligner = new AprilTagAligner(this, driveTrain, 24);

@@ -10,8 +10,10 @@ public class TeleOpConstants {
     final static double VIOLET = 0.720;
     final static double RED = 0.333;
     final static double BLUE = 0.611;
-    final static double SHORT_RANGE_VELOCITY = 1225;
-    final static double LONG_RANGE_VELOCITY = 1385;
+    final static double SHORT_RANGE_VELOCITY = 1160;
+    final static double MEDIUM_RANGE_VELOCITY = 1225;
+    final static double LONG_RANGE_VELOCITY = 1275;
+    final static double EXTRA_LONG_RANGE_VELOCITY = 1390;
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
     final static double MAX_VELOCITY = 2300.0;
@@ -24,10 +26,10 @@ public class TeleOpConstants {
     final static long PREFIRE_WAIT_MS = 200;
     final static double CELEBRATION_SPEED = 3500;
     final static int WAIT_FOR_MOTOR_OFFSET = 20;
-    final static double kP = 28.0;
-    final static double kI = 0.00;
-    final static double kD = 12.0;
-    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.92;
+    final static double kP = 60.0; // 7s: 18.0, 5s: 28.0, 3s: 34.0, 2.5s: 38.0, 2s: 44.0, 1.5s: 52.0, 1s: 60.0
+    final static double kI = 0.000; // 7s: 0.15, 5s: 0.00, 3s: 0.005, 2.5s: 0.003, 2s: 0.002, 1.5s: 0.000, 1s: 0.000
+    final static double kD = 26.5; // 7s: 7.5, 5s: 12.0, 3s: 13.0, 2.5s: 15.0, 2s: 17.0, 1.5s: 20.0, 1s: 24.0
+    final static double kF = 32767 / TeleOpConstants.MAX_VELOCITY * 0.98; // 7s: *0.88, 5s: *0.92, 3s: *0.93, 2.5s: *0.94, 2s: *0.95, 1.5s: *0.965, 1s: *0.98
     final static double OPENCV_IMAGE_WIDTH = 1280;
     final static double OPENCV_IMAGE_HEIGHT = 720;
     final static double ALIGN_STRAFE_KP = 0.02;
@@ -42,7 +44,16 @@ public class TeleOpConstants {
     final static double ALIGN_MAX_TURN_POWER = 0.25;
     final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
-    final static double ALIGN_LONG_RANGE_MIN_IN = 45;
-    final static double ALIGN_LONG_RANGE_MAX_IN = 60;
+    final static double ALIGN_EXTRA_LONG_RANGE_MIN_IN = 45;
+    final static double ALIGN_EXTRA_LONG_RANGE_MAX_IN = 65;
+    final static double ALIGN_LONG_RANGE_MIN_IN = 40;
+    final static double ALIGN_LONG_RANGE_MAX_IN = 44.99;
+    final static double ALIGN_MEDIUM_RANGE_MIN_IN = 30;
+    final static double ALIGN_MEDIUM_RANGE_MAX_IN = 39.99;
     public static double CAMERA_OFFSET_X_IN_RUNTIME = CAMERA_OFFSET_X_IN;
+	final static double HEADING_KP = 15;
+	final static double HEADING_KI = 0.0;
+	final static double HEADING_KD = 60;
+	final static double HEADING_MAX_TURN_POWER = 0.75;
+	final static double HEADING_TOLERANCE_DEG = 1.0;
 }

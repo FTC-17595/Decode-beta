@@ -141,22 +141,44 @@ public class ArtifactHandlingSystem {
             return;
         }
 
-        if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN
+        if (rangeInches >= TeleOpConstants.ALIGN_EXTRA_LONG_RANGE_MIN_IN // EXTRA LONG
+                && rangeInches <= TeleOpConstants.ALIGN_EXTRA_LONG_RANGE_MAX_IN) {
+            if (tagId == 20) { // BLUE
+                launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
+                autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -127 / 25.4;
+            } else { // RED
+                launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
+                autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -127 / 25.4;
+            }
+        } else if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN // LONG
                 && rangeInches <= TeleOpConstants.ALIGN_LONG_RANGE_MAX_IN) {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -150 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 43.275 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
             }
-        } else {
+        } else if (rangeInches >= TeleOpConstants.ALIGN_MEDIUM_RANGE_MIN_IN // MEDIUM
+                && rangeInches <= TeleOpConstants.ALIGN_MEDIUM_RANGE_MAX_IN) {
+            if (tagId == 20) { // BLUE
+                launchVelocity = TeleOpConstants.MEDIUM_RANGE_VELOCITY;
+                autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+            } else { // RED
+                launchVelocity = TeleOpConstants.MEDIUM_RANGE_VELOCITY;
+                autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+            }
+        } else { // SHORT
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -200 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;

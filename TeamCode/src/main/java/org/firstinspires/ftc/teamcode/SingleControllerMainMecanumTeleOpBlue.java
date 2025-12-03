@@ -3,38 +3,45 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Single Controller TeleOp")
-public class SingleControllerTeleOp extends LinearOpMode {
+@TeleOp(name = "Single Controller Main Mecanum TeleOp Blue")
+public class SingleControllerMainMecanumTeleOpBlue extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
-    private singleController robotControls;
+    private SingleControllerControls robotControls;
     private DriveTrain driveTrain;
     private ColorDetection colorDetection;
-
-
+    private AprilTagAligner aprilTagAligner;
 
     @Override
     public void runOpMode() throws InterruptedException {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
-        robotControls = new singleController(this);
+        robotControls = new SingleControllerControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
-
+        aprilTagAligner = new AprilTagAligner(this, driveTrain, 20);
 
         configureMotorModes();
 
-        waitForStart();
-        if (isStopRequested()) return;
-        mainTeleOpLoop();
+        try {
+            waitForStart();
+            if (isStopRequested()) {
+                return;
+            }
+            mainTeleOpLoop();
+        } finally {
+            if (aprilTagAligner != null) {
+                aprilTagAligner.close();
+            }
+        }
     }
 
     private void mainTeleOpLoop() throws InterruptedException {
         while (opModeIsActive()) {
             robotControls.updateControls();
-
+            aprilTagAligner.updateDetection();
+            artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches(), aprilTagAligner.getTargetedTagId());
 
             driveTrain.adjustTurnSpeed();
-            driveTrain.setMotorPowers();
             driveTrain.resetYaw();
             artifactHandlingSystem.shootingSystem(robotControls.shootArtifact, robotControls.motorBrake);
             artifactHandlingSystem.flapSystem(robotControls.flapArtifact);
@@ -44,6 +51,12 @@ public class SingleControllerTeleOp extends LinearOpMode {
             artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);
             colorDetection.setRGBIndicator();
+            colorDetection.setOuttakeIndicatorWithVelocity(
+                    artifactHandlingSystem.getLaunchVelocity(),
+                    artifactHandlingSystem.getActualVelocity()
+            );
+            aprilTagAligner.align(robotControls.alignRobot);
+
             displayTelemetry();
         }
     }
@@ -58,6 +71,8 @@ public class SingleControllerTeleOp extends LinearOpMode {
         driveTrain.displayTelemetry();
         artifactHandlingSystem.displayTelemetry();
         colorDetection.displayTelemetry();
+        robotControls.displayTelemetry();
+        aprilTagAligner.displayTelemetry();
 
         telemetry.update();
     }
