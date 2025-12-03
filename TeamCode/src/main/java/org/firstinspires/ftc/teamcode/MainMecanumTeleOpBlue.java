@@ -40,6 +40,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             robotControls.updateControls();
             aprilTagAligner.updateDetection();
             artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches(), aprilTagAligner.getTargetedTagId());
+            aprilTagAligner.setRangeHoldEnabled(artifactHandlingSystem.getLaunchVelocity() == TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY);
 
             driveTrain.adjustTurnSpeed();
             driveTrain.resetYaw();

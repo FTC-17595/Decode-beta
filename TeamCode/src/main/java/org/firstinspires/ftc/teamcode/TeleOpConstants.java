@@ -13,7 +13,7 @@ public class TeleOpConstants {
     final static double SHORT_RANGE_VELOCITY = 1160;
     final static double MEDIUM_RANGE_VELOCITY = 1225;
     final static double LONG_RANGE_VELOCITY = 1275;
-    final static double EXTRA_LONG_RANGE_VELOCITY = 1390;
+    final static double EXTRA_LONG_RANGE_VELOCITY = 1380;
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
     final static double MAX_VELOCITY = 2300.0;
@@ -38,10 +38,15 @@ public class TeleOpConstants {
     final static double ALIGN_TURN_KP = 0.01;
     final static double ALIGN_TURN_KI = 0.0;
     final static double ALIGN_TURN_KD = 0.0005;
+    final static double ALIGN_FORWARD_KP = 0.04;
+    final static double ALIGN_FORWARD_KI = 0.0;
+    final static double ALIGN_FORWARD_KD = 0.001;
     final static double ALIGN_STRAFE_TOLERANCE_IN = 0.75;
     final static double ALIGN_BEARING_TOLERANCE_DEG = 1.5;
+    final static double ALIGN_RANGE_TOLERANCE_IN = 1.0;
     final static double ALIGN_MAX_STRAFE_POWER = 0.35;
     final static double ALIGN_MAX_TURN_POWER = 0.25;
+    final static double ALIGN_MAX_FORWARD_POWER = 0.35;
     final static double CAMERA_OFFSET_X_IN = 43.275 / 25.4;
     final static double CAMERA_OFFSET_Y_IN = 220.0 / 25.4;
     final static double ALIGN_EXTRA_LONG_RANGE_MIN_IN = 45;
@@ -50,6 +55,7 @@ public class TeleOpConstants {
     final static double ALIGN_LONG_RANGE_MAX_IN = 44.99;
     final static double ALIGN_MEDIUM_RANGE_MIN_IN = 30;
     final static double ALIGN_MEDIUM_RANGE_MAX_IN = 39.99;
+    final static double ALIGN_TARGET_RANGE_EXTRA_LONG_IN = 50.0;
     public static double CAMERA_OFFSET_X_IN_RUNTIME = CAMERA_OFFSET_X_IN;
 	final static double HEADING_KP = 15;
 	final static double HEADING_KI = 0.0;
