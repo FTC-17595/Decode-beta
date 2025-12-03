@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -252,7 +252,7 @@ public class ArtifactHandlingSystem {
 
     public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
         if (shootArtifact > 0) {
-            outtakeMotor.setVelocity(AutoConstants.LONG_RANGE_VELOCITY);
+            outtakeMotor.setVelocity(TeleOpConstants.LONG_RANGE_VELOCITY);
         } else if (rejectArtifact > 0) {
             outtakeMotor.setVelocity(-launchVelocity * rejectArtifact);
         } else {

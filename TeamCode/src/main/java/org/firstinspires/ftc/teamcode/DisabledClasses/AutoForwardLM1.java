@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.DisabledClasses;
 
-//import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_X;
-//import static org.firstinspires.ftc.teamcode.AutoConstants.CLASSIFIER_Y;
+//import static org.firstinspires.ftc.teamcode.Auto.AutoConstants.CLASSIFIER_X;
+//import static org.firstinspires.ftc.teamcode.Auto.AutoConstants.CLASSIFIER_Y;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;

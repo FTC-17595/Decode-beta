@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
-import static android.os.SystemClock.sleep;
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
 
@@ -12,13 +11,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.teamcode.TeleOp.TeleOpConstants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,7 +22,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import java.util.Locale;
-import java.util.List;
 
 public class AutoMovement {
 
@@ -211,9 +206,9 @@ public class AutoMovement {
 
     public void AutoflapSystem(boolean flapUp) {
         if (flapUp) {
-            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+            flapServo.setPosition(AutoConstants.FLAP_SERVO_UP);
         } else {
-            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+            flapServo.setPosition(AutoConstants.FLAP_SERVO_DOWN);
         }
     }
 

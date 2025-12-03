@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import static android.os.SystemClock.sleep;
 import static java.lang.Math.abs;
@@ -17,8 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -464,43 +463,7 @@ private void stopMotors() {
 
     }
 
-    public void shootAutoArtifactTriple() {
-        final int shotCount = 3;
-        final double targetVelocity = AutoConstants.LONG_RANGE_VELOCITY;
-        final double velocityTolerance = 5;
-        final long flapDelayMs = (long) AutoConstants.FLAP_SLEEP;
-        final long initialSpinupTimeoutMs = (long) AutoConstants.SHOOTING_SPINUP_TIME;
-        final long feedMs = TeleOpConstants.FEED_MS;
-        final long feedSettleMs = TeleOpConstants.FEED_SETTLE_MS;
 
-        OuttakeSystemFar(true);
-
-        if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, initialSpinupTimeoutMs)) {
-            OuttakeSystemFar(false);
-            return;
-        }
-
-        for (int shot = 0; shot < shotCount && opModeIsActive(); shot++) {
-            AutoflapSystem(true);
-            sleep(flapDelayMs);
-            AutoflapSystem(false);
-            sleep(flapDelayMs);
-
-            if (shot < shotCount - 1 && opModeIsActive()) {
-                intakeSystemAuto(true, false);
-                sleep(feedMs);
-                intakeStop();
-                sleep(feedSettleMs);
-
-                if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, TeleOpConstants.SPINUP_MS)) {
-                    break;
-                }
-            }
-        }
-
-        OuttakeSystemFar(false);
-        intakeStop();
-    }
 
     public void shootAutoArtifactNear() {
 //        while (opModeIsActive() && loopState) {
@@ -612,16 +575,7 @@ private void stopMotors() {
 //            loopState = false;
 //        }
 //    }
-    public void shootAutoArtifactSingle(){
-            OuttakeSystemFar(true);
-             sleep(3000);
-            AutoflapSystem(true);
-            sleep(870);
-//            AutoflapSystem(false);
-        flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
 
-
-    }
     public void intakeSystemAuto(boolean intakeArtifact, boolean rejectArtifact) {
         if (intakeArtifact) {
             intakeMotor.setPower(1);
@@ -735,9 +689,9 @@ private void stopMotors() {
 
     public void AutoflapSystem(boolean flapUp) {
         if (flapUp) {
-            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+            flapServo.setPosition(AutoConstants.FLAP_SERVO_UP);
         } else {
-            flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+            flapServo.setPosition(AutoConstants.FLAP_SERVO_DOWN);
         }
     }
 

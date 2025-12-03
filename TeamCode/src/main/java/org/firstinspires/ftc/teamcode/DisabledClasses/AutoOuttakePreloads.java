@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.ArtifactHandlingSystem;
+import org.firstinspires.ftc.teamcode.TeleOp.ArtifactHandlingSystem;
 
 @Autonomous(name = "Auto Outtake Preloads")
 @Disabled

@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Main Mecanum TeleOp Red")
-public class MainMecanumTeleOpRed extends LinearOpMode {
+@TeleOp(name = "Main Mecanum TeleOp Blue")
+public class MainMecanumTeleOpBlue extends LinearOpMode {
 
     private ArtifactHandlingSystem artifactHandlingSystem;
     private RobotControls robotControls;
@@ -18,7 +18,7 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
         robotControls = new RobotControls(this);
         driveTrain = new DriveTrain(this);
         colorDetection = new ColorDetection(this);
-        aprilTagAligner = new AprilTagAligner(this, driveTrain, 24);
+        aprilTagAligner = new AprilTagAligner(this, driveTrain, 20);
 
         configureMotorModes();
 
@@ -47,7 +47,6 @@ public class MainMecanumTeleOpRed extends LinearOpMode {
             artifactHandlingSystem.flapSystem(robotControls.flapArtifact);
             artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
-            artifactHandlingSystem.autoShootingSystemTeleOp(robotControls.autoShoot);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
             artifactHandlingSystem.checkMotorHealth();
             colorDetection.celebrateToggle(robotControls.celebrate);

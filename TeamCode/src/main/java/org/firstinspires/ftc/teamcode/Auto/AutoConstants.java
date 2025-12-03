@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class AutoConstants {
 
@@ -28,5 +26,7 @@ public class AutoConstants {
     final static double SHOOTING_SPINUP_TIME = 2000;
     final static double FLAP_SLEEP = 250;
     final static long FEED_TIME_AUTO = 900;
+    final static double FLAP_SERVO_UP = 1.0;
+    final static double FLAP_SERVO_DOWN = 0.67;
 
 }

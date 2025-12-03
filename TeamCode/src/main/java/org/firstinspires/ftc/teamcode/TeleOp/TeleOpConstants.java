@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 public class TeleOpConstants {
     final static double LEFT_JOYSTICK_SPEED_ADJUSTER = 1.0;

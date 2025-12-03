@@ -7,10 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.ArtifactHandlingSystem;
-import org.firstinspires.ftc.teamcode.ColorDetection;
-import org.firstinspires.ftc.teamcode.DriveTrain;
-import org.firstinspires.ftc.teamcode.RobotControls;
+import org.firstinspires.ftc.teamcode.TeleOp.ArtifactHandlingSystem;
+import org.firstinspires.ftc.teamcode.TeleOp.ColorDetection;
+import org.firstinspires.ftc.teamcode.TeleOp.DriveTrain;
+import org.firstinspires.ftc.teamcode.TeleOp.RobotControls;
 
 @TeleOp
 @Disabled

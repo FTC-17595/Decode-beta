@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Near - Blue Alliance")
-public class AutoBlueNear extends LinearOpMode {
+@Autonomous(name = "Autonomous - Red Alliance")
+public class AutoRed extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
     private AutoMovement autoMovement;
@@ -29,10 +29,10 @@ public class AutoBlueNear extends LinearOpMode {
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException{
 
         initAuto();
-        waitForStart();
+//        waitForStart();
 //        Thread intakeThread = new Thread(() -> {
 //142 65
 //            while (opModeIsActive()) {
@@ -53,58 +53,65 @@ public class AutoBlueNear extends LinearOpMode {
 //                .build();
 //
 //        AprilTagDetection tag = tagProcessor.getDetections().get(0);
-
+//  TODO: If implemented, look for a commented thing in the initAuto();
 
         waitForStart();
-        while (!isStopRequested() && (loopFinished = true)) {
+        try {
+            while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
+    //      Run up outtake while moving to shoot
+                decodeAuto.OuttakeSystemFar(true);
+                autoMovement.PinpointX(120);
+                autoMovement.gyroTurnToAngle(-22);
+        //      ============ SHOOT + 9 Points ===========
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+        //      Move to pickup first set of Artifacts
+                decodeAuto.OuttakeSystemFar(true);
+                decodeAuto.gyroTurnToAngle(22);
+//                odo.resetPosAndIMU();
+                autoMovement.PinpointX(520);
+                autoMovement.gyroTurnToAngle(-90);
+        //      Run the intake while intaking artifacts
+                decodeAuto.intakeRun();
+                autoMovement.PinpointY(800,50);
+                sleep(700);
+                decodeAuto.intakeSystemAuto(false,false);
+/*
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(500);
+*/
+/*
+ */
+    //          Spin up outtake while moving back to shoot
 
-            decodeAuto.OuttakeSystemNear(true);
-
-            autoMovement.PinpointX(-1300);
-
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
-
-            odo.setPosX(0,DistanceUnit.MM);
-
-            autoMovement.PinpointX(-1400);
-
-            decodeAuto.shootAutoArtifactNear();
-
-            decodeAuto.gyroTurnToAngle(45);
-
-            odo.resetPosAndIMU();
-
-            decodeAuto.intakeSystemAuto(true,false);
-
-            autoMovement.PinpointX(800);
-
-            autoMovement.PinpointX(-700);
-
-            decodeAuto.intakeSystemAuto(false,false);
-
-            decodeAuto.gyroTurnToAngle(-41);
-
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
-
-//            decodeAuto.intakeRun();
-////            sleep(1000);
-//            decodeAuto.PinpointYBlue(900);
-//            sleep(700);
-//            decodeAuto.intakeSystemAuto(false,false);
-//            decodeAuto.PinpointYBlue(-800);
-//            gyroTurnToAngle(-90);
-//            decodeAuto.PinpointX(-350);
-//            decodeAuto.gyroTurnToAngle(19);
-//            decodeAuto.shootAutoArtifactFar();
-//            decodeAuto.gyroTurnToAngle(-19);
-//            decodeAuto.PinpointX(100);
-//            decodeAuto.gyroTurnToAngle(90);
-//            loopFinished = true;
-
-//        } else {
-//            return;
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(-750);
+                gyroTurnToAngle(90);
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(-250);
+                gyroTurnToAngle(-21);
+    //          ============ SHOOT + 9 points ===========
+                decodeAuto.setShootState(true);
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+                telemetry.addData("Shooting Complete",null);
+                // Leave + 3 Points
+//                gyroTurnToAngle(28);
+                odo.resetPosAndIMU();
+                autoMovement.PinpointX(200);
+                gyroTurnToAngle(-108);
+                loopFinished = false;
+            }
+        } catch(Exception e){
+//            decodeAuto.stopAllMotors();
         }
-
+         finally {
+            // Always stop all motors when opmode ends, regardless of how it ends
+//            decodeAuto.stopAllMotors();
+//            // Also stop drive motors directly as a safety measure
+//            frontLeftMotor.setPower(0);
+//            backLeftMotor.setPower(0);
+//            frontRightMotor.setPower(0);
+//            backRightMotor.setPower(0);
+        }
 
 
 
@@ -371,6 +378,7 @@ public class AutoBlueNear extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         this.imu.initialize(parameters);
         this.imu.resetYaw();
+//        tagProcessor = AprilTagProcessor.easyCreateWithDefaults();
 
         ElapsedTime timer = new ElapsedTime();
 
@@ -386,4 +394,3 @@ public class AutoBlueNear extends LinearOpMode {
 
     }
 }
-

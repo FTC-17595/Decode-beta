@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.DisabledClasses;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,14 +12,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Auto.AutoConstants;
+import org.firstinspires.ftc.teamcode.Auto.DecodeAuto;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Red Alliance")
-public class AutoRed extends LinearOpMode {
+@Autonomous(name = "Autonomous - Shooting")
+@Disabled
+public class shootTestingAuto extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
-    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -56,62 +59,13 @@ public class AutoRed extends LinearOpMode {
 //  TODO: If implemented, look for a commented thing in the initAuto();
 
         waitForStart();
-        try {
-            while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
-    //      Run up outtake while moving to shoot
-                decodeAuto.OuttakeSystemFar(true);
-                autoMovement.PinpointX(120);
-                autoMovement.gyroTurnToAngle(-22);
-        //      ============ SHOOT + 9 Points ===========
-                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-        //      Move to pickup first set of Artifacts
-                decodeAuto.OuttakeSystemFar(true);
-                decodeAuto.gyroTurnToAngle(22);
-//                odo.resetPosAndIMU();
-                autoMovement.PinpointX(520);
-                autoMovement.gyroTurnToAngle(-90);
-        //      Run the intake while intaking artifacts
-                decodeAuto.intakeRun();
-                autoMovement.PinpointY(800,50);
-                sleep(700);
-                decodeAuto.intakeSystemAuto(false,false);
-/*
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(500);
-*/
-/*
- */
-    //          Spin up outtake while moving back to shoot
+        if (opModeIsActive() && (loopFinished)) {
+            decodeAuto.shootAutoArtifactFar(1380);
+            loopFinished = false;
+//        } else {
+//            return;
+        }
 
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-750);
-                gyroTurnToAngle(90);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-250);
-                gyroTurnToAngle(-21);
-    //          ============ SHOOT + 9 points ===========
-                decodeAuto.setShootState(true);
-                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-                telemetry.addData("Shooting Complete",null);
-                // Leave + 3 Points
-//                gyroTurnToAngle(28);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(200);
-                gyroTurnToAngle(-108);
-                loopFinished = false;
-            }
-        } catch(Exception e){
-//            decodeAuto.stopAllMotors();
-        }
-         finally {
-            // Always stop all motors when opmode ends, regardless of how it ends
-//            decodeAuto.stopAllMotors();
-//            // Also stop drive motors directly as a safety measure
-//            frontLeftMotor.setPower(0);
-//            backLeftMotor.setPower(0);
-//            frontRightMotor.setPower(0);
-//            backRightMotor.setPower(0);
-        }
 
 
 
@@ -343,7 +297,6 @@ public class AutoRed extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
-        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60

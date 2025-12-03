@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -14,10 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Shooting")
-public class shootTestingAuto extends LinearOpMode {
+@Autonomous(name = "Autonomous - Blue Alliance")
+public class AutoBlue extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -28,10 +29,10 @@ public class shootTestingAuto extends LinearOpMode {
     IMU imu;
     AprilTagProcessor tagProcessor;
     @Override
-    public void runOpMode() throws InterruptedException{
+    public void runOpMode() throws InterruptedException {
 
         initAuto();
-//        waitForStart();
+        waitForStart();
 //        Thread intakeThread = new Thread(() -> {
 //142 65
 //            while (opModeIsActive()) {
@@ -52,14 +53,49 @@ public class shootTestingAuto extends LinearOpMode {
 //                .build();
 //
 //        AprilTagDetection tag = tagProcessor.getDetections().get(0);
-//  TODO: If implemented, look for a commented thing in the initAuto();
+
 
         waitForStart();
-        if (opModeIsActive() && (loopFinished)) {
+        try{
+        while (!isStopRequested() && (loopFinished = true)) {
+            decodeAuto.OuttakeSystemFar(true);
+
+            autoMovement.PinpointX(207);
+
+            decodeAuto.gyroTurnToAngle(21);
+
             decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-            loopFinished = false;
+
+            decodeAuto.gyroTurnToAngle(-21);
+
+            odo.resetPosAndIMU();
+
+            autoMovement.PinpointX(425);
+
+            decodeAuto.gyroTurnToAngle(90);
+
+            decodeAuto.intakeRun();
+//            sleep(1000);
+            decodeAuto.OuttakeSystemFar(true);
+            decodeAuto.PinpointYBlue(900,50);
+            sleep(700);
+            decodeAuto.intakeSystemAuto(false, false);
+            decodeAuto.PinpointYBlue(-730,50);
+            gyroTurnToAngle(-90);
+            autoMovement.PinpointX(-350);
+            decodeAuto.gyroTurnToAngle(22);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+            telemetry.addData("Shooting Complete",null);
+            odo.resetPosAndIMU();
+            autoMovement.PinpointX(200);
+            loopFinished = true;
+        }
 //        } else {
 //            return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+
         }
 
 
@@ -293,6 +329,7 @@ public class shootTestingAuto extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
@@ -327,7 +364,6 @@ public class shootTestingAuto extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         this.imu.initialize(parameters);
         this.imu.resetYaw();
-//        tagProcessor = AprilTagProcessor.easyCreateWithDefaults();
 
         ElapsedTime timer = new ElapsedTime();
 
@@ -343,3 +379,4 @@ public class shootTestingAuto extends LinearOpMode {
 
     }
 }
+

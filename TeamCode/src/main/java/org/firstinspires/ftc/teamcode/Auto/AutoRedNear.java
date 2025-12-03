@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Autonomous - Blue Alliance")
-public class AutoBlue extends LinearOpMode {
+@Autonomous(name = "Near - Red Alliance")
+public class AutoRedNear extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
     private AutoMovement autoMovement;
@@ -56,46 +56,31 @@ public class AutoBlue extends LinearOpMode {
 
 
         waitForStart();
-        try{
         while (!isStopRequested() && (loopFinished = true)) {
-            decodeAuto.OuttakeSystemFar(true);
 
-            autoMovement.PinpointX(207);
+            decodeAuto.OuttakeSystemNear(true);
 
-            decodeAuto.gyroTurnToAngle(21);
+            odo.setPosX(0,DistanceUnit.MM);
 
-            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+            autoMovement.PinpointX(-1500);
 
-            decodeAuto.gyroTurnToAngle(-21);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+
+            decodeAuto.gyroTurnToAngle(-45);
 
             odo.resetPosAndIMU();
 
-            autoMovement.PinpointX(425);
+            decodeAuto.intakeSystemAuto(true,false);
 
-            decodeAuto.gyroTurnToAngle(90);
+            autoMovement.PinpointX(850);
 
-            decodeAuto.intakeRun();
-//            sleep(1000);
-            decodeAuto.OuttakeSystemFar(true);
-            decodeAuto.PinpointYBlue(900,50);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointYBlue(-730,50);
-            gyroTurnToAngle(-90);
-            autoMovement.PinpointX(-350);
-            decodeAuto.gyroTurnToAngle(22);
-            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-            telemetry.addData("Shooting Complete",null);
-            odo.resetPosAndIMU();
-            autoMovement.PinpointX(200);
-            loopFinished = true;
-        }
-//        } else {
-//            return;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
+            autoMovement.PinpointX(-800);
 
+            decodeAuto.intakeStop();
+
+            gyroTurnToAngle(45);
+
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
         }
 
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -14,10 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Tag Align Auto")
-public class AlignToTag extends LinearOpMode {
+@Autonomous(name = "Near - Blue Alliance")
+public class AutoBlueNear extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
+    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -57,10 +58,49 @@ public class AlignToTag extends LinearOpMode {
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
 
+            decodeAuto.OuttakeSystemNear(true);
 
+            autoMovement.PinpointX(-1300);
 
-            AprilTagDetection tag = getLatestTag();
-            decodeAuto.AlignToTag(tag);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+
+            odo.setPosX(0,DistanceUnit.MM);
+
+            autoMovement.PinpointX(-1400);
+
+            decodeAuto.shootAutoArtifactNear();
+
+            decodeAuto.gyroTurnToAngle(45);
+
+            odo.resetPosAndIMU();
+
+            decodeAuto.intakeSystemAuto(true,false);
+
+            autoMovement.PinpointX(800);
+
+            autoMovement.PinpointX(-700);
+
+            decodeAuto.intakeSystemAuto(false,false);
+
+            decodeAuto.gyroTurnToAngle(-41);
+
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+
+//            decodeAuto.intakeRun();
+////            sleep(1000);
+//            decodeAuto.PinpointYBlue(900);
+//            sleep(700);
+//            decodeAuto.intakeSystemAuto(false,false);
+//            decodeAuto.PinpointYBlue(-800);
+//            gyroTurnToAngle(-90);
+//            decodeAuto.PinpointX(-350);
+//            decodeAuto.gyroTurnToAngle(19);
+//            decodeAuto.shootAutoArtifactFar();
+//            decodeAuto.gyroTurnToAngle(-19);
+//            decodeAuto.PinpointX(100);
+//            decodeAuto.gyroTurnToAngle(90);
+//            loopFinished = true;
+
 //        } else {
 //            return;
         }
@@ -296,6 +336,7 @@ public class AlignToTag extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
+        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60

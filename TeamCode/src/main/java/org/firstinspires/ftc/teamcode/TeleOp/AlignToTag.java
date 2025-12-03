@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -11,14 +11,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Auto.DecodeAuto;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name = "Near - Red Alliance")
-public class AutoRedNear extends LinearOpMode {
+@Autonomous(name = "Tag Align Auto")
+public class AlignToTag extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
-    private AutoMovement autoMovement;
     GoBildaPinpointDriver odo;
     DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
     int counter = 0;
@@ -58,29 +58,12 @@ public class AutoRedNear extends LinearOpMode {
         waitForStart();
         while (!isStopRequested() && (loopFinished = true)) {
 
-            decodeAuto.OuttakeSystemNear(true);
 
-            odo.setPosX(0,DistanceUnit.MM);
 
-            autoMovement.PinpointX(-1500);
-
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
-
-            decodeAuto.gyroTurnToAngle(-45);
-
-            odo.resetPosAndIMU();
-
-            decodeAuto.intakeSystemAuto(true,false);
-
-            autoMovement.PinpointX(850);
-
-            autoMovement.PinpointX(-800);
-
-            decodeAuto.intakeStop();
-
-            gyroTurnToAngle(45);
-
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+            AprilTagDetection tag = getLatestTag();
+            decodeAuto.AlignToTag(tag);
+//        } else {
+//            return;
         }
 
 
@@ -314,7 +297,6 @@ public class AutoRedNear extends LinearOpMode {
 
     private void initAuto() {
         decodeAuto = new DecodeAuto(this);
-        autoMovement = new AutoMovement(this);
         this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
         //        odo.setv ts(101.6, 95.25 ); //these are tuned for 3110-0002-0001 Product Insight #1
         odo.setOffsets(65, 142, DistanceUnit.MM ); // Old values: 150, 60
