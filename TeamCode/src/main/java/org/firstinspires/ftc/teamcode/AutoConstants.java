@@ -21,7 +21,7 @@ public class AutoConstants {
     final static double LONG_RANGE_VELOCITY = 1380; // Please don't edit this part
 //    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
     final static double MAX_VELOCITY = 2300;
-    final static  double kP = 18;
+    final static  double kP = 16;
     final static  double kI = 0.15;
     final static double kD = 7.5;
     final static  double kF = 32767 / MAX_VELOCITY * 0.88;
