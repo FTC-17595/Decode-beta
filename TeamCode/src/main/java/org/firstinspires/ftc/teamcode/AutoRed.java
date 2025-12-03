@@ -60,7 +60,7 @@ public class AutoRed extends LinearOpMode {
             while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
     //      Run up outtake while moving to shoot
                 decodeAuto.OuttakeSystemFar(true);
-                autoMovement.PinpointX(150);
+                autoMovement.PinpointX(120);
                 autoMovement.gyroTurnToAngle(-22);
         //      ============ SHOOT + 9 Points ===========
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
@@ -68,7 +68,7 @@ public class AutoRed extends LinearOpMode {
                 decodeAuto.OuttakeSystemFar(true);
                 decodeAuto.gyroTurnToAngle(22);
 //                odo.resetPosAndIMU();
-                autoMovement.PinpointX(450);
+                autoMovement.PinpointX(480);
                 autoMovement.gyroTurnToAngle(-90);
         //      Run the intake while intaking artifacts
                 decodeAuto.intakeRun();

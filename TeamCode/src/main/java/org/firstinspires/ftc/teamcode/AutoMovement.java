@@ -232,7 +232,7 @@ public class AutoMovement {
         double margin = target + odo.getPosX(DistanceUnit.MM);
 
 
-        while (opModeIsActive() && abs(margin) > 50) {
+        while (opModeIsActive() && abs(margin) > 30) {
             if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
                 break;
             }
@@ -279,7 +279,7 @@ public class AutoMovement {
         double margin = target - odo.getPosY(DistanceUnit.MM);
 
 
-        while (opModeIsActive() && abs(margin) > 100) {
+        while (opModeIsActive() && abs(margin) > 30) {
             if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
                 break;
             }
