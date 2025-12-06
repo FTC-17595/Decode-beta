@@ -56,7 +56,7 @@ public class shootTestingAuto extends LinearOpMode {
 
         waitForStart();
         if (opModeIsActive() && (loopFinished)) {
-            decodeAuto.shootAutoArtifactFar();
+            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
             loopFinished = false;
 //        } else {
 //            return;
