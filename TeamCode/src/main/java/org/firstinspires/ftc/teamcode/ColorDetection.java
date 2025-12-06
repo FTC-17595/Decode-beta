@@ -20,7 +20,6 @@ public class ColorDetection {
     private int g_artifactCount = 0;
     private final LinearOpMode linearOpMode;
     private final FtcDashboard dashboard;
-    private long lastCelebrateUpdateMs = 0;
 
     public ColorDetection(LinearOpMode linearOpMode) {
         frontLeftColorSensor = linearOpMode.hardwareMap.get(ColorSensor.class, "frontLeftColorSensor");
@@ -45,16 +44,15 @@ public class ColorDetection {
 
         if (celebrateOn) {
             long currentTime = System.currentTimeMillis();
-            // Non-blocking: update at ~20 Hz without sleeping the OpMode loop
-            if (currentTime - lastCelebrateUpdateMs >= 50) {
-                double cyclePosition = (currentTime % TeleOpConstants.CELEBRATION_SPEED) / TeleOpConstants.CELEBRATION_SPEED;
-                double triangleWave = cyclePosition < 0.5 ? cyclePosition * 2 : 2 - (cyclePosition * 2);
-                double rainbowColor = TeleOpConstants.RED + (TeleOpConstants.VIOLET - TeleOpConstants.RED) * triangleWave;
+            double cyclePosition = (currentTime % TeleOpConstants.CELEBRATION_SPEED) / TeleOpConstants.CELEBRATION_SPEED;
 
-                rgbIndicator.setPosition(rainbowColor);
-                outtakeIndicator.setPosition(rainbowColor);
-                lastCelebrateUpdateMs = currentTime;
-            }
+            double triangleWave = cyclePosition < 0.5 ? cyclePosition * 2 : 2 - (cyclePosition * 2);
+
+            double rainbowColor = TeleOpConstants.RED + (TeleOpConstants.VIOLET - TeleOpConstants.RED) * triangleWave;
+
+            rgbIndicator.setPosition(rainbowColor);
+            outtakeIndicator.setPosition(rainbowColor);
+
         } else if (wasCelebrateOn) {
             // Clear both indicators when celebration is turned off
             rgbIndicator.setPosition(TeleOpConstants.BLANK);
