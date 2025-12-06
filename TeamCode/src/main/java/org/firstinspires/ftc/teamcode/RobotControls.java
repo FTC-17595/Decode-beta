@@ -24,6 +24,7 @@ public class RobotControls {
     boolean celebrate;
     boolean autoShoot;
     boolean alignRobot;
+    boolean DEBUG;
 
     public void updateControls() {
         intakeArtifact = linearOpMode.gamepad2.a;
@@ -37,6 +38,7 @@ public class RobotControls {
         decreaseFactor = linearOpMode.gamepad2.dpad_down;
         autoShoot = linearOpMode.gamepad2.right_bumper;
         alignRobot = linearOpMode.gamepad1.b;
+        DEBUG = linearOpMode.gamepad1.y;
     }
 
     public void displayTelemetry() {
