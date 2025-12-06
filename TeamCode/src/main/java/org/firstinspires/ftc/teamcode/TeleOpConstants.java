@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode;
 public class TeleOpConstants {
     final static double LEFT_JOYSTICK_SPEED_ADJUSTER = 1.0;
     final static double RIGHT_JOYSTICK_SPEED_ADJUSTER = 1.0;
-    final static double FLAP_SERVO_UP = 1.0;
-    final static double FLAP_SERVO_DOWN = 0.67;
+    final static double FLAP_SERVO_UP = 0.8539;
+    final static double FLAP_SERVO_DOWN = 0.6567;
     final static double BLANK = 0.000;
     final static double GREEN = 0.500;
     final static double VIOLET = 0.720;
-    final static double RED = 0.333;
+    final static double RED = 0.280;
     final static double BLUE = 0.611;
+    final static double ORANGE = 0.333;
     final static double SHORT_RANGE_VELOCITY = 1160;
     final static double MEDIUM_RANGE_VELOCITY = 1225;
     final static double LONG_RANGE_VELOCITY = 1275;
@@ -41,9 +42,9 @@ public class TeleOpConstants {
     final static double ALIGN_FORWARD_KP = 0.04;
     final static double ALIGN_FORWARD_KI = 0.0;
     final static double ALIGN_FORWARD_KD = 0.001;
-    final static double ALIGN_STRAFE_TOLERANCE_IN = 0.75;
-    final static double ALIGN_BEARING_TOLERANCE_DEG = 1.5;
-    final static double ALIGN_RANGE_TOLERANCE_IN = 1.0;
+    final static double ALIGN_STRAFE_TOLERANCE_IN = 0.25;
+    final static double ALIGN_BEARING_TOLERANCE_DEG = 0.5;
+    final static double ALIGN_RANGE_TOLERANCE_IN = 0.5;
     final static double ALIGN_MAX_STRAFE_POWER = 0.35;
     final static double ALIGN_MAX_TURN_POWER = 0.25;
     final static double ALIGN_MAX_FORWARD_POWER = 0.35;
@@ -61,5 +62,5 @@ public class TeleOpConstants {
 	final static double HEADING_KI = 0.0;
 	final static double HEADING_KD = 60;
 	final static double HEADING_MAX_TURN_POWER = 0.75;
-	final static double HEADING_TOLERANCE_DEG = 1.0;
+	final static double HEADING_TOLERANCE_DEG = 0.5;
 }
