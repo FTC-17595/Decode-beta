@@ -69,12 +69,14 @@ public class SingleControllerMainMecanumTeleOpBlue extends LinearOpMode {
     }
 
     private void displayTelemetry() {
-        driveTrain.displayTelemetry();
-        artifactHandlingSystem.displayTelemetry();
-        colorDetection.displayTelemetry();
-        robotControls.displayTelemetry();
-        aprilTagAligner.displayTelemetry();
+        if (robotControls.DEBUG) {
+            driveTrain.displayTelemetry();
+            artifactHandlingSystem.displayTelemetry();
+            colorDetection.displayTelemetry();
+            robotControls.displayTelemetry();
+            aprilTagAligner.displayTelemetry();
 
-        telemetry.update();
+            telemetry.update();
+        }
     }
 }

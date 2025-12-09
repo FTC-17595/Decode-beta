@@ -134,14 +134,17 @@ public class ColorDetection {
             return;
         }
 
-        if (Math.abs(actualVelocity - targetVelocity) <= 15) {
-            // At target velocity - blue
-            outtakeIndicator.setPosition(TeleOpConstants.BLUE);
-            return;
-        }
+        boolean artifactInBack = detectArtifact(backColorSensor) == 1;
+        boolean reachedTargetVelocity = Math.abs(actualVelocity - targetVelocity) <= 15;
 
-        // If not at target and motor is running:
-        outtakeIndicator.setPosition(TeleOpConstants.BLANK);
+
+        if (artifactInBack && reachedTargetVelocity) {
+            outtakeIndicator.setPosition(TeleOpConstants.BLUE);
+        } else if (artifactInBack ^ reachedTargetVelocity) {
+            outtakeIndicator.setPosition(TeleOpConstants.VIOLET);
+        } else {
+            outtakeIndicator.setPosition(TeleOpConstants.BLANK);
+        }
     }
 
     private double getRGBIndicatorPosition() {

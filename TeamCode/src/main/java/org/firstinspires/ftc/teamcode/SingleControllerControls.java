@@ -24,6 +24,7 @@ public class SingleControllerControls {
     boolean celebrate;
     boolean autoShoot;
     boolean alignRobot;
+    boolean DEBUG;
 
     public void updateControls() {
         intakeArtifact = linearOpMode.gamepad1.a;
@@ -36,7 +37,8 @@ public class SingleControllerControls {
         increaseFactor = linearOpMode.gamepad1.dpad_up;
         decreaseFactor = linearOpMode.gamepad1.dpad_down;
         autoShoot = linearOpMode.gamepad1.right_bumper;
-        alignRobot = linearOpMode.gamepad1.b;
+        alignRobot = linearOpMode.gamepad1.left_bumper;
+        DEBUG = linearOpMode.gamepad1.left_stick_button;
     }
 
     public void displayTelemetry() {
