@@ -40,6 +40,7 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             robotControls.updateControls();
             aprilTagAligner.updateDetection();
             artifactHandlingSystem.updateLaunchVelocityForRange(aprilTagAligner.getLastRangeInches(), aprilTagAligner.getTargetedTagId());
+            aprilTagAligner.setRangeHoldEnabled(artifactHandlingSystem.getLaunchVelocity() == TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY);
 
             driveTrain.adjustTurnSpeed();
             driveTrain.resetYaw();
@@ -68,12 +69,14 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
     }
 
     private void displayTelemetry() {
-        driveTrain.displayTelemetry();
-        artifactHandlingSystem.displayTelemetry();
-        colorDetection.displayTelemetry();
-        robotControls.displayTelemetry();
-        aprilTagAligner.displayTelemetry();
+        if (robotControls.DEBUG) {
+            driveTrain.displayTelemetry();
+            artifactHandlingSystem.displayTelemetry();
+            colorDetection.displayTelemetry();
+            robotControls.displayTelemetry();
+            aprilTagAligner.displayTelemetry();
 
-        telemetry.update();
+            telemetry.update();
+        }
     }
 }

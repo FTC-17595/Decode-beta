@@ -39,6 +39,10 @@ public class AprilTagAligner {
             TeleOpConstants.ALIGN_TURN_KP,
             TeleOpConstants.ALIGN_TURN_KI,
             TeleOpConstants.ALIGN_TURN_KD);
+    private final SimplePIDController forwardController = new SimplePIDController(
+            TeleOpConstants.ALIGN_FORWARD_KP,
+            TeleOpConstants.ALIGN_FORWARD_KI,
+            TeleOpConstants.ALIGN_FORWARD_KD);
 
     private final ElapsedTime loopTimer = new ElapsedTime();
 
@@ -48,10 +52,13 @@ public class AprilTagAligner {
 
     private double lastStrafeCommand = 0.0;
     private double lastTurnCommand = 0.0;
+    private double lastForwardCommand = 0.0;
     private double lastStrafeError = 0.0;
     private double lastTurnError = 0.0;
+    private double lastRangeError = 0.0;
 
     private boolean controllersPrimed = false;
+    private boolean rangeHoldEnabled = false;
 
     public AprilTagAligner(LinearOpMode linearOpMode, DriveTrain driveTrain, int desiredTagId) {
         this(linearOpMode, driveTrain, desiredTagId, "Webcam");
@@ -106,6 +113,7 @@ public class AprilTagAligner {
             controllersPrimed = true;
             strafeController.reset();
             turnController.reset();
+            forwardController.reset();
             loopTimer.reset();
         }
 
@@ -125,17 +133,21 @@ public class AprilTagAligner {
 
         double rawStrafe = currentDetection.ftcPose.x;
         double rawForward = currentDetection.ftcPose.y;
+        double currentRangeIn = currentDetection.ftcPose.range;
 
         double adjustedStrafe = rawStrafe + TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME;
         double adjustedForward = rawForward + TeleOpConstants.CAMERA_OFFSET_Y_IN;
 
         double turnError = Math.toDegrees(Math.atan2(adjustedStrafe, adjustedForward));
+        double rangeError = currentRangeIn - TeleOpConstants.ALIGN_TARGET_RANGE_EXTRA_LONG_IN;
 
         lastStrafeError = adjustedStrafe;
         lastTurnError = turnError;
+        lastRangeError = rangeError;
 
         double strafeCommand = strafeController.calculate(adjustedStrafe, dt);
         double turnCommand = turnController.calculate(turnError, dt);
+        double forwardCommand = rangeHoldEnabled ? forwardController.calculate(rangeError, dt) : 0.0;
 
         double appliedStrafeCommand = Range.clip(
                 -strafeCommand,
@@ -145,16 +157,23 @@ public class AprilTagAligner {
                 turnCommand,
                 -TeleOpConstants.ALIGN_MAX_TURN_POWER,
                 TeleOpConstants.ALIGN_MAX_TURN_POWER);
+        double appliedForwardCommand = rangeHoldEnabled
+                ? Range.clip(forwardCommand,
+                -TeleOpConstants.ALIGN_MAX_FORWARD_POWER,
+                TeleOpConstants.ALIGN_MAX_FORWARD_POWER)
+                : 0.0;
 
         lastStrafeCommand = appliedStrafeCommand;
         lastTurnCommand = appliedTurnCommand;
+        lastForwardCommand = appliedForwardCommand;
 
-        driveTrain.driveRobotCentric(0.0, appliedStrafeCommand, appliedTurnCommand);
+        driveTrain.driveRobotCentric(appliedForwardCommand, appliedStrafeCommand, appliedTurnCommand);
 
         boolean strafeAligned = Math.abs(adjustedStrafe) <= TeleOpConstants.ALIGN_STRAFE_TOLERANCE_IN;
         boolean turnAligned = Math.abs(turnError) <= TeleOpConstants.ALIGN_BEARING_TOLERANCE_DEG;
+        boolean rangeAligned = !rangeHoldEnabled || Math.abs(rangeError) <= TeleOpConstants.ALIGN_RANGE_TOLERANCE_IN;
 
-        lastState = (strafeAligned && turnAligned) ? AlignState.ALIGNED : AlignState.ALIGNING;
+        lastState = (strafeAligned && turnAligned && rangeAligned) ? AlignState.ALIGNED : AlignState.ALIGNING;
         lastDetection = currentDetection;
     }
 
@@ -163,11 +182,13 @@ public class AprilTagAligner {
             controllersPrimed = false;
             strafeController.reset();
             turnController.reset();
+            forwardController.reset();
             loopTimer.reset();
         }
         lastState = AlignState.IDLE;
         lastStrafeCommand = 0.0;
         lastTurnCommand = 0.0;
+        lastForwardCommand = 0.0;
     }
 
     public void align(boolean alignRequested) {
@@ -181,6 +202,7 @@ public class AprilTagAligner {
 
     public void displayTelemetry() {
         linearOpMode.telemetry.addData("AprilTag Align State", lastState);
+        linearOpMode.telemetry.addData("Range Hold (50in)", rangeHoldEnabled);
         if (lastDetection != null) {
             linearOpMode.telemetry.addData("AprilTag ID", lastDetection.id);
             linearOpMode.telemetry.addData("AprilTag Range (in)", "%.1f", lastDetection.ftcPose.range);
@@ -191,13 +213,15 @@ public class AprilTagAligner {
             linearOpMode.telemetry.addData("AprilTag ID", "none");
         }
 
-        linearOpMode.telemetry.addData("Align Error", "strafe=%.2f in, turn=%.2f deg", lastStrafeError, lastTurnError);
-        linearOpMode.telemetry.addData("Align Cmd", "strafe=%.2f, turn=%.2f", lastStrafeCommand, lastTurnCommand);
+        linearOpMode.telemetry.addData("Align Error", "range=%.2f in, strafe=%.2f in, turn=%.2f deg", lastRangeError, lastStrafeError, lastTurnError);
+        linearOpMode.telemetry.addData("Align Cmd", "forward=%.2f, strafe=%.2f, turn=%.2f", lastForwardCommand, lastStrafeCommand, lastTurnCommand);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("state", lastState.name());
+        packet.put("rangeErrorIn", lastRangeError);
         packet.put("strafeErrorIn", lastStrafeError);
         packet.put("turnErrorDeg", lastTurnError);
+        packet.put("forwardCommand", lastForwardCommand);
         packet.put("strafeCommand", lastStrafeCommand);
         packet.put("turnCommand", lastTurnCommand);
         if (lastDetection != null) {
@@ -222,6 +246,10 @@ public class AprilTagAligner {
                 TeleOpConstants.ALIGN_TURN_KP,
                 TeleOpConstants.ALIGN_TURN_KI,
                 TeleOpConstants.ALIGN_TURN_KD);
+        forwardController.setCoefficients(
+                TeleOpConstants.ALIGN_FORWARD_KP,
+                TeleOpConstants.ALIGN_FORWARD_KI,
+                TeleOpConstants.ALIGN_FORWARD_KD);
     }
 
     public double getLastRangeInches() {
@@ -230,6 +258,13 @@ public class AprilTagAligner {
 
     public double getTargetedTagId() {
         return lastDetection != null ? lastDetection.id : Double.NaN;
+    }
+
+    public void setRangeHoldEnabled(boolean enabled) {
+        this.rangeHoldEnabled = enabled;
+        if (!enabled) {
+            forwardController.reset();
+        }
     }
 }
 
