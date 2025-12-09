@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode;
 public class TeleOpConstants {
     final static double LEFT_JOYSTICK_SPEED_ADJUSTER = 1.0;
     final static double RIGHT_JOYSTICK_SPEED_ADJUSTER = 1.0;
-    final static double FLAP_SERVO_UP = 0.8539;
-    final static double FLAP_SERVO_DOWN = 0.6567;
+    final static double FLAP_SERVO_UP = 0.6844;
+    final static double FLAP_SERVO_DOWN = 0.475;
     final static double BLANK = 0.000;
     final static double GREEN = 0.500;
     final static double VIOLET = 0.720;
