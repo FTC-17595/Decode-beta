@@ -49,8 +49,8 @@ public class ArtifactHandlingSystem {
         containerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flapServo.setDirection(Servo.Direction.FORWARD);
 
-        launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
-        autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
+        launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
+        autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
 
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(
                 TeleOpConstants.kP,
@@ -112,30 +112,6 @@ public class ArtifactHandlingSystem {
         }
     }
 
-    public void autoShootingSystemTeleOp(boolean autoShoot) {
-        if (autoShoot) {
-            shootingSystem(1f, 0f);
-            linearOpMode.sleep(TeleOpConstants.SPINUP_MS);
-
-            if (prepareArtifact(false)) {
-                return;
-            }
-
-            fireArtifact();
-
-            for (int i = 1; i < 3 && linearOpMode.opModeIsActive(); i++) {
-                if (prepareArtifact(true)) {
-                    break;
-                }
-                fireArtifact();
-            }
-
-            shootingSystem(0f, 0f);
-            intakeSystem(false, false);
-            flapSystem(false);
-        }
-    }
-
     public void updateLaunchVelocityForRange(double rangeInches, double tagId) {
         if (Double.isNaN(rangeInches) || rangeInches <= 0) {
             return;
@@ -146,83 +122,45 @@ public class ArtifactHandlingSystem {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -127 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -127 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             }
         } else if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN // LONG
                 && rangeInches <= TeleOpConstants.ALIGN_LONG_RANGE_MAX_IN) {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             }
         } else if (rangeInches >= TeleOpConstants.ALIGN_MEDIUM_RANGE_MIN_IN // MEDIUM
                 && rangeInches <= TeleOpConstants.ALIGN_MEDIUM_RANGE_MAX_IN) {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.MEDIUM_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.MEDIUM_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             }
         } else { // SHORT
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.SHORT_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = -159.84 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
             }
         }
-    }
-
-    private boolean prepareArtifact(boolean useFeed) {
-        if (!linearOpMode.opModeIsActive()) {
-            return true;
-        }
-
-        if (useFeed) {
-            intakeSystem(true, false);
-            linearOpMode.sleep(TeleOpConstants.FEED_MS);
-            intakeSystem(false, false);
-        } /* else { */
-//            linearOpMode.sleep(TeleOpConstants.FEED_MS);
-//        }
-
-        if (!linearOpMode.opModeIsActive()) {
-            return true;
-        }
-
-        linearOpMode.sleep(TeleOpConstants.FEED_SETTLE_MS);
-
-        if (!linearOpMode.opModeIsActive()) {
-            return true;
-        }
-
-        linearOpMode.sleep(TeleOpConstants.PREFIRE_WAIT_MS);
-        return !linearOpMode.opModeIsActive();
-    }
-
-    private void fireArtifact() {
-        if (!linearOpMode.opModeIsActive()) {
-            return;
-        }
-        waitForMotor();
-        flapSystem(true);
-        linearOpMode.sleep(TeleOpConstants.SERVO_UP_MS);
-        flapSystem(false);
-        linearOpMode.sleep(TeleOpConstants.SERVO_RESET_MS);
     }
 
     private void waitForMotor() {
@@ -266,20 +204,6 @@ public class ArtifactHandlingSystem {
                     : TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
         }
         lastSwitchState = switch_f;
-    }
-
-    public void setLaunchVelocity(double velocity) {
-        launchVelocity = Math.max(0, Math.min(velocity, TeleOpConstants.MAX_VELOCITY));
-    }
-
-    public void shootingSystemAuto(float shootArtifact, float rejectArtifact) {
-        if (shootArtifact > 0) {
-            outtakeMotor.setVelocity(AutoConstants.LONG_RANGE_VELOCITY);
-        } else if (rejectArtifact > 0) {
-            outtakeMotor.setVelocity(-launchVelocity * rejectArtifact);
-        } else {
-            outtakeMotor.setVelocity(0);
-        }
     }
 
     public double getLaunchVelocity() {
