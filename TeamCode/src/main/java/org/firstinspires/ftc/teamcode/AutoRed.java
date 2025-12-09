@@ -87,8 +87,8 @@ public class AutoRed extends LinearOpMode {
                 autoMovement.PinpointX(-750);
                 gyroTurnToAngle(90);
                 odo.resetPosAndIMU();
-                autoMovement.PinpointX(-250);
-                gyroTurnToAngle(-21);
+                autoMovement.PinpointX(-300);
+                gyroTurnToAngle(-18.5);
     //          ============ SHOOT + 9 points ===========
                 decodeAuto.setShootState(true);
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);

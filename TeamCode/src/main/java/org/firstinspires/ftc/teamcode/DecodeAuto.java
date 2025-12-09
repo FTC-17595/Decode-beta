@@ -388,7 +388,7 @@ private void stopMotors() {
     }
     boolean loopState = true;
     public void shootAutoArtifactFar(double targetVelocity) {
-//        while (opModeIsActive() && loopState) {
+
             // Spin up once
             try {
 
@@ -402,7 +402,7 @@ private void stopMotors() {
                         return;
                     }
                 }
-//                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 4000);
+
                 // ===== SHOT 1 =====
                 AutoflapSystem(true);
                 sleep((long) AutoConstants.FLAP_SLEEP);
