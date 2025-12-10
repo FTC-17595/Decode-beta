@@ -122,11 +122,11 @@ public class ArtifactHandlingSystem {
             if (tagId == 20) { // BLUE
                 launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 50 / 25.4;
             } else { // RED
                 launchVelocity = TeleOpConstants.EXTRA_LONG_RANGE_VELOCITY;
                 autoLaunchVelocity = TeleOpConstants.AUTO_LONG_RANGE_VELOCITY;
-                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 0 / 25.4;
+                TeleOpConstants.CAMERA_OFFSET_X_IN_RUNTIME = 50 / 25.4;
             }
         } else if (rangeInches >= TeleOpConstants.ALIGN_LONG_RANGE_MIN_IN // LONG
                 && rangeInches <= TeleOpConstants.ALIGN_LONG_RANGE_MAX_IN) {

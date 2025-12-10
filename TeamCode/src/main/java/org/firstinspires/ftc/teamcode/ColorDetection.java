@@ -140,8 +140,6 @@ public class ColorDetection {
 
         if (artifactInBack && reachedTargetVelocity) {
             outtakeIndicator.setPosition(TeleOpConstants.BLUE);
-        } else if (artifactInBack ^ reachedTargetVelocity) {
-            outtakeIndicator.setPosition(TeleOpConstants.WHITE);
         } else {
             outtakeIndicator.setPosition(TeleOpConstants.BLANK);
         }
