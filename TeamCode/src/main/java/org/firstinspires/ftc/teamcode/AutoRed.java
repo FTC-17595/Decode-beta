@@ -32,18 +32,7 @@ public class AutoRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
 
         initAuto();
-//        waitForStart();
-//        Thread intakeThread = new Thread(() -> {
-//142 65
-//            while (opModeIsActive()) {
-//                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-//
-//                // Keep it running while opmode is active
-//                // You can add conditions here if needed
-//                sleep(1000);
-//            }
-//
-//        });
+
         if(isStopRequested()) return;
 //        tagProcessor = new AprilTagProcessor.Builder()
 //                .setDrawAxes(true)
@@ -58,47 +47,29 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         try {
             while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
-    //      Run up outtake while moving to shoot
-                decodeAuto.OuttakeSystemFar(true);
-                autoMovement.PinpointX(120);
-                autoMovement.gyroTurnToAngle(-22);
+
+        //   =============Position the Robot to shoot ==========================
+                positionShoot();
+
         //      ============ SHOOT + 9 Points ===========
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-        //      Move to pickup first set of Artifacts
-                decodeAuto.OuttakeSystemFar(true);
-                decodeAuto.gyroTurnToAngle(22);
-//                odo.resetPosAndIMU();
-                autoMovement.PinpointX(520);
-                autoMovement.gyroTurnToAngle(-90);
-        //      Run the intake while intaking artifacts
-                decodeAuto.intakeRun();
-                autoMovement.PinpointY(800,50);
-                sleep(700);
-                decodeAuto.intakeSystemAuto(false,false);
-/*
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(500);
-*/
-/*
- */
-    //          Spin up outtake while moving back to shoot
 
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-750);
-                gyroTurnToAngle(90);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(-300);
-                gyroTurnToAngle(-18.5);
-    //          ============ SHOOT + 9 points ===========
+        //   =============Pick up the first line of artifacts ==========================
+                pickFirstLine();
+
+        //   =============Return to base for shooting =======================
+                returnToBase();
+
+        //   ============ SHOOT + 9 points ===========
                 decodeAuto.setShootState(true);
                 decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
                 telemetry.addData("Shooting Complete",null);
-                // Leave + 3 Points
-//                gyroTurnToAngle(28);
-                odo.resetPosAndIMU();
-                autoMovement.PinpointX(200);
-                gyroTurnToAngle(-108);
+
+        //   =============Position the robot for Teleop ==========================
+                posTeleop();
+
                 loopFinished = false;
+
             }
         } catch(Exception e){
 //            decodeAuto.stopAllMotors();
@@ -113,55 +84,46 @@ public class AutoRed extends LinearOpMode {
 //            backRightMotor.setPower(0);
         }
 
+    }
 
-
-//
-//        if (tag.id == 21) {
-//            GPP = true;
-//
-//        } else if (tag.id == 22) {
-//            PGP = true;
-//
-//        } else if (tag.id == 23){
-//            PPG = true;
-//        }
-//
-//        driveToPos(SHOOT_X, SHOOT_Y);
-//            gyroTurnToAngle(110);
-//
-//            ArtifactHandlingSystem artifactSystem = new ArtifactHandlingSystem(linearOpMode);
-//            decodeAuto.shootAutoArtifact();
-//
-//
-//
-//
-//
-//
-//
-//        if (PPG == true) {
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//            // the PPG line
-//        } else if (PGP == true) {
-//
-//            driveToPos(-514.710,678.612);
-//            gyroTurnToAngle(-23);
-//            driveToPos(-514.710,700.612);
-//            driveToPos(0,0);
-//            gyroTurnToAngle(23);
-//            decodeAuto.shootAutoArtifact();
-//
-//        } else if (GPP == true) {
-//            // The GPP line
-//            driveToPos(12,12);
-//        }
-//
+    private void positionShoot() {
+        //      Run up outtake while moving to shoot
+        decodeAuto.OuttakeSystemFar(true);
+        autoMovement.PinpointX(120);
+        autoMovement.gyroTurnToAngle(-22);
 
     }
+
+    private void pickFirstLine() {
+        //      Move to pickup first set of Artifacts
+        decodeAuto.OuttakeSystemFar(true);
+        autoMovement.gyroTurnToAngle(22);
+//                odo.resetPosAndIMU();
+        autoMovement.PinpointX(470);
+        autoMovement.gyroTurnToAngle(-90);
+
+        //      Run the intake while intaking artifacts
+        decodeAuto.intakeRun();
+        autoMovement.PinpointY(900,65);
+        sleep(700);
+        decodeAuto.intakeSystemAuto(false,false);
+
+
+    }
+    private void returnToBase() {
+        autoMovement.PinpointY(-800,80);
+        autoMovement.gyroTurnToAngle(90);
+                odo.resetPosAndIMU();
+        autoMovement.PinpointX(-250);
+        autoMovement.gyroTurnToAngle(-17);
+    }
+    private void posTeleop() {
+        gyroTurnToAngle(18.5);
+        odo.resetPosAndIMU();
+        autoMovement.PinpointX(200);
+        autoMovement.gyroTurnToAngle(-108);
+    }
+
 
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
     private void driveToPos(double targetX, double targetY) {
