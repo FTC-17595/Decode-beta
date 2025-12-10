@@ -11,10 +11,10 @@ public class TeleOpConstants {
     final static double RED = 0.280;
     final static double BLUE = 0.611;
     final static double ORANGE = 0.333;
-    final static double SHORT_RANGE_VELOCITY = 1160;
-    final static double MEDIUM_RANGE_VELOCITY = 1225;
-    final static double LONG_RANGE_VELOCITY = 1275;
-    final static double EXTRA_LONG_RANGE_VELOCITY = 1380;
+    final static double SHORT_RANGE_VELOCITY = 1135; // prev: 1160
+    final static double MEDIUM_RANGE_VELOCITY = 1220; // prev: 1225
+    final static double LONG_RANGE_VELOCITY = 1255; // prev: 1275
+    final static double EXTRA_LONG_RANGE_VELOCITY = 1315; // prev: 1380
     final static double AUTO_SHORT_RANGE_VELOCITY = 950;
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
     final static double MAX_VELOCITY = 2300.0;
@@ -39,9 +39,9 @@ public class TeleOpConstants {
     final static double ALIGN_FORWARD_KP = 0.04;
     final static double ALIGN_FORWARD_KI = 0.0;
     final static double ALIGN_FORWARD_KD = 0.001;
-    final static double ALIGN_STRAFE_TOLERANCE_IN = 0.0;
-    final static double ALIGN_BEARING_TOLERANCE_DEG = 0.0;
-    final static double ALIGN_RANGE_TOLERANCE_IN = 0.0;
+    final static double ALIGN_STRAFE_TOLERANCE_IN = 0.1;
+    final static double ALIGN_BEARING_TOLERANCE_DEG = 0.25;
+    final static double ALIGN_RANGE_TOLERANCE_IN = 0.25;
     final static double ALIGN_MAX_STRAFE_POWER = 0.35;
     final static double ALIGN_MAX_TURN_POWER = 0.25;
     final static double ALIGN_MAX_FORWARD_POWER = 0.35;
