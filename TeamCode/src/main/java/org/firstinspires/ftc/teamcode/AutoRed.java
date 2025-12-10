@@ -114,7 +114,7 @@ public class AutoRed extends LinearOpMode {
         autoMovement.PinpointY(-800,80);
         autoMovement.gyroTurnToAngle(90);
                 odo.resetPosAndIMU();
-        autoMovement.PinpointX(-250);
+        autoMovement.PinpointX(-225);
         autoMovement.gyroTurnToAngle(-17);
     }
     private void posTeleop() {
