@@ -55,48 +55,87 @@ public class AutoBlue extends LinearOpMode {
 //        AprilTagDetection tag = tagProcessor.getDetections().get(0);
 
 
+
         waitForStart();
-        try{
-        while (!isStopRequested() && (loopFinished = true)) {
-            decodeAuto.OuttakeSystemFar(true);
+        try {
+            while (opModeIsActive() && (loopFinished) && !isStopRequested()) {
 
-            autoMovement.PinpointX(207);
+                //   =============Position the Robot to shoot ==========================
+                positionShoot();
 
-            decodeAuto.gyroTurnToAngle(21);
+                //      ============ SHOOT + 9 Points ===========
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
 
-            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+                //   =============Pick up the first line of artifacts ==========================
+                pickFirstLine();
 
-            decodeAuto.gyroTurnToAngle(-21);
+                //   =============Return to base for shooting =======================
+                returnToBase();
 
-            odo.resetPosAndIMU();
+                //   ============ SHOOT + 9 points ===========
+                decodeAuto.setShootState(true);
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+                telemetry.addData("Shooting Complete",null);
 
-            autoMovement.PinpointX(425);
+                //   =============Position the robot for Teleop ==========================
+                posTeleop();
 
-            decodeAuto.gyroTurnToAngle(90);
+                loopFinished = false;
 
-            decodeAuto.intakeRun();
-//            sleep(1000);
-            decodeAuto.OuttakeSystemFar(true);
-            decodeAuto.PinpointYBlue(900,50);
-            sleep(700);
-            decodeAuto.intakeSystemAuto(false, false);
-            decodeAuto.PinpointYBlue(-730,50);
-            gyroTurnToAngle(-90);
-            autoMovement.PinpointX(-350);
-            decodeAuto.gyroTurnToAngle(22);
-            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
-            telemetry.addData("Shooting Complete",null);
-            odo.resetPosAndIMU();
-            autoMovement.PinpointX(200);
-            loopFinished = true;
+            }
+        } catch(Exception e){
+//            decodeAuto.stopAllMotors();
         }
-//        } else {
-//            return;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-
+        finally {
+            // Always stop all motors when opmode ends, regardless of how it ends
+//            decodeAuto.stopAllMotors();
+//            // Also stop drive motors directly as a safety measure
+//            frontLeftMotor.setPower(0);
+//            backLeftMotor.setPower(0);
+//            frontRightMotor.setPower(0);
+//            backRightMotor.setPower(0);
         }
+
+    }
+
+    private void positionShoot() {
+        //      Run up outtake while moving to shoot
+        decodeAuto.OuttakeSystemFar(true);
+        autoMovement.PinpointX(120);
+        autoMovement.gyroTurnToAngle(20);
+
+    }
+
+    private void pickFirstLine() {
+        //      Move to pickup first set of Artifacts
+        decodeAuto.OuttakeSystemFar(true);
+        autoMovement.gyroTurnToAngle(-20);
+//                odo.resetPosAndIMU();
+        autoMovement.PinpointX(420);
+        autoMovement.gyroTurnToAngle(90);
+
+        //      Run the intake while intaking artifacts
+        decodeAuto.intakeRun();
+        autoMovement.PinpointY(750,65);
+        sleep(700);
+        decodeAuto.intakeSystemAuto(false,false);
+
+
+    }
+    private void returnToBase() {
+        autoMovement.PinpointY(-650,80);
+        autoMovement.gyroTurnToAngle(-90);
+        odo.resetPosAndIMU();
+        autoMovement.PinpointX(-225);
+        autoMovement.gyroTurnToAngle(17);
+    }
+
+    private void posTeleop() {
+        gyroTurnToAngle(-18.5);
+        odo.resetPosAndIMU();
+        autoMovement.PinpointX(200);
+        autoMovement.gyroTurnToAngle(108);
+    }
 
 
 
@@ -147,7 +186,7 @@ public class AutoBlue extends LinearOpMode {
 //        }
 //
 
-    }
+
 
     // Drives the robot toward a given (X, Y) coordinate using odometry and IMU heading
     private void driveToPos(double targetX, double targetY) {
