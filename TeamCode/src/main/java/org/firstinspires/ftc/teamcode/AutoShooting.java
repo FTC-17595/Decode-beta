@@ -15,7 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous(name = "Autonomous - Shooting")
-public class shootTestingAuto extends LinearOpMode {
+public class AutoShooting extends LinearOpMode {
 
     private DecodeAuto decodeAuto;
     GoBildaPinpointDriver odo;

@@ -82,6 +82,11 @@ public class AutoMovement {
         outtakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         outtakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         containerMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flapServo.setDirection(Servo.Direction.FORWARD);
@@ -359,7 +364,51 @@ public class AutoMovement {
         backRightMotor.setPower(0);
 
     }
+    public void gyroTurnToAngle(double turnAngle) {
+        double error, currentHeadingAngle, driveMotorsPower;
+        imu.resetYaw();
 
+        error = turnAngle;
+
+        while (opModeIsActive() && ((error > 1) || (error < -1))) {
+            odo.update();
+            linearOpMode.telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
+            linearOpMode.telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
+//                telemetry.addData("Heading Odo: ", Math.toDegrees(odo.getHeading()));
+            linearOpMode.telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            linearOpMode.telemetry.update();
+
+            driveMotorsPower = error / 200;
+
+            if ((driveMotorsPower < 0.2) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.2;
+            } else if ((driveMotorsPower > -0.2) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.2;
+            }
+
+//            driveMotorsPower = error / 50;
+
+            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.35;
+            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.35;
+            }
+            // Positive power causes left turn
+            frontLeftMotor.setPower(-driveMotorsPower);
+            backLeftMotor.setPower(-driveMotorsPower);
+            frontRightMotor.setPower(driveMotorsPower);
+            backRightMotor.setPower(driveMotorsPower);
+
+            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            error = turnAngle - currentHeadingAngle;
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+
+    }
     //    public void PinpointY(double target, double speed) {
 //
 ////        odo.resetPosAndIMU();
@@ -450,6 +499,7 @@ public class AutoMovement {
 //
 //
 //    }
+/*
     public void gyroTurnToAngle(double turnAngle) {
         double error, currentHeadingAngle, driveMotorsPower;
         imu.resetYaw();
@@ -499,6 +549,6 @@ public class AutoMovement {
 
 
     }
-
+*/
 
 }
