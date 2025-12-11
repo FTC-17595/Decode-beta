@@ -24,7 +24,7 @@ public class AutoOuttakePreloads extends LinearOpMode {
         artifactHandlingSystem = new ArtifactHandlingSystem(this);
         artifactHandlingSystem.configureMotorModes();
         artifactHandlingSystem.flapSystem(false);
-        artifactHandlingSystem.intakeSystem(false, false);
+        artifactHandlingSystem.intakeSystem(false, false, 0);
 
         telemetry.addLine("Ready to launch preloads");
         telemetry.update();
@@ -76,9 +76,9 @@ public class AutoOuttakePreloads extends LinearOpMode {
         }
 
         if (useFeed) {
-            artifactHandlingSystem.intakeSystem(true, false);
+            artifactHandlingSystem.intakeSystem(true, false, 0);
             sleep(FEED_MS);
-            artifactHandlingSystem.intakeSystem(false, false);
+            artifactHandlingSystem.intakeSystem(false, false, 0);
         } else {
             sleep(FEED_MS);
         }
@@ -99,7 +99,7 @@ public class AutoOuttakePreloads extends LinearOpMode {
 
     private void shutdownSystems() {
         artifactHandlingSystem.shootingSystem(0f, 0f);
-        artifactHandlingSystem.intakeSystem(false, false);
+        artifactHandlingSystem.intakeSystem(false, false, 0);
         artifactHandlingSystem.flapSystem(false);
     }
 }

@@ -60,4 +60,5 @@ public class TeleOpConstants {
 	final static double HEADING_KD = 60;
 	final static double HEADING_MAX_TURN_POWER = 0.75;
 	final static double HEADING_TOLERANCE_DEG = 0.5;
+    final static int MAX_ARTIFACT_CAPACITY = 3;
 }

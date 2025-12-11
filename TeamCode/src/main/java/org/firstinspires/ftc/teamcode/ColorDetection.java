@@ -93,6 +93,14 @@ public class ColorDetection {
         return detectArtifact(backColorSensor) == 1;
     }
 
+    public int getArtifactCount() {
+        int artifactCount =
+                ((detectArtifact(frontLeftColorSensor) == 1 || detectArtifact(frontRightColorSensor) == 1) ? 1 : 0)
+                        + detectArtifact(middleColorSensor)
+                        + detectArtifact(backColorSensor);
+        g_artifactCount = artifactCount;
+        return artifactCount;
+    }
 
     public void setRGBIndicator() {
         // Don't update if celebrating
@@ -100,12 +108,7 @@ public class ColorDetection {
             return;
         }
 
-        final int artifactCount =
-                ((detectArtifact(frontLeftColorSensor) == 1 || detectArtifact(frontRightColorSensor) == 1) ? 1 : 0)
-                + detectArtifact(middleColorSensor)
-                + detectArtifact(backColorSensor);
-
-        g_artifactCount = artifactCount;
+        final int artifactCount = getArtifactCount();
 
         switch (artifactCount) {
             case 3:
