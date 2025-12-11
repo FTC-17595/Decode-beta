@@ -23,6 +23,8 @@ public class ArtifactHandlingSystem {
     private boolean lastSwitchState = false;
     private boolean flapDown = true;
     private boolean autoFeeding = false;
+    private String intakeAutoStatus = "idle";
+    private boolean intakeStoppedForCapacity = false;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
         this.outtakeMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "outtakeMotor");
@@ -65,16 +67,28 @@ public class ArtifactHandlingSystem {
         outtakeMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     }
 
-    public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact) {
+    public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact, int artifactCount) {
+        intakeStoppedForCapacity = false;
+        if (artifactCount >= TeleOpConstants.MAX_ARTIFACT_CAPACITY && intakeArtifact) {
+            intakeMotor.setPower(0);
+            containerMotor.setPower(0);
+            intakeAutoStatus = "stopped: full (>=cap)";
+            intakeStoppedForCapacity = true;
+            return;
+        }
+
         if (intakeArtifact) {
             intakeMotor.setPower(1);
             containerMotor.setPower(1);
+            intakeAutoStatus = "intake: forward";
         } else if (rejectArtifact) {
             intakeMotor.setPower(-1);
             containerMotor.setPower(-1);
+            intakeAutoStatus = "intake: reverse";
         } else {
             intakeMotor.setPower(0);
             containerMotor.setPower(0);
+            intakeAutoStatus = "intake: idle";
         }
     }
 
@@ -87,41 +101,33 @@ public class ArtifactHandlingSystem {
             flapDown = true;
         }
     }
-
-    /**
-     * Auto-feed logic:
-     * - If driver commands intake/reject, manual override takes priority.
-     * - Otherwise, when shooter is commanded (>0.1), flap is down, and no artifact
-     *   detected at the back sensor, run intake until an artifact is detected.
-     */
+    
     public void manageIntakeWithAutoFeed(boolean intakeArtifact,
                                          boolean rejectArtifact,
                                          boolean shooterActive,
-                                         boolean artifactAtBack) {
-        // Manual override: driver commands intake or reject
+                                         boolean artifactAtBack,
+                                         int artifactCount) {
         if (intakeArtifact || rejectArtifact) {
             autoFeeding = false;
-            intakeSystem(intakeArtifact, rejectArtifact);
+            intakeAutoStatus = intakeArtifact ? "manual: intake" : "manual: reject";
+            intakeSystem(intakeArtifact, rejectArtifact, artifactCount);
             return;
         }
 
-        // Auto-feed when shooting with flap down and nothing staged
         if (shooterActive && flapDown && !artifactAtBack) {
             autoFeeding = true;
-            intakeMotor.setPower(1);
-            containerMotor.setPower(1);
+            intakeAutoStatus = "auto: feeding (shoot)";
+            intakeSystem(true, false, artifactCount);
             return;
         }
 
-        // No auto condition; ensure motors are stopped if we were auto feeding
         if (autoFeeding) {
-            intakeMotor.setPower(0);
-            containerMotor.setPower(0);
+            intakeSystem(false, false, artifactCount);
             autoFeeding = false;
+            intakeAutoStatus = "auto: stopped";
         } else {
-            // Keep previous behavior: stop when no inputs
-            intakeMotor.setPower(0);
-            containerMotor.setPower(0);
+            intakeSystem(false, false, artifactCount);
+            intakeAutoStatus = "idle";
         }
     }
 
@@ -280,6 +286,8 @@ public class ArtifactHandlingSystem {
         linearOpMode.telemetry.addData("Intake Motor Power", intakeMotor.getPower());
         linearOpMode.telemetry.addData("Container Motor Power", containerMotor.getPower());
         linearOpMode.telemetry.addData("Flap Servo Position", flapServo.getPosition());
+        linearOpMode.telemetry.addData("Intake Auto Status", intakeAutoStatus);
+        linearOpMode.telemetry.addData("Intake Auto-Stopped (Full)", intakeStoppedForCapacity);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("targetVelocity", launchVelocity);
@@ -290,6 +298,8 @@ public class ArtifactHandlingSystem {
         packet.put("intakePower", intakeMotor.getPower());
         packet.put("containerPower", containerMotor.getPower());
         packet.put("flapPosition", flapServo.getPosition());
+        packet.put("intakeAutoStatus", intakeAutoStatus);
+        packet.put("intakeAutoStopped", intakeStoppedForCapacity);
         dashboard.sendTelemetryPacket(packet);
     }
 }
