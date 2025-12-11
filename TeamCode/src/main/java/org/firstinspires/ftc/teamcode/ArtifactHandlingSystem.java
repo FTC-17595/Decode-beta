@@ -21,6 +21,8 @@ public class ArtifactHandlingSystem {
     private double launchVelocity;
     private double autoLaunchVelocity;
     private boolean lastSwitchState = false;
+    private boolean flapDown = true;
+    private boolean autoFeeding = false;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
         this.outtakeMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "outtakeMotor");
@@ -79,8 +81,47 @@ public class ArtifactHandlingSystem {
     public void flapSystem(boolean flapUp) {
         if (flapUp) {
             flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+            flapDown = false;
         } else {
             flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+            flapDown = true;
+        }
+    }
+
+    /**
+     * Auto-feed logic:
+     * - If driver commands intake/reject, manual override takes priority.
+     * - Otherwise, when shooter is commanded (>0.1), flap is down, and no artifact
+     *   detected at the back sensor, run intake until an artifact is detected.
+     */
+    public void manageIntakeWithAutoFeed(boolean intakeArtifact,
+                                         boolean rejectArtifact,
+                                         boolean shooterActive,
+                                         boolean artifactAtBack) {
+        // Manual override: driver commands intake or reject
+        if (intakeArtifact || rejectArtifact) {
+            autoFeeding = false;
+            intakeSystem(intakeArtifact, rejectArtifact);
+            return;
+        }
+
+        // Auto-feed when shooting with flap down and nothing staged
+        if (shooterActive && flapDown && !artifactAtBack) {
+            autoFeeding = true;
+            intakeMotor.setPower(1);
+            containerMotor.setPower(1);
+            return;
+        }
+
+        // No auto condition; ensure motors are stopped if we were auto feeding
+        if (autoFeeding) {
+            intakeMotor.setPower(0);
+            containerMotor.setPower(0);
+            autoFeeding = false;
+        } else {
+            // Keep previous behavior: stop when no inputs
+            intakeMotor.setPower(0);
+            containerMotor.setPower(0);
         }
     }
 
@@ -204,6 +245,10 @@ public class ArtifactHandlingSystem {
                     : TeleOpConstants.AUTO_SHORT_RANGE_VELOCITY;
         }
         lastSwitchState = switch_f;
+    }
+
+    public boolean isFlapDown() {
+        return flapDown;
     }
 
     public double getLaunchVelocity() {

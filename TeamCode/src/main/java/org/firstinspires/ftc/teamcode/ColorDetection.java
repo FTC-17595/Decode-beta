@@ -89,6 +89,10 @@ public class ColorDetection {
         }
     }
 
+    public boolean isArtifactAtBack() {
+        return detectArtifact(backColorSensor) == 1;
+    }
+
 
     public void setRGBIndicator() {
         // Don't update if celebrating
