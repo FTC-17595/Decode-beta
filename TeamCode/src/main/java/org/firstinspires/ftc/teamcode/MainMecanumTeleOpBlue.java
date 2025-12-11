@@ -46,7 +46,12 @@ public class MainMecanumTeleOpBlue extends LinearOpMode {
             driveTrain.resetYaw();
             artifactHandlingSystem.shootingSystem(robotControls.shootArtifact, robotControls.motorBrake);
             artifactHandlingSystem.flapSystem(robotControls.flapArtifact);
-            artifactHandlingSystem.intakeSystem(robotControls.intakeArtifact, robotControls.rejectIntakeArtifact);
+            artifactHandlingSystem.manageIntakeWithAutoFeed(
+                robotControls.intakeArtifact,
+                robotControls.rejectIntakeArtifact,
+                robotControls.shootArtifact > 0.1f,
+                colorDetection.isArtifactAtBack()
+            );
             artifactHandlingSystem.adjustShootingFactor(robotControls.increaseFactor, robotControls.decreaseFactor);
             artifactHandlingSystem.switchShootingFactor(robotControls.switchLaunchPower);
             artifactHandlingSystem.checkMotorHealth();
