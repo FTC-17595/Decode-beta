@@ -52,7 +52,7 @@ public class AutoRed extends LinearOpMode {
                 positionShoot();
 
         //      ============ SHOOT + 9 Points ===========
-                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY, 15);
 
         //   =============Pick up the first line of artifacts ==========================
                 pickFirstLine();
@@ -62,7 +62,7 @@ public class AutoRed extends LinearOpMode {
 
         //   ============ SHOOT + 9 points ===========
                 decodeAuto.setShootState(true);
-                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY, 15);
                 telemetry.addData("Shooting Complete",null);
 
         //   =============Position the robot for Teleop ==========================
@@ -104,7 +104,7 @@ public class AutoRed extends LinearOpMode {
 
         //      Run the intake while intaking artifacts
         decodeAuto.intakeRun();
-        autoMovement.PinpointY(900,65);
+        autoMovement.PinpointY(900,45);
         sleep(700);
         decodeAuto.intakeSystemAuto(false,false);
 

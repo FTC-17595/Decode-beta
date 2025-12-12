@@ -62,7 +62,7 @@ public class AutoBlueNear extends LinearOpMode {
 
             autoMovement.PinpointX(-1300);
 
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY, 20);
 
             odo.setPosX(0,DistanceUnit.MM);
 
@@ -84,7 +84,7 @@ public class AutoBlueNear extends LinearOpMode {
 
             decodeAuto.gyroTurnToAngle(-41);
 
-            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.SHORT_RANGE_VELOCITY, 20);
 
 //            decodeAuto.intakeRun();
 ////            sleep(1000);

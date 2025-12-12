@@ -21,9 +21,9 @@ public class AutoConstants {
     final static double LONG_RANGE_VELOCITY = 1255; // prev: 1275
 //    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
     final static double MAX_VELOCITY = 2300;
-    final static  double kP = 60.0;
-    final static  double kI = 0.05;
-    final static double kD = 18.5;
+    final static  double kP = 85.0;
+    final static  double kI = 0.00;
+    final static double kD = 26;
     final static  double kF = 32767 / MAX_VELOCITY * 0.88;
     final static double SHOOTING_SPINUP_TIME = 2000;
     final static double FLAP_SLEEP = 800;

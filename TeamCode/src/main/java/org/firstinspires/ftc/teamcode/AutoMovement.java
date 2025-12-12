@@ -388,10 +388,10 @@ public class AutoMovement {
 
 //            driveMotorsPower = error / 50;
 
-            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) {
-                driveMotorsPower = 0.35;
-            } else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) {
-                driveMotorsPower = -0.35;
+            if ((driveMotorsPower < 0.25) && (driveMotorsPower > 0)) {
+                driveMotorsPower = 0.25;
+            } else if ((driveMotorsPower > -0.25) && (driveMotorsPower < 0)) {
+                driveMotorsPower = -0.25;
             }
             // Positive power causes left turn
             frontLeftMotor.setPower(-driveMotorsPower);
