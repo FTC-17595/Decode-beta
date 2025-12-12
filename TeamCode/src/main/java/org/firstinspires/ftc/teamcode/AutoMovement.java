@@ -275,6 +275,51 @@ public class AutoMovement {
 //        odo.resetPosAndIMU();
     }
 
+    public void PinpointXHorizontal(double target, double speed) {
+
+//        odo.setPosX(0, DistanceUnit.MM);
+//        sleep(700);
+
+        double margin = target + odo.getPosX(DistanceUnit.MM);
+
+
+        while (opModeIsActive() && abs(margin) > 30) {
+            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+                break;
+            }
+
+            odo.update();
+
+            Pose2D pos = odo.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+
+            linearOpMode.telemetry.addData("Position", data);
+            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+            linearOpMode.telemetry.addData("Margin", margin);
+            double factor = speed/100;
+            double direction = Math.signum(margin);
+            double power = (AutoConstants.ARTIFACT_PICKUP_SPEED * direction)* factor;
+            double current = odo.getPosX(DistanceUnit.MM);
+            margin = target + current;
+
+            linearOpMode.telemetry.addData("Margin", margin);
+
+            linearOpMode.telemetry.update();
+
+
+            frontLeftMotor.setPower(power);
+            backLeftMotor.setPower(power);
+            frontRightMotor.setPower(power);
+            backRightMotor.setPower(power);
+
+
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+//        odo.resetPosAndIMU();
+    }
 
 
     public void PinpointY(double target, double speed) {
@@ -320,15 +365,14 @@ public class AutoMovement {
         backRightMotor.setPower(0);
 //        odo.resetPosAndIMU();
     }
-
-    public void PinpointYBlue(double target) {
+    public void PinpointYBlue(double target, double speed) {
 
         odo.setPosY(0,DistanceUnit.MM);
 
         double margin = target + odo.getPosY(DistanceUnit.MM);
 
 
-        while (opModeIsActive() && abs(margin) > 100) {
+        while (opModeIsActive() && abs(margin) > 30) {
             if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
                 break;
             }
@@ -340,11 +384,11 @@ public class AutoMovement {
 
             linearOpMode.telemetry.addData("Position", data);
             linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
-
+            double factor = speed/100;
             double direction = Math.signum(margin);
-            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
+            double power = (AutoConstants.ARTIFACT_PICKUP_SPEED * direction)* factor;
             double current = odo.getPosY(DistanceUnit.MM);
-            margin = target + current;
+            margin = target - current;
 
             linearOpMode.telemetry.addData("Margin", margin);
 
@@ -362,8 +406,52 @@ public class AutoMovement {
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
-
+//        odo.resetPosAndIMU();
     }
+
+//    public void PinpointYBlue(double target) {
+//
+//        odo.setPosY(0,DistanceUnit.MM);
+//
+//        double margin = target + odo.getPosY(DistanceUnit.MM);
+//
+//
+//        while (opModeIsActive() && abs(margin) > 100) {
+//            if (!linearOpMode.opModeIsActive() || linearOpMode.isStopRequested()) {
+//                break;
+//            }
+//
+//            odo.update();
+//
+//            Pose2D pos = odo.getPosition();
+//            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+//
+//            linearOpMode.telemetry.addData("Position", data);
+//            linearOpMode.telemetry.addData("Status", odo.getDeviceStatus());
+//
+//            double direction = Math.signum(margin);
+//            double power = AutoConstants.ARTIFACT_PICKUP_SPEED * direction;
+//            double current = odo.getPosY(DistanceUnit.MM);
+//            margin = target + current;
+//
+//            linearOpMode.telemetry.addData("Margin", margin);
+//
+//            linearOpMode.telemetry.update();
+//
+//
+//            frontLeftMotor.setPower(power);
+//            backLeftMotor.setPower(power);
+//            frontRightMotor.setPower(power);
+//            backRightMotor.setPower(power);
+//
+//
+//        }
+//        frontLeftMotor.setPower(0);
+//        backLeftMotor.setPower(0);
+//        frontRightMotor.setPower(0);
+//        backRightMotor.setPower(0);
+//
+//    }
     public void gyroTurnToAngle(double turnAngle) {
         double error, currentHeadingAngle, driveMotorsPower;
         imu.resetYaw();

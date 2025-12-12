@@ -64,7 +64,7 @@ public class AutoBlue extends LinearOpMode {
                 positionShoot();
 
                 //      ============ SHOOT + 9 Points ===========
-                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY, 12);
+                decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY, 15);
 
                 //   =============Pick up the first line of artifacts ==========================
                 pickFirstLine();
@@ -114,16 +114,19 @@ public class AutoBlue extends LinearOpMode {
         autoMovement.PinpointX(420);
         autoMovement.gyroTurnToAngle(90);
 
+
         //      Run the intake while intaking artifacts
+        odo.resetPosAndIMU();
         decodeAuto.intakeRun();
-        autoMovement.PinpointY(750,65);
+        autoMovement.PinpointXHorizontal(650,50);
         sleep(700);
         decodeAuto.intakeSystemAuto(false,false);
 
 
     }
     private void returnToBase() {
-        autoMovement.PinpointY(-650,80);
+        odo.resetPosAndIMU();
+        autoMovement.PinpointXHorizontal(-550,80);
         autoMovement.gyroTurnToAngle(-90);
         odo.resetPosAndIMU();
         autoMovement.PinpointX(-225);
