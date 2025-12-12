@@ -22,7 +22,6 @@ public class RobotControls {
     boolean decreaseFactor;
     boolean switchLaunchPower;
     boolean celebrate;
-    boolean autoShoot;
     boolean alignRobot;
     boolean DEBUG;
 
@@ -36,7 +35,6 @@ public class RobotControls {
         celebrate = linearOpMode.gamepad2.back;
         increaseFactor = linearOpMode.gamepad2.dpad_up;
         decreaseFactor = linearOpMode.gamepad2.dpad_down;
-        autoShoot = linearOpMode.gamepad2.right_bumper;
         alignRobot = linearOpMode.gamepad1.b;
         DEBUG = linearOpMode.gamepad1.y;
     }
@@ -51,7 +49,6 @@ public class RobotControls {
         linearOpMode.telemetry.addData("Decrease Velocity (DPad Down)", decreaseFactor);
         linearOpMode.telemetry.addData("Switch Launch Power (X)", switchLaunchPower);
         linearOpMode.telemetry.addData("Celebrate (Back)", celebrate);
-        linearOpMode.telemetry.addData("Auto Shoot (RB)", autoShoot);
         linearOpMode.telemetry.addData("Align Robot (gamepad1 B)", alignRobot);
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -64,7 +61,6 @@ public class RobotControls {
         packet.put("decreaseFactor", decreaseFactor);
         packet.put("switchLaunchPower", switchLaunchPower);
         packet.put("celebrate", celebrate);
-        packet.put("autoShoot", autoShoot);
         packet.put("alignRobot", alignRobot);
         dashboard.sendTelemetryPacket(packet);
     }
