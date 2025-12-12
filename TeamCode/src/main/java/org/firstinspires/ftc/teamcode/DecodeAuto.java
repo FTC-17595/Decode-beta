@@ -387,12 +387,12 @@ private void stopMotors() {
         loopState = state;
     }
     boolean loopState = true;
-    public void shootAutoArtifactFar(double targetVelocity) {
+    public void shootAutoArtifactFar(double targetVelocity, double margin) {
 
             // Spin up once
             try {
 
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12) ) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > margin) ) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 1" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();
@@ -414,7 +414,7 @@ private void stopMotors() {
                 sleep(AutoConstants.FEED_TIME_AUTO);
                 // intakeStop();
 //                waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 10, 2000);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12) ) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > margin) ) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 2" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();
@@ -433,7 +433,7 @@ private void stopMotors() {
                 // ===== SHOT 3 =====
                 //intakeSystemAuto(true, false);
                // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > 12)) {
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > (margin + 4))) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 3" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();

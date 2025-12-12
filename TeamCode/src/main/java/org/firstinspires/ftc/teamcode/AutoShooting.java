@@ -56,7 +56,7 @@ public class AutoShooting extends LinearOpMode {
 
         waitForStart();
         if (opModeIsActive() && (loopFinished)) {
-            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY);
+            decodeAuto.shootAutoArtifactFar(AutoConstants.LONG_RANGE_VELOCITY, 20);
             loopFinished = false;
 //        } else {
 //            return;
