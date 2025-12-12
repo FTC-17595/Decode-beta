@@ -28,7 +28,4 @@ public class AutoConstants {
     final static double SHOOTING_SPINUP_TIME = 2000;
     final static double FLAP_SLEEP = 800;
     final static long FEED_TIME_AUTO = 900;
-    final static long SPINUP_MS = 2000;
-    final static long FEED_MS = 1000;
-    final static long FEED_SETTLE_MS = 150;
 }

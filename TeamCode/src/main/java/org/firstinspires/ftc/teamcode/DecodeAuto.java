@@ -470,8 +470,8 @@ private void stopMotors() {
         final double velocityTolerance = 5;
         final long flapDelayMs = (long) AutoConstants.FLAP_SLEEP;
         final long initialSpinupTimeoutMs = (long) AutoConstants.SHOOTING_SPINUP_TIME;
-        final long feedMs = AutoConstants.FEED_MS;
-        final long feedSettleMs = AutoConstants.FEED_SETTLE_MS;
+        final long feedMs = TeleOpConstants.FEED_MS;
+        final long feedSettleMs = TeleOpConstants.FEED_SETTLE_MS;
 
         OuttakeSystemFar(true);
 
@@ -492,7 +492,7 @@ private void stopMotors() {
                 intakeStop();
                 sleep(feedSettleMs);
 
-                if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, AutoConstants.SPINUP_MS)) {
+                if (!waitForOuttakeVelocity(targetVelocity, velocityTolerance, TeleOpConstants.SPINUP_MS)) {
                     break;
                 }
             }
