@@ -18,10 +18,10 @@ public class AutoConstants {
     static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
     static final double AUTO_STRAFE_POWER = 0.5;
     final static double SHORT_RANGE_VELOCITY =1238;
-    final static double LONG_RANGE_VELOCITY = 1380; // Please don't edit this part
+    final static double LONG_RANGE_VELOCITY = 1255; // prev: 1275
 //    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
     final static double MAX_VELOCITY = 2300;
-    final static  double kP = 45.0;
+    final static  double kP = 60.0;
     final static  double kI = 0.05;
     final static double kD = 18.5;
     final static  double kF = 32767 / MAX_VELOCITY * 0.88;
