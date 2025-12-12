@@ -19,9 +19,6 @@ public class TeleOpConstants {
     final static double AUTO_LONG_RANGE_VELOCITY = 1250;
     final static double MAX_VELOCITY = 2300.0;
     final static double VELOCITY_INCREMENT = 10.0;
-    final static long SPINUP_MS = 2000;
-    final static long FEED_MS = 1000;
-    final static long FEED_SETTLE_MS = 150;
     final static double CELEBRATION_SPEED = 3500;
     final static int WAIT_FOR_MOTOR_OFFSET = 20;
     final static double kP = 60.0; // 7s: 18.0, 5s: 28.0, 3s: 34.0, 2.5s: 38.0, 2s: 44.0, 1.5s: 52.0, 1s: 60.0
