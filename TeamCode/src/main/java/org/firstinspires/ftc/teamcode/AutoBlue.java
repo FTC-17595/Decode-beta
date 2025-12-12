@@ -102,14 +102,14 @@ public class AutoBlue extends LinearOpMode {
         //      Run up outtake while moving to shoot
         decodeAuto.OuttakeSystemFar(true);
         autoMovement.PinpointX(120);
-        autoMovement.gyroTurnToAngle(20);
+        autoMovement.gyroTurnToAngle(19);
 
     }
 
     private void pickFirstLine() {
         //      Move to pickup first set of Artifacts
         decodeAuto.OuttakeSystemFar(true);
-        autoMovement.gyroTurnToAngle(-20);
+        autoMovement.gyroTurnToAngle(-19);
 //                odo.resetPosAndIMU();
         autoMovement.PinpointX(420);
         autoMovement.gyroTurnToAngle(90);
@@ -130,7 +130,7 @@ public class AutoBlue extends LinearOpMode {
         autoMovement.gyroTurnToAngle(-90);
         odo.resetPosAndIMU();
         autoMovement.PinpointX(-225);
-        autoMovement.gyroTurnToAngle(17);
+        autoMovement.gyroTurnToAngle(15);
     }
 
     private void posTeleop() {
