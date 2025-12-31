@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Locale;
 import java.util.List;
@@ -387,6 +388,7 @@ private void stopMotors() {
         loopState = state;
     }
     boolean loopState = true;
+    float counter;
     public void shootAutoArtifactFar(double targetVelocity, double margin) {
 
             // Spin up once
@@ -433,7 +435,9 @@ private void stopMotors() {
                 // ===== SHOT 3 =====
                 //intakeSystemAuto(true, false);
                // waitForOuttakeVelocity(AutoConstants.LONG_RANGE_VELOCITY, 8, 2000);
-                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > (margin + 4))) {
+                ElapsedTime timer = new ElapsedTime();
+                timer.reset();
+                while ((abs(outtakeMotor.getVelocity() - targetVelocity) > (margin + 4)) && timer.seconds() < 2) {
 
                     linearOpMode.telemetry.addLine("Velocity in while 3" + outtakeMotor.getVelocity() + "...");
                     linearOpMode.telemetry.update();

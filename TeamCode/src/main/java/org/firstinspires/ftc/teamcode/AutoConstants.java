@@ -17,7 +17,7 @@ public class AutoConstants {
     static final double SHOOT_Y = -307.373;
     static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
     static final double AUTO_STRAFE_POWER = 0.5;
-    final static double SHORT_RANGE_VELOCITY =1238;
+    final static double SHORT_RANGE_VELOCITY = 1130; // prev: 1238;
     final static double LONG_RANGE_VELOCITY = 1255; // prev: 1275
 //    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
     final static double MAX_VELOCITY = 2300;

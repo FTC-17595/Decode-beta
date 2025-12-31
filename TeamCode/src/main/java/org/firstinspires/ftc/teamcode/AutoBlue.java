@@ -129,7 +129,7 @@ public class AutoBlue extends LinearOpMode {
         autoMovement.PinpointXHorizontal(-550,80);
         autoMovement.gyroTurnToAngle(-90);
         odo.resetPosAndIMU();
-        autoMovement.PinpointX(-225);
+        autoMovement.PinpointX(-200);
         autoMovement.gyroTurnToAngle(15);
     }
 
