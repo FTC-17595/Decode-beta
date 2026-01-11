@@ -21,6 +21,10 @@ public class ArtifactHandlingSystem {
     private double launchVelocity;
     private double autoLaunchVelocity;
     private boolean lastSwitchState = false;
+    private boolean flapDown = true;
+    private boolean autoFeeding = false;
+    private String intakeAutoStatus = "idle";
+    private boolean intakeStoppedForCapacity = false;
 
     public ArtifactHandlingSystem(LinearOpMode linearOpMode) {
         this.outtakeMotor = linearOpMode.hardwareMap.get(DcMotorEx.class, "outtakeMotor");
@@ -63,24 +67,67 @@ public class ArtifactHandlingSystem {
         outtakeMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     }
 
-    public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact) {
+    public void intakeSystem(boolean intakeArtifact, boolean rejectArtifact, int artifactCount) {
+        intakeStoppedForCapacity = false;
+        if (artifactCount >= TeleOpConstants.MAX_ARTIFACT_CAPACITY && intakeArtifact) {
+            intakeMotor.setPower(0);
+            containerMotor.setPower(0);
+            intakeAutoStatus = "stopped: full (>=cap)";
+            intakeStoppedForCapacity = true;
+            return;
+        }
+
         if (intakeArtifact) {
             intakeMotor.setPower(1);
             containerMotor.setPower(1);
+            intakeAutoStatus = "intake: forward";
         } else if (rejectArtifact) {
             intakeMotor.setPower(-1);
             containerMotor.setPower(-1);
+            intakeAutoStatus = "intake: reverse";
         } else {
             intakeMotor.setPower(0);
             containerMotor.setPower(0);
+            intakeAutoStatus = "intake: idle";
         }
     }
 
     public void flapSystem(boolean flapUp) {
         if (flapUp) {
             flapServo.setPosition(TeleOpConstants.FLAP_SERVO_UP);
+            flapDown = false;
         } else {
             flapServo.setPosition(TeleOpConstants.FLAP_SERVO_DOWN);
+            flapDown = true;
+        }
+    }
+    
+    public void manageIntakeWithAutoFeed(boolean intakeArtifact,
+                                         boolean rejectArtifact,
+                                         boolean shooterActive,
+                                         boolean artifactAtBack,
+                                         int artifactCount) {
+        if (intakeArtifact || rejectArtifact) {
+            autoFeeding = false;
+            intakeAutoStatus = intakeArtifact ? "manual: intake" : "manual: reject";
+            intakeSystem(intakeArtifact, rejectArtifact, artifactCount);
+            return;
+        }
+
+        if (shooterActive && flapDown && !artifactAtBack) {
+            autoFeeding = true;
+            intakeAutoStatus = "auto: feeding (shoot)";
+            intakeSystem(true, false, artifactCount);
+            return;
+        }
+
+        if (autoFeeding) {
+            intakeSystem(false, false, artifactCount);
+            autoFeeding = false;
+            intakeAutoStatus = "auto: stopped";
+        } else {
+            intakeSystem(false, false, artifactCount);
+            intakeAutoStatus = "idle";
         }
     }
 
@@ -206,6 +253,10 @@ public class ArtifactHandlingSystem {
         lastSwitchState = switch_f;
     }
 
+    public boolean isFlapDown() {
+        return flapDown;
+    }
+
     public double getLaunchVelocity() {
         return launchVelocity;
     }
@@ -235,6 +286,8 @@ public class ArtifactHandlingSystem {
         linearOpMode.telemetry.addData("Intake Motor Power", intakeMotor.getPower());
         linearOpMode.telemetry.addData("Container Motor Power", containerMotor.getPower());
         linearOpMode.telemetry.addData("Flap Servo Position", flapServo.getPosition());
+        linearOpMode.telemetry.addData("Intake Auto Status", intakeAutoStatus);
+        linearOpMode.telemetry.addData("Intake Auto-Stopped (Full)", intakeStoppedForCapacity);
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("targetVelocity", launchVelocity);
@@ -245,6 +298,8 @@ public class ArtifactHandlingSystem {
         packet.put("intakePower", intakeMotor.getPower());
         packet.put("containerPower", containerMotor.getPower());
         packet.put("flapPosition", flapServo.getPosition());
+        packet.put("intakeAutoStatus", intakeAutoStatus);
+        packet.put("intakeAutoStopped", intakeStoppedForCapacity);
         dashboard.sendTelemetryPacket(packet);
     }
 }
