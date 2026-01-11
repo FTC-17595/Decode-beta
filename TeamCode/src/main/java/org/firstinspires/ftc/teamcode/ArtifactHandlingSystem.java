@@ -102,11 +102,7 @@ public class ArtifactHandlingSystem {
         }
     }
     
-    public void manageIntakeWithAutoFeed(boolean intakeArtifact,
-                                         boolean rejectArtifact,
-                                         boolean shooterActive,
-                                         boolean artifactAtBack,
-                                         int artifactCount) {
+    public void manageIntakeWithAutoFeed(boolean intakeArtifact, boolean rejectArtifact, boolean shooterActive, boolean artifactAtBack, int artifactCount) {
         if (intakeArtifact || rejectArtifact) {
             autoFeeding = false;
             intakeAutoStatus = intakeArtifact ? "manual: intake" : "manual: reject";
@@ -143,7 +139,6 @@ public class ArtifactHandlingSystem {
             }
 
             shootingSystem(0, 0);
-            System.out.println("Thread finished its 4-second run!");
         });
 
         ArtifactShoot.start();
@@ -268,6 +263,7 @@ public class ArtifactHandlingSystem {
     public void checkMotorHealth() {
         if (outtakeMotor.isOverCurrent()) {
             linearOpMode.telemetry.addData("WARNING", "Shooter motor over current!");
+            linearOpMode.telemetry.update();
             outtakeMotor.setVelocity(0);
         }
     }
