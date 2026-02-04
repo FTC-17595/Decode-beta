@@ -1,32 +1,34 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pedroPathing.constants;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.localization.Encoder;
+import com.pedropathing.localization.GoBildaPinpointDriver;
+import com.pedropathing.pathgen.Point;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+@Config
+public class PedroConstants {
 
-public class AutoConstants {
+    public static double MASS = 12.5; 
 
-    private LinearOpMode linearOpMode;
-    GoBildaPinpointDriver odo;
-    static final double ARTIFACT_PICKUP_SPEED = 0.45;
-    static final double TURN_SPEED = 0.5;
-    static final double STRAFE_SPEED = 0.5;
-    static final double LAUNCH_EXIT_SPEED = 0.8;
-    static final double SHOOT_X = 1437;
-    static final double SHOOT_Y = -307.373;
-    static final double AUTO_ARTIFACT_SHOOT_POWER = 0.72;
-    static final double AUTO_STRAFE_POWER = 0.5;
-    final static double SHORT_RANGE_VELOCITY =1185;
-    final static double LONG_RANGE_VELOCITY = 1335; // Please don't edit this part
-//    final static double LONG_RANGE_VELOCITY = 1500; // Please don't edit this part
-    final static double MAX_VELOCITY = 2300;
-    final static  double kP = 18;
-    final static  double kI = 0.15;
-    final static double kD = 7.5;
-    final static  double kF = 32767 / MAX_VELOCITY * 0.88;
-    final static double SHOOTING_SPINUP_TIME = 2000;
-    final static double FLAP_SLEEP = 250;
-    final static long FEED_TIME_AUTO = 900;
+    public static double X_OFFSET = 2.56; 
+    public static double Y_OFFSET = 5.60; 
 
+    public static double TRACK_WIDTH = 14.0; 
+    public static double WHEEL_BASE = 14.0; 
+
+    public static double MAX_VELOCITY = 70.0;
+    public static double MAX_ACCELERATION = 60.0;
+    public static double MAX_ANGULAR_VELOCITY = Math.toRadians(180);
+    public static double MAX_ANGULAR_ACCELERATION = Math.toRadians(90);
+
+    public static double xMovementP = 0.06;
+    public static double xMovementD = 0.01;
+    
+    public static double yMovementP = 0.06;
+    public static double yMovementD = 0.01;
+    
+    public static double headingP = 0.3;
+    public static double headingD = 0.02;
+    
+    public static double driveP = 0.02; 
 }
