@@ -1,361 +1,163 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
+import com.pedropathing.pathgen.BezierCurve;
+import com.pedropathing.pathgen.BezierLine;
+import com.pedropathing.pathgen.PathChain;
+import com.pedropathing.pathgen.Point;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.teamcode.pedroPathing.constants.PedroConstants;
+import org.firstinspires.ftc.teamcode.subsystems.MechanismSubsystem;
 
-@Autonomous(name = "AutoBlue")
-public class AutoBlue extends LinearOpMode {
+@Config
+@Autonomous(name = "Pedro Blue Auto", group = "Pedro")
+public class AutoBluePedro extends OpMode {
 
-    ElapsedTime runtime = new ElapsedTime();
+    private Follower follower;
+    private MechanismSubsystem mechanisms;
+    private ElapsedTime pathTimer = new ElapsedTime();
+    private ElapsedTime actionTimer = new ElapsedTime();
 
-    private AutoMovement autoMovement;
-    GoBildaPinpointDriver odo;
-    DcMotor frontLeftMotor, frontRightMotor, backLeftMotor, backRightMotor;
-    RobotAnimations obj;
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(0));
+    private final Pose shootPose = new Pose(4.7, 0, Math.toRadians(19));
+    private final Pose pickupStartPose = new Pose(16.5, 5.0, Math.toRadians(90));
+    private final Pose pickupEndPose = new Pose(25.6, 5.0, Math.toRadians(90));
+    private final Pose parkPose = new Pose(8.0, 4.0, Math.toRadians(108));
 
-    int counter = 0;
-    boolean PPG = false;
-    boolean PGP = false;
-    boolean GPP = false;
-    boolean loopFinished = true;
-    IMU imu;
-    AprilTagProcessor tagProcessor;
+    private PathChain toShootingSpot, toPickupStart, intakeSampleLine, returnToShoot, toPark;
 
-    private boolean stopIfNeeded() {
-        return !opModeIsActive() || getRuntime() >= 30.0;
+    private int pathState = 0;
+
+    @Override
+    public void init() {
+        follower = new Follower(hardwareMap);
+        follower.setStartingPose(startPose);
+
+        mechanisms = new MechanismSubsystem(hardwareMap);
+
+        buildPaths();
+
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry.update();
+    }
+
+    private void buildPaths() {
+        toShootingSpot = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(startPose), new Point(shootPose)))
+                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .build();
+
+        toPickupStart = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(shootPose), new Point(pickupStartPose)))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), pickupStartPose.getHeading())
+                .build();
+
+        intakeSampleLine = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pickupStartPose), new Point(pickupEndPose)))
+                .setLinearHeadingInterpolation(pickupStartPose.getHeading(), pickupEndPose.getHeading())
+                .setZeroPowerAccelerationMultiplier(0.5) 
+                .build();
+
+        returnToShoot = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pickupEndPose), new Point(shootPose)))
+                .setLinearHeadingInterpolation(pickupEndPose.getHeading(), shootPose.getHeading())
+                .build();
+
+        toPark = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(shootPose), new Point(parkPose)))
+                .setLinearHeadingInterpolation(shootPose.getHeading(), parkPose.getHeading())
+                .build();
     }
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
-        AlignToTag alignToTag = new AlignToTag();
-        initAuto();
-        waitForStart();
-        runtime.reset();
-
-        if (opModeIsActive() && loopFinished && runtime.seconds() < 30) {
-
-            while (!isStopRequested() && loopFinished) {
-
-                alignToTag();
-                if (stopIfNeeded()) return;
-
-                autoMovement.shootAutoArtifactFar();
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-22);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(1500);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeRun();
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(-1300);
-                if (stopIfNeeded()) return;
-
-                sleep(700);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeSystemAuto(false, false);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(1220);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(-900);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(31);
-                if (stopIfNeeded()) return;
-
-                alignToTag();
-                if (stopIfNeeded()) return;
-
-                autoMovement.shootAutoArtifactFar();
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-31);
-                if (stopIfNeeded()) return;
-
-                sleep(500);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(180);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeRun();
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(-1000);
-                if (stopIfNeeded()) return;
-
-                sleep(700);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeSystemAuto(false, false);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(1000);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(-400);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(35);
-                if (stopIfNeeded()) return;
-
-                alignToTag();
-                if (stopIfNeeded()) return;
-
-                autoMovement.shootAutoArtifactFar();
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-35);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(180);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeRun();
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(-1000);
-                if (stopIfNeeded()) return;
-
-                sleep(700);
-                if (stopIfNeeded()) return;
-
-                autoMovement.intakeSystemAuto(false, false);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointY(1000);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(-90);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(-600);
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(35);
-                if (stopIfNeeded()) return;
-
-                alignToTag();
-                if (stopIfNeeded()) return;
-
-                autoMovement.shootAutoArtifactFar();
-                if (stopIfNeeded()) return;
-
-                autoMovement.gyroTurnToAngle(55);
-                if (stopIfNeeded()) return;
-
-                autoMovement.PinpointX(-600);
-                if (stopIfNeeded()) return;
-
-                odo.resetPosAndIMU();
-
-                loopFinished = true;
-            }
-        }
+    public void start() {
+        pathTimer.reset();
+        actionTimer.reset();
+        pathState = 0;
+        
+        follower.followPath(toShootingSpot);
+        mechanisms.startShooter(); 
     }
 
-    private void driveToPos(double targetX, double targetY) {
-        odo.update();
-        boolean telemAdded = true;
+    @Override
+    public void loop() {
+        follower.update();
+        
+        telemetry.addData("State", pathState);
+        telemetry.addData("X", follower.getPose().getX());
+        telemetry.addData("Y", follower.getPose().getY());
+        telemetry.update();
 
-        while (opModeIsActive() &&
-                (Math.abs(targetX + odo.getPosX(DistanceUnit.MM)) > 30 ||
-                        Math.abs(targetY - odo.getPosY(DistanceUnit.MM)) > 30)) {
-
-            odo.update();
-            double x = 0.001 * (targetX + odo.getPosX(DistanceUnit.MM));
-            double y = -0.001 * (targetY - odo.getPosY(DistanceUnit.MM));
-
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-            double rotY = y * Math.cos(-botHeading) - x * Math.sin(-botHeading);
-            double rotX = y * Math.sin(-botHeading) + x * Math.cos(-botHeading);
-
-            if (!telemAdded) {
-                telemetry.addData("x: ", x);
-                telemetry.addData("y: ", y);
-                telemetry.addData("rotX: ", rotX);
-                telemetry.addData("rotY: ", rotY);
-                telemetry.update();
-                telemAdded = true;
-            }
-
-            if (Math.abs(rotX) < 0.15) rotX = Math.signum(rotX) * 0.15;
-            if (Math.abs(rotY) < 0.15) rotY = Math.signum(rotY) * 0.15;
-
-            double denominator = Math.max(Math.abs(y) + Math.abs(x), 1);
-
-            double frontLeftPower = (rotX + rotY) / denominator;
-            double backLeftPower = (rotX - rotY) / denominator;
-            double frontRightPower = (rotX - rotY) / denominator;
-            double backRightPower = (rotX + rotY) / denominator;
-
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
-        }
-
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-    }
-
-    private void AlignToTag(AprilTagDetection tag) {
-        double error, drivePower;
-
-        ElapsedTime alignTimer = new ElapsedTime();
-
-        error = tag.ftcPose.yaw;
-
-        while (opModeIsActive() &&
-                alignTimer.seconds() < 2.0 &&
-                Math.abs(error) > 1.0) {
-
-            odo.update();
-
-            AprilTagDetection currentTag = getLatestTag();
-            if (currentTag == null) {
-                telemetry.addLine("Tag lost — stopping alignment.");
+        switch (pathState) {
+            case 0: 
+                if (!follower.isBusy()) {
+                    mechanisms.shootArtifact(); 
+                    actionTimer.reset();
+                    pathState = 1;
+                }
                 break;
-            }
 
-            error = currentTag.ftcPose.yaw;
-            drivePower = error / 50.0;
+            case 1: 
+                if (actionTimer.milliseconds() > 800) { 
+                    mechanisms.resetFlap();
+                    follower.followPath(toPickupStart);
+                    pathState = 2;
+                }
+                break;
 
-            if (drivePower > 0) drivePower = Math.max(drivePower, 0.35);
-            else drivePower = Math.min(drivePower, -0.35);
+            case 2: 
+                if (!follower.isBusy()) {
+                    mechanisms.setIntakePower(1.0);
+                    follower.followPath(intakeSampleLine);
+                    pathState = 3;
+                }
+                break;
 
-            frontLeftMotor.setPower(-drivePower);
-            backLeftMotor.setPower(-drivePower);
-            frontRightMotor.setPower(drivePower);
-            backRightMotor.setPower(drivePower);
+            case 3: 
+                if (!follower.isBusy()) {
+                    actionTimer.reset();
+                    pathState = 4;
+                }
+                break;
+                
+            case 4: 
+                if (actionTimer.milliseconds() > 500) {
+                    mechanisms.setIntakePower(0); 
+                    mechanisms.startShooter();    
+                    follower.followPath(returnToShoot);
+                    pathState = 5;
+                }
+                break;
 
-            telemetry.addData("Y:", odo.getPosY(DistanceUnit.MM));
-            telemetry.addData("X:", -odo.getPosX(DistanceUnit.MM));
-            telemetry.addData("Tag Yaw", error);
-            telemetry.addData("Drive Power", drivePower);
-            telemetry.update();
-        }
-
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-    }
-
-    private AprilTagDetection getLatestTag() {
-        if (tagProcessor.getDetections().size() > 0) {
-            return tagProcessor.getDetections().get(0);
-        }
-        return null;
-    }
-
-    private void gyroTurnToAngle(double turnAngle) {
-        double error, currentHeadingAngle, driveMotorsPower;
-        imu.resetYaw();
-
-        error = turnAngle;
-
-        while (opModeIsActive() && ((error > 1) || (error < -1))) {
-            odo.update();
-            telemetry.addData("X: ", -odo.getPosX(DistanceUnit.MM));
-            telemetry.addData("Y: ", odo.getPosY(DistanceUnit.MM));
-            telemetry.addData("Heading IMU: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.update();
-
-            driveMotorsPower = error / 50;
-
-            if ((driveMotorsPower < 0.35) && (driveMotorsPower > 0)) driveMotorsPower = 0.35;
-            else if ((driveMotorsPower > -0.35) && (driveMotorsPower < 0)) driveMotorsPower = -0.35;
-
-            frontLeftMotor.setPower(-driveMotorsPower);
-            backLeftMotor.setPower(-driveMotorsPower);
-            frontRightMotor.setPower(driveMotorsPower);
-            backRightMotor.setPower(driveMotorsPower);
-
-            currentHeadingAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            error = turnAngle - currentHeadingAngle;
-        }
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-    }
-
-    private void initAuto() {
-        autoMovement = new AutoMovement(this);
-
-        this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        odo.setOffsets(65, 142, DistanceUnit.MM);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        odo.resetPosAndIMU();
-        odo.recalibrateIMU();
-
-        this.frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");
-        this.backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        this.frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        this.backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
-
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        this.imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        this.imu.initialize(parameters);
-        this.imu.resetYaw();
-
-        ElapsedTime timer = new ElapsedTime();
-
-        if (timer.seconds() >= 1.0) {
-            counter++;
-            timer.reset();
-            telemetry.addData("Counter:", counter);
-            telemetry.update();
+            case 5: 
+                if (!follower.isBusy()) {
+                    mechanisms.shootArtifact(); 
+                    actionTimer.reset();
+                    pathState = 6;
+                }
+                break;
+                
+            case 6: 
+                 if (actionTimer.milliseconds() > 800) {
+                    mechanisms.resetFlap();
+                    mechanisms.stopShooter();
+                    follower.followPath(toPark);
+                    pathState = 7;
+                 }
+                 break;
+                 
+            case 7: 
+                if (!follower.isBusy()) {
+                    requestOpModeStop();
+                }
+                break;
         }
     }
 }
